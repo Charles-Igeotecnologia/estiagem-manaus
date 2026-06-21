@@ -1725,6 +1725,7 @@
             resultsBox.innerHTML = '';
             let hasResults = false;
 
+            // 1. Buscar nas mídias (fotos 360° e panorâmicas)
             geojsonData.features.forEach(feature => {
                 const props = feature.properties;
                 if (props.title.toLowerCase().includes(query)) {
@@ -1743,6 +1744,50 @@
                     resultsBox.appendChild(item);
                 }
             });
+
+            // 2. Buscar na camada vetorial de escolas rurais da SEMED
+            if (escolasRuraisData && escolasRuraisData.features) {
+                escolasRuraisData.features.forEach(feature => {
+                    const props = feature.properties;
+                    if (props.title.toLowerCase().includes(query)) {
+                        hasResults = true;
+                        const item = document.createElement('div');
+                        item.className = 'search-result-item';
+                        
+                        const labelType = props.schoolType === 'ribeirinha' ? 'Escola Ribeirinha' : 'Escola Rodoviária';
+                        const metaColor = props.schoolType === 'ribeirinha' ? 'var(--accent-cyan)' : 'var(--accent-orange)';
+                        
+                        item.innerHTML = `
+                            <span>${props.title}</span>
+                            <span class="result-meta" style="color: ${metaColor}; font-weight: 600;">${labelType}</span>
+                        `;
+                        item.addEventListener('click', () => {
+                            const marker = ruralMarkers[props.id];
+                            if (marker) {
+                                // Se a escola estiver oculta pelo filtro, ativa o checkbox correspondente
+                                const showRibeirinha = document.getElementById('chkRibeirinha');
+                                const showRodoviaria = document.getElementById('chkRodoviaria');
+                                
+                                if (props.schoolType === 'ribeirinha' && !showRibeirinha.checked) {
+                                    showRibeirinha.checked = true;
+                                    filterSchools();
+                                } else if (props.schoolType === 'rodoviaria' && !showRodoviaria.checked) {
+                                    showRodoviaria.checked = true;
+                                    filterSchools();
+                                }
+
+                                // Ajusta foco e abre o pop-up da escola
+                                map.setView(marker.getLatLng(), 17);
+                                marker.openPopup();
+                            }
+                            
+                            document.getElementById('searchInput').value = '';
+                            resultsBox.classList.remove('visible');
+                        });
+                        resultsBox.appendChild(item);
+                    }
+                });
+            }
 
             if (hasResults) {
                 resultsBox.classList.add('visible');
