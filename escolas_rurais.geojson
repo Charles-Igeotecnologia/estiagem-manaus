@@ -1,0 +1,1790 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1863986871332,
+          -2.99392366023141
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_1",
+        "title": "E.M. EBENEZER",
+        "address": "RIO TARUMAZINHO - RIO NEGRO",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 65,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.6562426860807,
+          -2.64147466131373
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_2",
+        "title": "E.M. ESTRELA DA MANHA",
+        "address": "RIO NEGRO",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 88,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8064810057962,
+          -3.03634700447262
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_3",
+        "title": "E.M. FRANCISCO COELHO",
+        "address": "LAGO PURAQUEQUARA S FRANCISCO",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69086-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 27,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0115636863835,
+          -2.94233665993819
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_4",
+        "title": "E.M. LAGO E SILVA",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 160,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4667086857982,
+          -2.92991366032103
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_5",
+        "title": "E. M. LUIZ JORGE DA SILVA",
+        "address": "RIO NEGRO - ANAVILHANAS",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 38,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8817536870674,
+          -2.80281666026966
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_6",
+        "title": "E.M. MANOEL ADRIANO",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69083-010",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 100,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4543466860355,
+          -2.89668466144102
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_7",
+        "title": "E.M. MARIO PALMERIO",
+        "address": "IGARAPE DO CHITA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 51,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4767646864323,
+          -2.8861936606486
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_8",
+        "title": "E.M. PROF. MANUEL DA SILVA BAHIA",
+        "address": "PAGODAORIO NEGRO - PARANA DE ANAVILHANA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 46,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3318360054786,
+          -3.07831400463857
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_9",
+        "title": "E.M. MONTE SINAI",
+        "address": "BAIXO RIO PRETO DA EVA TAPAIUNA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 148,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0359006876961,
+          -2.82144266025775
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_10",
+        "title": "E.M. LUIS FREIRE DE OLIVEIRA",
+        "address": "ROD. BR-174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 129,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.678063006286,
+          -3.05143500390215
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_11",
+        "title": "E.M. PROFESSORA ELIZABETH SIQUEIRA FERREIRA",
+        "address": "COSTA DO JATUARANA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 69,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3457650056681,
+          -3.14484300426521
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_12",
+        "title": "E.M. NOSSA SENHORA DO CARMO",
+        "address": "PARANA DA EVA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 47,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0344536865764,
+          -2.86669666013949
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_13",
+        "title": "E.M. PADRE CALLERI",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 107,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8870766866545,
+          -2.90596765971643
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_14",
+        "title": "E.M. PROF.ª JOANA VIEIRA",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 103,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.824455006263,
+          -3.03638600493294
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_15",
+        "title": "E.M. SANTA LUZIA",
+        "address": "RIO AMAZONAS",
+        "bairro": "PURAQUEQUARA",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 40,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.4021630057071,
+          -3.14173000501194
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_16",
+        "title": "E.M. SANTA ROSA",
+        "address": "COSTA DO TABOCAL",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 22,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1095763379641,
+          -2.92510726915655
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_17",
+        "title": "E.M. PROFESSORA PAULA ALIOMAR RIBEIRO BELTRAO",
+        "address": "TARUMA ACU",
+        "bairro": "RIO NEGRO",
+        "cep": "69022-488",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 112,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.5692550057553,
+          -3.08769800474585
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_18",
+        "title": "E.M. SAO FRANCISCO",
+        "address": "COSTA DO TABOCAL COMSAO FRANCISCO",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 69,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.3991720056742,
+          -3.01242500457454
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_19",
+        "title": "E.M. SAO FRANCISCO DAS CHAGAS",
+        "address": "COSTA DO ARARA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 48,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.2176780058096,
+          -3.12291600436436
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_20",
+        "title": "E.M. SAO JORGE",
+        "address": "LAGO DO ARUMA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 27,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8868326873219,
+          -2.73358866044691
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_21",
+        "title": "E.M. SAO JOSE -RODOVIARIA",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69048-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 173,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8351936871188,
+          -2.98133866001928
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_22",
+        "title": "E.M. SAO LUIZ DE GONZAGA",
+        "address": "LAGO PURAQUEQUARA - IGARAPE DA FLORESTA",
+        "bairro": "PURAQUEQUARA",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 45,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1991226868465,
+          -2.97024566063349
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_23",
+        "title": "E.M. SAO SEBASTIAO II",
+        "address": "TARUMAZINHO C/ SAO SEBASTIAO",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 68,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.5692516865126,
+          -2.77492166119176
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_24",
+        "title": "E.I.M. KUNYATA PUTIRA",
+        "address": "PARANA DO SAMAUMA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 14,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.2576170065084,
+          -3.15190300393334
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_25",
+        "title": "E.M. VISTA ALEGRE",
+        "address": "PARANA DA EVA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 17,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.9353806870032,
+          -2.81447165978643
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_26",
+        "title": "E.M. OUVIDOR SAMPAIO",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69048-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 185,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0380166875328,
+          -2.90737466098603
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_27",
+        "title": "E.M. ESTER",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69035-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 220,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.432504005614,
+          -3.13127500398625
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_28",
+        "title": "E.M. MANOEL CHAGAS",
+        "address": "COSTA DO TABOCAL - BONSUCESSO",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 48,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.1871980056366,
+          -3.17375700425574
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_29",
+        "title": "E.M. SAO JOSE DO PARANA DA EVA",
+        "address": "PARANA DAEVA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 70,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.6624450058863,
+          -3.05759000488993
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_30",
+        "title": "E.M. SAO LAZARO",
+        "address": "COSTA DO JATUARANA",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 19,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.4710040051982,
+          -3.12081400432033
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_31",
+        "title": "E.M. SAO PEDRO -RIBEIRINHA",
+        "address": "COSTA DO TABOCAL- VISTA ALEGRE",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 30,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.2059770054071,
+          -3.00727000468751
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_32",
+        "title": "E.M. CANAA II",
+        "address": "TARUMAZINHO - COMUNIDADE JULIAO",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 61,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1362266864074,
+          -2.95156266045928
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_33",
+        "title": "E.M. PROF. PAULO CESAR DA SILVA NONATO",
+        "address": "IGARAPE TIU - COMUNIDADE NOVA ESPERANCA",
+        "bairro": "RIO NEGRO",
+        "cep": "69022-488",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 138,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.2559730048116,
+          -3.04599200372221
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_34",
+        "title": "E.M. SAO JOAO -RIBEIRINHA",
+        "address": "LAGO DO TUPE- COMUNIDADE SAO JOAO",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 74,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1793710053663,
+          -3.02704300405273
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_35",
+        "title": "E.M. SAO JOSE DO TARUMA",
+        "address": "TARUMAZINHO -COM. N.SRA. DO LIVRAMENTO",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 150,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1648690048734,
+          -3.02078700359988
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_36",
+        "title": "E.M. JOSE SOBREIRA DO NASCIMENTO",
+        "address": "TARUMAZINHO-COM. N. SRA. DE FATIMA",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 276,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.5726586867483,
+          -2.73492166067896
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_37",
+        "title": "E.M. SANTO ANTONIO -RIBEIRINHA",
+        "address": "IGARAPEACU - COMUNIDADE MONTE SINAI",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 49,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4857656867111,
+          -2.81630465993531
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_38",
+        "title": "E.M. SAO SEBASTIAO I",
+        "address": "FOZ DO RIO CUIEIRAS -COM. SAO SEBASTIAO",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-993",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 92,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1675506868757,
+          -2.85477466034218
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_39",
+        "title": "E.M. PROF.ª MARIA ISABEL CORDEIRO MELGUEIRO",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 183,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1329496866891,
+          -2.77786366004001
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_40",
+        "title": "E.M. PROF. NEUZA DOS SANTOS RIBEIRO",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 308,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1676626866084,
+          -2.94368066077915
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_41",
+        "title": "E.M. PEDRO DIAS SILVA",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 20,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1147596867491,
+          -2.83037166033863
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_42",
+        "title": "E.M. RUTH LEIA OLIVEIRA DOS SANTOS",
+        "address": "ROD. BR 174 - EST. MANAUS-CARACARAI",
+        "bairro": "BR-174",
+        "cep": "69000-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 46,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1310816868281,
+          -2.87498266009344
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_43",
+        "title": "E.M. PROF.ª OSCARINA FALCAO",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69000-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 45,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3569540057078,
+          -3.11831800485785
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_44",
+        "title": "E.M. SAO SALVADOR",
+        "address": "BAIXO RIO PRETO DA EVA - MONTE HOREBE",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 30,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.2266766869592,
+          -2.89964666035875
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_45",
+        "title": "E.M. RAUL POMPEIA",
+        "address": "COMUNIDADE NOVO PARAISO",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 22,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.522556005932,
+          -3.11152400409652
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_46",
+        "title": "E.M. NOSSA SENHORA DE NAZARE",
+        "address": "COSTA DO TABOCAL",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 112,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0905146872229,
+          -2.85415966026384
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_47",
+        "title": "E.M. IVAN JUNIOR SARAIVA DE BARROS",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69048-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 83,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3877930056165,
+          -3.06907900517715
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_48",
+        "title": "E.M. LUIS ALBERTO CASTELO",
+        "address": "COMUNIDADE CARAMURI",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 14,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.5016322964389,
+          -2.82100896986432
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_49",
+        "title": "ESC. INDIG. MUL. KANATA T-YKUA",
+        "address": "RIO CUIEIRAS-COMU INDIGENA TRES UNIDOS",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-993",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 20,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4312026865189,
+          -2.74718966127927
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_50",
+        "title": "ESC. INDIG. MUL. PURANGA PISASU",
+        "address": "RIO CUIEIRAS",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-993",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 62,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.467043760639,
+          -2.91851396699684
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_51",
+        "title": "ESC. INDIG. MUL. ARU WAIMI",
+        "address": "COMUNIDADE TERRA PRETA",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-993",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 32,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1999856870294,
+          -2.73334766008764
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_52",
+        "title": "E.M. EPITACIO NUNES DA FONSECA",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69023-165",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 39,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3226550055018,
+          -3.11687900457302
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_53",
+        "title": "E.M. FRANCISCO ORELLANA",
+        "address": "IGARAPE DO CEMITERIO",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 42,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.6091566870047,
+          -2.65285666117996
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_54",
+        "title": "E.M. FIGUEIREDO PIMENTEL",
+        "address": "IGARAPE DO MULATO",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 32,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.3752010058362,
+          -3.0272200040275
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_55",
+        "title": "E.M. SILVIO ROMERO",
+        "address": "RIO NEGRO",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 42,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.7616876870749,
+          -2.55589466033824
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_56",
+        "title": "E.M. RAIMUNDA BRASIL",
+        "address": "PARANA DO ACARIQUARA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 91,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1994776866177,
+          -2.91446566051407
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_57",
+        "title": "E.M. JOSE EUCLIDES COSTA DE AZEVEDO",
+        "address": "COM TRESGALHOS",
+        "bairro": "BR-174",
+        "cep": "69023-165",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 52,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.2431656874801,
+          -2.43002766053845
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_58",
+        "title": "E.M. PROF.ª ZILDA IRACEMA MELGUEIRO NUNES",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 78,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.1568260059403,
+          -3.01583500404849
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_59",
+        "title": "E.M. PROFª DIAN KELLY DO NASCIMENTO MOTA",
+        "address": "RIO NEGRO - COMUNIDADE ABELHA",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 89,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0382206879445,
+          -2.6171086605827
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_60",
+        "title": "E.M. CARLOS ANTONIO CARDOSO",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69048-990",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 167,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0355866872548,
+          -2.87529366033565
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_61",
+        "title": "E.M. SAO JUDAS TADEU",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69098-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 470,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4511566866618,
+          -2.78943266060106
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_62",
+        "title": "E.M. RUI BARBOSA",
+        "address": "RIO CUIEIRAS COMUNIDADENOVA CANAA",
+        "bairro": "RIO NEGRO",
+        "cep": "69085-010",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 28,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.9371696877445,
+          -2.75887366011845
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_63",
+        "title": "E.M. SANTO ANTONIO",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69048-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 75,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.9408896873374,
+          -2.85924366012835
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_64",
+        "title": "E.M. ABILIO ALENCAR",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69059-070",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 526,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0947976872009,
+          -2.87042865976358
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_65",
+        "title": "E.M. ARTHUR VIRGILIO FILHO",
+        "address": "ROD. BR-174",
+        "bairro": "BR-174",
+        "cep": "69048-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 122,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.6088946865746,
+          -2.66902566122778
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_66",
+        "title": "E.M. BOM JESUS",
+        "address": "LAGO DO MIPINDIAU",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 72,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.3024740054764,
+          -3.14684000455656
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_67",
+        "title": "E.M. CANAA I",
+        "address": "RIO AMAZONAS",
+        "bairro": "RIO AMAZONAS",
+        "cep": "69001-009",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 48,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.9940016869961,
+          -2.91499866050621
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_68",
+        "title": "E.M. CARLOS SANTOS",
+        "address": "ROD. AM 010",
+        "bairro": "AM-010",
+        "cep": "69068-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 235,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.7806526866473,
+          -2.51909866083437
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_69",
+        "title": "E.M. FRANCISCO DIOGO DE MELO",
+        "address": "RIO APUAU-NOVA ESPERANCA",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 41,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.4082216867664,
+          -2.99284166082868
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_70",
+        "title": "E.M. DIVINO ESPIRITO SANTO",
+        "address": "RIO NEGRO -IGARAPE DO JARAQUI",
+        "bairro": "RIO NEGRO",
+        "cep": "69001-019",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 99,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8773470060792,
+          -3.06013200462118
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_71",
+        "title": "E.M. MONTE HOREBE",
+        "address": "EST. DO PURAQUEQUARA",
+        "bairro": "PURAQUEQUARA",
+        "cep": "69009-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 258,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.9840776871439,
+          -2.95461366009023
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_72",
+        "title": "E.M. JOSE MARQUES DE ALMEIDA",
+        "address": "ROD. AM 010",
+        "bairro": "LAGO AZUL",
+        "cep": "69019-400",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 98,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0261986871134,
+          -2.94765465967828
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_73",
+        "title": "E.M. PROF.ª MARIA LEIDE AMORIM",
+        "address": "ROD. BR 174",
+        "bairro": "LAGO AZUL",
+        "cep": "69048-990",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 698,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0261599588389,
+          -2.9548775787996
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_74",
+        "title": "E.M. AMBIENTALISTA CHICO MENDES",
+        "address": "ROD. AM10, KM 19",
+        "bairro": "LAGO AZUL",
+        "cep": "69019-440",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 464,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8936160053492,
+          -3.04752600415346
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_75",
+        "title": "E.M. JOAO PAULO II",
+        "address": "EST. DO PURAQUEQUARA",
+        "bairro": "DISTRITO INDUSTRIAL II",
+        "cep": "69089-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 425,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8575170056763,
+          -3.01457800471312
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_76",
+        "title": "E.M. PROF. EMANUEL REBELO DA CUNHA",
+        "address": "EST. DO BRASILEIRINHO",
+        "bairro": "DISTRITO INDUSTRIAL II",
+        "cep": "69088-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 358,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0326366873898,
+          -2.95968766060653
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_77",
+        "title": "E.M. SOLANGE NASCIMENTO",
+        "address": "ROD. BR 174",
+        "bairro": "TARUMÃ-AÇÚ",
+        "cep": "69048-990",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 543,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0772876136791,
+          -2.9928514125571
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_78",
+        "title": "E.M. PROF.ª TEREZA CORDOVIL GUIMARAES",
+        "address": "EST.DA VIVENDA VERDE",
+        "bairro": "TARUMÃ-AÇÚ",
+        "cep": "69005-330",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 399,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.02575468693,
+          -2.96587866039413
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_79",
+        "title": "CMEI ISMAIL AZIZ",
+        "address": "ROD. BR 174",
+        "bairro": "TARUMÃ-AÇÚ",
+        "cep": "69035-000",
+        "modalidade": "EDUCAÇÃO INFANTIL",
+        "alunos": 404,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0613706871559,
+          -2.98379265996778
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_80",
+        "title": "E.M. PROF. PEDRO DIOGO DOS SANTOS ROQUE",
+        "address": "AVENIDA DA FLORESTA",
+        "bairro": "TARUMÃ-AÇÚ",
+        "cep": "69024-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 187,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.2104926859689,
+          -2.96874266044846
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_81",
+        "title": "E.M. PAULO FREIRE",
+        "address": "TARUMA MIRIM - AGROVILA AMAZONINO MENDES",
+        "bairro": "RIO NEGRO",
+        "cep": "69049-992",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 73,
+        "schoolType": "ribeirinha",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0372216880423,
+          -2.78203065967608
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_82",
+        "title": "ESCOLA RAINHA DOS APOSTOLOS",
+        "address": "ROD. BR 174",
+        "bairro": "BR-174",
+        "cep": "69089-000",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 417,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.076928005856,
+          -3.01327300437057
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_83",
+        "title": "E.M. PROF.ª FRANCISCA CAMPOS CORREA",
+        "address": "AV. DOTURISMO/RAMAL DO CETUR",
+        "bairro": "TARUMÃ",
+        "cep": "69049-690",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 485,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.072135424307,
+          -2.98770537885911
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_84",
+        "title": "E.M. SANTA ROSA II",
+        "address": "RUA JACURURU",
+        "bairro": "TARUMÃ-AÇÚ",
+        "cep": "69022-580",
+        "modalidade": "ENSINO FUNDAMENTAL",
+        "alunos": 716,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.0730728839787,
+          -2.89281760156538
+        ]
+      },
+      "properties": {
+        "id": "escola_rural_85",
+        "title": "CRECHE MUNICIPAL ROSA ALMEIDA",
+        "address": "ESTRADA CLÁUDIO MESQUITA, KM 08",
+        "bairro": "BR-174",
+        "cep": "69000000",
+        "modalidade": "CRECHE",
+        "alunos": 0,
+        "schoolType": "rodoviaria",
+        "isRuralSchool": true
+      }
+    }
+  ]
+}
