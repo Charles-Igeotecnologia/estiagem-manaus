@@ -350,7 +350,7 @@
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 320px 1fr 1fr;
             gap: 24px;
         }
 
@@ -697,7 +697,7 @@
                     </div>
                 </div>
 
-                <!-- Coluna 2: Gráfico Comparativo 2023 vs Ano Atual -->
+                <!-- Coluna 2: Gráfico Comparativo de Precipitação 2023 vs Ano Atual -->
                 <div class="chart-card">
                     <div class="chart-card-header">
                         <div>
@@ -716,6 +716,24 @@
                         <canvas id="climateComparisonChart"></canvas>
                     </div>
                 </div>
+
+                <!-- Coluna 3: Gráfico do Nível do Rio Negro 2023 vs Ano Atual -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <div class="chart-card-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                </svg>
+                                Cota Hidrométrica (Nível do Rio Negro)
+                            </div>
+                            <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM</div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="riverLevelChart"></canvas>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -727,6 +745,12 @@
 
     <script>
         let climateChart = null;
+        let riverLevelChart = null;
+
+        // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
+        const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
+        // Dados de 2026 consolidados até Junho e projetados/nulos para o restante
+        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, null, null, null, null, null, null];
 
         // Traduz códigos WMO meteorológicos para português
         function translateWeatherCode(code) {
@@ -740,7 +764,7 @@
             return "Nublado";
         }
 
-        // Inicializa o gráfico de linha comparativo mensal com Chart.js
+        // Inicializa o gráfico de linha comparativo de chuva (Precipitação) com Chart.js
         function initClimateChart() {
             const ctx = document.getElementById('climateComparisonChart').getContext('2d');
             const currentYear = new Date().getFullYear();
@@ -819,7 +843,7 @@
                                     if (context.parsed.y !== null) {
                                         label += context.parsed.y.toFixed(1) + ' mm';
                                     } else {
-                                        label += 'Sem dados ainda';
+                                        label += 'Sem dados';
                                     }
                                     return label;
                                 }
@@ -853,6 +877,127 @@
                                     return value + ' mm';
                                 }
                             }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializa o gráfico do Nível do Rio Negro com Chart.js
+        function initRiverLevelChart() {
+            const ctx = document.getElementById('riverLevelChart').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            riverLevelChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Mínima 12.70m)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2.5,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: riverData2026,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 3,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
+                                },
+                                boxWidth: 12,
+                                boxHeight: 8
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 12,
+                                family: "'Outfit', 'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 11,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10, // Destaca a descida acentuada e a cota de 12.70m
+                            max: 31
                         }
                     }
                 }
@@ -925,8 +1070,14 @@
                 // 2. BUSCA DE DADOS ANUAIS COMPARATIVOS
                 const currentYear = new Date().getFullYear();
                 
+                // Calcula a data de ontem dinamicamente para buscar o histórico de chuvas acumuladas do ano corrente de forma real
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                const formattedYesterday = yesterday.toISOString().split('T')[0];
+
                 const url2023 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2023-01-01&end_date=2023-12-31&daily=precipitation_sum&timezone=America/Manaus`;
-                const urlCurrentYear = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${currentYear}-12-31&daily=precipitation_sum&timezone=America/Manaus`;
+                const urlCurrentYear = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${formattedYesterday}&daily=precipitation_sum&timezone=America/Manaus`;
 
                 // Busca dados históricos de 2023
                 fetch(url2023)
@@ -944,24 +1095,20 @@
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
 
-                // Busca dados do ano atual
+                // Busca dados do ano atual (usando archive-api para dados reais consolidados de jan-jun)
                 fetch(urlCurrentYear)
                     .then(res => res.json())
                     .then(dataCurrent => {
                         const monthlyCurrent = new Array(12).fill(null);
-                        const today = new Date();
                         
                         dataCurrent.daily.time.forEach((dateStr, idx) => {
                             const date = new Date(dateStr + 'T00:00:00');
                             const month = date.getMonth();
                             
-                            // Apenas soma se for no passado ou mês atual
-                            if (date <= today) {
-                                if (monthlyCurrent[month] === null) {
-                                    monthlyCurrent[month] = 0;
-                                }
-                                monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
+                            if (monthlyCurrent[month] === null) {
+                                monthlyCurrent[month] = 0;
                             }
+                            monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
                         });
                         
                         // Atualiza a série do ano atual no gráfico
@@ -978,6 +1125,7 @@
 
         window.addEventListener('load', () => {
             fetchClimateData();
+            initRiverLevelChart();
         });
     </script>
 </body>

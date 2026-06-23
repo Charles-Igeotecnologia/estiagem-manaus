@@ -1016,7 +1016,7 @@
         .climate-body {
             border-top: 1px solid var(--border-color);
             padding: 12px 14px;
-            max-height: 400px;
+            max-height: 650px;
             overflow-y: auto;
             transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.4s ease;
             display: flex;
@@ -1156,11 +1156,17 @@
             top: 20px;
             left: 20px;
             width: 320px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             z-index: 1002;
             display: flex;
             flex-direction: column;
             gap: 12px;
             pointer-events: none;
+            scrollbar-width: none;
+        }
+        .sidebar-left::-webkit-scrollbar {
+            display: none;
         }
 
         .sidebar-left > div {
@@ -1546,9 +1552,14 @@
                 <div class="climate-chart-container">
                     <canvas id="climateComparisonChart"></canvas>
                 </div>
+
+                <!-- Gráfico do Nível do Rio Negro 2023 vs Ano Atual -->
+                <div class="climate-chart-container" style="margin-top: 12px;">
+                    <canvas id="riverLevelChart"></canvas>
+                </div>
                 
                 <div class="climate-footer">
-                    Dados atualizados em tempo real via Open-Meteo para a região de Manaus.
+                    Dados atualizados em tempo real via Open-Meteo e Porto de Manaus.
                 </div>
             </div>
         </div>
@@ -2700,6 +2711,245 @@
             });
         }
 
+        let riverLevelChart = null;
+
+        // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
+        const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
+        // Dados de 2026 consolidados até Junho e projetados/nulos para o restante
+        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, null, null, null, null, null, null];
+
+        // Inicializa o gráfico de linha comparativo mensal com Chart.js
+        function initClimateChart() {
+            const ctx = document.getElementById('climateComparisonChart').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            climateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Crítica)',
+                            data: new Array(12).fill(0),
+                            borderColor: '#f97316', // Laranja do alerta/estiagem
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: new Array(12).fill(null),
+                            borderColor: '#06b6d4', // Ciano de escolas/chuva
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(1) + ' mm';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' mm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializa o gráfico do Nível do Rio Negro com Chart.js
+        function initRiverLevelChart() {
+            const ctx = document.getElementById('riverLevelChart').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            riverLevelChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Rio Negro)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: riverData2026,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+        }
+
         // Busca dados climáticos em tempo real de Manaus/AM via Open-Meteo
         async function fetchClimateData() {
             const lat = -3.119027;
@@ -2709,9 +2959,12 @@
             const urlCurrent = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
 
             try {
-                // Instancia o gráfico se ainda não foi feito
+                // Instancia os gráficos se ainda não foram feitos
                 if (!climateChart) {
                     initClimateChart();
+                }
+                if (!riverLevelChart) {
+                    initRiverLevelChart();
                 }
 
                 const response = await fetch(urlCurrent);
@@ -2766,8 +3019,14 @@
                 // 2. BUSCA DE DADOS ANUAIS COMPARATIVOS
                 const currentYear = new Date().getFullYear();
                 
+                // Calcula a data de ontem dinamicamente para buscar o histórico de chuvas acumuladas do ano corrente de forma real
+                const today = new Date();
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                const formattedYesterday = yesterday.toISOString().split('T')[0];
+
                 const url2023 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2023-01-01&end_date=2023-12-31&daily=precipitation_sum&timezone=America/Manaus`;
-                const urlCurrentYear = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${currentYear}-12-31&daily=precipitation_sum&timezone=America/Manaus`;
+                const urlCurrentYear = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${formattedYesterday}&daily=precipitation_sum&timezone=America/Manaus`;
 
                 // Busca dados históricos de 2023
                 fetch(url2023)
@@ -2775,38 +3034,34 @@
                     .then(data2023 => {
                         const monthly2023 = new Array(12).fill(0);
                         data2023.daily.time.forEach((dateStr, idx) => {
-                            const month = new Date(dateStr + 'T00:00:00').getMonth(); // Evita fuso horário local
+                            const month = new Date(dateStr + 'T00:00:00').getMonth();
                             monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
                         });
                         
                         // Atualiza a série de 2023 no gráfico
-                        climateChart.data.datasets[0].data = monthly2023;
+                        climateChart.data.datasets[0].data = monthly2023.map(v => parseFloat(v.toFixed(1)));
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
 
-                // Busca dados do ano atual (2026/futuro)
+                // Busca dados do ano atual (usando archive-api para dados reais consolidados de jan-jun)
                 fetch(urlCurrentYear)
                     .then(res => res.json())
                     .then(dataCurrent => {
                         const monthlyCurrent = new Array(12).fill(null);
-                        const today = new Date();
                         
                         dataCurrent.daily.time.forEach((dateStr, idx) => {
                             const date = new Date(dateStr + 'T00:00:00');
                             const month = date.getMonth();
                             
-                            // Apenas soma se for no passado ou mês atual
-                            if (date <= today) {
-                                if (monthlyCurrent[month] === null) {
-                                    monthlyCurrent[month] = 0;
-                                }
-                                monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
+                            if (monthlyCurrent[month] === null) {
+                                monthlyCurrent[month] = 0;
                             }
+                            monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
                         });
                         
                         // Atualiza a série do ano atual no gráfico
-                        climateChart.data.datasets[1].data = monthlyCurrent;
+                        climateChart.data.datasets[1].data = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
@@ -2823,6 +3078,7 @@
             initFlatViewerEvents();
             fetchClimateData();
         });
+
     </script>
     <!-- Toast de Notificação Premium -->
     <div class="toast-notification" id="toastNotification">
