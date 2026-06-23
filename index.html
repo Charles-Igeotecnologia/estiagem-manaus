@@ -735,6 +735,51 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Seção Metodologia e Fontes -->
+            <div class="methodology-card" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: var(--shadow-premium); display: flex; flex-direction: column; gap: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <h3 style="font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600; color: #ffffff; text-transform: uppercase; letter-spacing: 0.8px;">Nota Metodológica & Fontes de Referência</h3>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <h4 style="font-size: 0.8rem; font-weight: 600; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.5px;">1. Monitoramento Pluviométrico (Precipitação)</h4>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;">
+                            Os dados pluviométricos (chuvas acumuladas) e meteorológicos em tempo real (temperatura, umidade, evapotranspiração) são consultados dinamicamente via a API global da <b>Open-Meteo</b>.
+                        </p>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; margin-top: 4px;">
+                            A Open-Meteo consolida dados de reanálise atmosférica utilizando o modelo meteorológico <b>ERA5</b> do Centro Europeu de Previsões Meteorológicas a Médio Prazo (<b>ECMWF</b>), combinando simulações físicas avançadas com dados históricos consolidados de satélites e estações de medição terrestre globais.
+                        </p>
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <h4 style="font-size: 0.8rem; font-weight: 600; color: var(--accent-cyan); text-transform: uppercase; letter-spacing: 0.5px;">2. Monitoramento Fluviométrico (Nível do Rio Negro)</h4>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5;">
+                            A cota diária (em metros) do Rio Negro é aferida por meio da régua física histórica instalada no centro da cidade de Manaus/AM (Estação Manaus - Código ANA: 00090000).
+                        </p>
+                        <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.5; margin-top: 4px;">
+                            A medição e disponibilização das cotas diárias e médias mensais são realizadas pelo <b>Porto de Manaus</b> em cooperação com o Sistema de Alerta Hidrológico da Bacia do Rio Amazonas (SAH Amazonas), gerido pelo <b>Serviço Geológico do Brasil (SGB / CPRM)</b> sob regulação da Agência Nacional de Águas e Saneamento Básico (<b>ANA</b>).
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; color: var(--text-secondary); flex-wrap: wrap; gap: 10px;">
+                    <span>Para consultas diretas aos bancos de dados de monitoramento e boletins hidrológicos oficiais, utilize os portais de referência:</span>
+                    <div style="display: flex; gap: 16px;">
+                        <a href="https://www.portodemanaus.com.br/" target="_blank" style="color: var(--accent-cyan); text-decoration: none; font-weight: 500; transition: var(--transition);">Porto de Manaus ↗</a>
+                        <a href="https://www.sgb.gov.br/sace/amazonas" target="_blank" style="color: var(--accent-cyan); text-decoration: none; font-weight: 500; transition: var(--transition);">SGB/CPRM (SACE) ↗</a>
+                        <a href="https://open-meteo.com/" target="_blank" style="color: var(--accent-cyan); text-decoration: none; font-weight: 500; transition: var(--transition);">Open-Meteo API ↗</a>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
