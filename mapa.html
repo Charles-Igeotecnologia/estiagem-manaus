@@ -1396,6 +1396,79 @@
             background: rgba(6, 182, 212, 0.05) !important;
             transform: translateY(-1px);
         }
+
+        /* Efeito Shimmer para os cards do painel lateral */
+        .temporal-analysis-card, .filter-card, .climate-card, .climate-chart-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .temporal-analysis-card::after, .filter-card::after, .climate-card::after, .climate-chart-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.02) 20%,
+                rgba(255, 255, 255, 0.05) 60%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 8s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            12% { transform: translateX(100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Pulsação do Alerta Climático no Mapa */
+        .climate-alert {
+            transition: var(--transition);
+        }
+        .alert-cyan {
+            background: rgba(6, 182, 212, 0.12) !important;
+            border: 1px solid rgba(6, 182, 212, 0.25) !important;
+            animation: breathingAlert 3s infinite ease-in-out;
+        }
+        .alert-orange {
+            background: rgba(249, 115, 22, 0.12) !important;
+            border: 1px solid rgba(249, 115, 22, 0.25) !important;
+            animation: breathingAlertOrange 3s infinite ease-in-out;
+        }
+        @keyframes breathingAlert {
+            0% {
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.1);
+                border-color: rgba(6, 182, 212, 0.25) !important;
+            }
+            50% {
+                box-shadow: 0 0 8px 1px rgba(6, 182, 212, 0.2);
+                border-color: rgba(6, 182, 212, 0.5) !important;
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.1);
+                border-color: rgba(6, 182, 212, 0.25) !important;
+            }
+        }
+        @keyframes breathingAlertOrange {
+            0% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.1);
+                border-color: rgba(249, 115, 22, 0.25) !important;
+            }
+            50% {
+                box-shadow: 0 0 8px 1px rgba(249, 115, 22, 0.2);
+                border-color: rgba(249, 115, 22, 0.5) !important;
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.1);
+                border-color: rgba(249, 115, 22, 0.25) !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2616,123 +2689,26 @@
             return "Nublado";
         }
 
-        // Inicializa o gráfico de linha comparativo mensal com Chart.js
-        function initClimateChart() {
-            const ctx = document.getElementById('climateComparisonChart').getContext('2d');
-            const currentYear = new Date().getFullYear();
-            
-            climateChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-                    datasets: [
-                        {
-                            label: 'Estiagem 2023 (Crítica)',
-                            data: new Array(12).fill(0),
-                            borderColor: '#f97316', // Laranja do alerta/estiagem
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
-                            fill: true,
-                            tension: 0.35,
-                            pointRadius: 2,
-                            pointHoverRadius: 4
-                        },
-                        {
-                            label: `Ano Atual (${currentYear})`,
-                            data: new Array(12).fill(null),
-                            borderColor: '#06b6d4', // Ciano de escolas/chuva
-                            borderWidth: 2.5,
-                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                            fill: true,
-                            tension: 0.35,
-                            pointRadius: 3,
-                            pointHoverRadius: 5
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#94a3b8',
-                                font: {
-                                    size: 9,
-                                    family: "'Inter', sans-serif"
-                                },
-                                boxWidth: 10,
-                                boxHeight: 6
-                            }
-                        },
-                        tooltip: {
-                            enabled: true,
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            titleColor: '#ffffff',
-                            bodyColor: '#cbd5e1',
-                            borderColor: 'rgba(255, 255, 255, 0.1)',
-                            borderWidth: 1,
-                            titleFont: {
-                                size: 10,
-                                family: "'Inter', sans-serif",
-                                weight: '600'
-                            },
-                            bodyFont: {
-                                size: 10,
-                                family: "'Inter', sans-serif"
-                            },
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
-                                    if (context.parsed.y !== null) {
-                                        label += context.parsed.y.toFixed(1) + ' mm';
-                                    } else {
-                                        label += 'Sem dados';
-                                    }
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: {
-                                    size: 8
-                                }
-                            }
-                        },
-                        y: {
-                            grid: {
-                                color: 'rgba(255, 255, 255, 0.04)'
-                            },
-                            ticks: {
-                                color: '#64748b',
-                                font: {
-                                    size: 8
-                                },
-                                callback: function(value) {
-                                    return value + ' mm';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        // Plugin customizado para aplicar efeito de Neon/Glow nas linhas do Chart.js
+        const glowPlugin = {
+            id: 'glow',
+            beforeDatasetDraw(chart, args) {
+                const ctx = chart.ctx;
+                ctx.save();
+                const dataset = chart.data.datasets[args.index];
+                
+                // Aplica sombra do canvas com base na cor da borda da linha
+                ctx.shadowColor = dataset.borderColor;
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+            },
+            afterDatasetDraw(chart, args) {
+                chart.ctx.restore();
+            }
+        };
 
         let riverLevelChart = null;
-
         // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
         // Dados de 2026 consolidados até Junho e projetados/nulos para o restante
@@ -2773,9 +2749,14 @@
                         }
                     ]
                 },
+                plugins: [glowPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -2888,9 +2869,14 @@
                         }
                     ]
                 },
+                plugins: [glowPlugin],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
                     plugins: {
                         legend: {
                             display: true,
@@ -2970,6 +2956,25 @@
             });
         }
 
+
+        // Função utilitária para contagem dinâmica (counter effect) nos cards climáticos
+        function animateValue(id, start, end, duration, suffix = "", decimals = 1) {
+            const obj = document.getElementById(id);
+            if (!obj) return;
+            
+            const range = end - start;
+            let current = start;
+            const increment = range / (duration / 16); // ~60fps
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+                    clearInterval(timer);
+                    current = end;
+                }
+                obj.innerText = decimals > 0 ? current.toFixed(decimals) + suffix : Math.floor(current) + suffix;
+            }, 16);
+        }
+
         // Busca dados climáticos em tempo real de Manaus/AM via Open-Meteo
         async function fetchClimateData() {
             const lat = -3.119027;
@@ -2991,13 +2996,13 @@
                 if (!response.ok) throw new Error("Erro de resposta da API de Clima");
                 const data = await response.json();
 
-                // Atualiza dados atuais de temperatura, umidade, etc.
+                // Atualiza dados atuais de temperatura, umidade, etc. com animação
                 const temp = data.current.temperature_2m;
                 const humidity = data.current.relative_humidity_2m;
                 const code = data.current.weather_code;
 
-                document.getElementById('climateTempVal').innerText = temp.toFixed(1);
-                document.getElementById('climateHumidity').innerText = `${humidity}%`;
+                animateValue('climateTempVal', 0, temp, 1200, "", 1);
+                animateValue('climateHumidity', 0, humidity, 1200, "%", 0);
                 document.getElementById('climateCond').innerText = translateWeatherCode(code);
 
                 const precipArray = data.daily.precipitation_sum.slice(0, 7);
@@ -3007,11 +3012,11 @@
                 const totalEvapo = evapoArray.reduce((a, b) => a + (b || 0), 0);
                 const waterBalance = totalPrecip - totalEvapo;
 
-                document.getElementById('climatePrecip').innerText = `${totalPrecip.toFixed(1)} mm`;
-                document.getElementById('climateEvapo').innerText = `${totalEvapo.toFixed(1)} mm`;
+                animateValue('climatePrecip', 0, totalPrecip, 1200, " mm", 1);
+                animateValue('climateEvapo', 0, totalEvapo, 1200, " mm", 1);
                 
                 const balanceVal = document.getElementById('climateBalance');
-                balanceVal.innerText = `${waterBalance.toFixed(1)} mm`;
+                animateValue('climateBalance', 0, waterBalance, 1200, " mm", 1);
 
                 if (waterBalance < 0) {
                     balanceVal.style.color = 'var(--accent-orange)';
@@ -3024,14 +3029,12 @@
 
                 if (totalPrecip < 15 || waterBalance < -15) {
                     alertBox.style.display = 'flex';
-                    alertBox.style.background = 'rgba(249, 115, 22, 0.12)';
-                    alertBox.style.borderColor = 'rgba(249, 115, 22, 0.25)';
+                    alertBox.className = 'climate-alert alert-orange';
                     alertBox.querySelector('svg').style.color = 'var(--accent-orange)';
                     alertText.innerHTML = `<b>Alerta de Estiagem:</b> A evaporação superou as chuvas em ${Math.abs(waterBalance).toFixed(1)}mm nos últimos 7 dias. Região sob forte estresse hídrico.`;
                 } else {
                     alertBox.style.display = 'flex';
-                    alertBox.style.background = 'rgba(6, 182, 212, 0.12)';
-                    alertBox.style.borderColor = 'rgba(6, 182, 212, 0.25)';
+                    alertBox.className = 'climate-alert alert-cyan';
                     alertBox.querySelector('svg').style.color = 'var(--accent-cyan)';
                     alertText.innerHTML = `<b>Equilíbrio Hídrico:</b> Nível aceitável de umidade acumulada na semana (+${waterBalance.toFixed(1)}mm).`;
                 }
