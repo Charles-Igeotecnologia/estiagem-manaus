@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web GIS 360 - Visualizador de Fotos Panorâmicas</title>
+    <title>Estiagem Manaus - Monitoramento Climático e Histórico da Seca</title>
     
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Outfit (títulos) e Inter (textos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Leaflet Map CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    
-    <!-- Pannellum 360 Viewer CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
         :root {
             --bg-main: #060913;
-            --bg-panel: rgba(15, 23, 42, 0.85);
+            --bg-gradient: radial-gradient(circle at top right, #0d1527 0%, #060913 60%, #02040a 100%);
+            --bg-panel: rgba(15, 23, 42, 0.6);
             --bg-panel-solid: #0f172a;
             --border-color: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
@@ -27,12 +25,11 @@
             --accent-blue: #2563eb;
             --accent-cyan: #06b6d4;
             --accent-green: #10b981;
-            --accent-orange: #f59e0b;
-            --shadow-primary: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 10px 10px -5px rgba(0, 0, 0, 0.5);
-            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.35);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --radius-lg: 12px;
-            --radius-md: 8px;
+            --accent-orange: #f97316;
+            --shadow-premium: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 15px 30px -10px rgba(0, 0, 0, 0.6);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --radius-lg: 16px;
+            --radius-md: 10px;
         }
 
         * {
@@ -45,960 +42,342 @@
         }
 
         body {
+            background: var(--bg-gradient);
             background-color: var(--bg-main);
             color: var(--text-primary);
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Workspace Grid (Map + 360 View) */
-        .workspace {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .map-section {
-            flex: 1 1 100%;
-            height: 100%;
-            position: relative;
-            transition: var(--transition);
-            z-index: 1;
-        }
-
-        .viewer-section {
-            flex: 0 0 0%;
-            height: 100%;
-            position: relative;
-            background-color: #03050a;
-            border-left: 0px solid var(--border-color);
-            transition: var(--transition);
-            overflow: hidden;
-            z-index: 2;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
-        /* Split-screen ativo (Mapa e 360 divididos) */
-        .workspace.split-active .map-section {
-            flex: 1 1 50%;
-        }
-
-        .workspace.split-active .viewer-section {
-            flex: 1 1 50%;
-            border-left: 1px solid var(--border-color);
-        }
-
-        #map {
-            width: 100%;
-            height: 100%;
-            background-color: #0c0f16;
-        }
-
-        #panorama {
-            width: 100%;
-            height: 100%;
-            background-color: #05070c;
-        }
-
-        /* 1. Barra de Busca Compacta Flutuante (Google Maps Style) */
-        .floating-search-box {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 320px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 1002; /* Maior que os marcadores e controles */
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition);
-        }
-
-        .search-input-group {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            position: relative;
-        }
-
-        .search-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            padding: 6px 0;
-        }
-
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Resultados da Busca (Autocomplete Dropdown) */
-        .search-autocomplete-results {
-            max-height: 250px;
-            overflow-y: auto;
-            border-top: 1px solid var(--border-color);
-            display: none;
-            padding: 6px 0;
-        }
-
-        .search-autocomplete-results.visible {
-            display: block;
-        }
-
-        .search-result-item {
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: var(--transition);
-        }
-
-        .search-result-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--accent-cyan);
-        }
-
-        .result-meta {
-            font-size: 0.65rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        /* 2. Tabela de Atributos Retrátil Inferior (Flutuando exclusivamente AQUI no Mapa) */
-        .gis-attribute-drawer {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            right: 12px;
-            height: 200px;
-            background: var(--bg-panel);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-primary);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 1000; /* Abaixo da busca, acima do mapa */
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            transform: translateY(calc(200px - 40px)); /* Mostra apenas a aba de 40px no topo */
-            overflow: hidden;
-        }
-
-        .gis-attribute-drawer.expanded {
-            transform: translateY(0);
-        }
-
-        .drawer-header {
-            height: 40px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            background: rgba(15, 23, 42, 0.955);
-            border-bottom: 1px solid var(--border-color);
-            user-select: none;
-        }
-
-        .drawer-title {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .drawer-toggle-btn {
-            font-size: 0.7rem;
-            color: var(--accent-cyan);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .drawer-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 14px;
-        }
-
-        /* Estilização da Tabela de Dados */
-        .attribute-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.75rem;
-        }
-
-        .attribute-table th {
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 8px 10px;
-            border-bottom: 2px solid var(--border-color);
-            font-size: 0.65rem;
-        }
-
-        .attribute-table td {
-            padding: 8px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-            color: var(--text-primary);
-            transition: var(--transition);
-        }
-
-        .attribute-table tr {
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .attribute-table tr:hover td {
-            background-color: rgba(255, 255, 255, 0.03);
-            color: var(--accent-cyan);
-        }
-
-        .attribute-table tr.active td {
-            background-color: rgba(6, 182, 212, 0.08);
-            color: var(--accent-cyan);
-            font-weight: 500;
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
-        }
-
-        .table-tag {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            padding: 1px 5px;
-            border-radius: 4px;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .tag-aerea { background-color: rgba(16, 185, 129, 0.12); color: var(--accent-green); }
-        .tag-terrestre { background-color: rgba(245, 158, 11, 0.12); color: var(--accent-orange); }
-
-        .table-coordinates {
-            font-family: monospace;
-            color: var(--text-secondary);
-        }
-
-        /* 3. Badge Discreto de Título (Marca d'água no visualizador 360) */
-        .viewer-mini-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: var(--radius-md);
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: var(--shadow-soft);
-            opacity: 0;
-            transform: translateY(-5px);
-            transition: var(--transition);
-            pointer-events: none;
-        }
-
-        .viewer-mini-badge.visible {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .badge-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .badge-title {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .badge-category {
-            font-size: 0.6rem;
-            color: var(--accent-cyan);
-            text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-close-viewer {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            outline: none;
-            font-size: 0.6rem;
-        }
-
-        .btn-close-viewer:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.4);
-            color: #f87171;
-            transform: scale(1.05);
-        }
-
-        /* 4. Marcadores SVG Customizados (Drone e Câmera de Solo - Estáticos e Discretos 22px) */
-        .svg-marker-container {
-            width: 22px;
-            height: 22px;
-            background-color: var(--bg-panel-solid);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 50%;
-            box-shadow: var(--shadow-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .svg-marker-icon {
-            width: 13px;
-            height: 13px;
-            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-            transition: var(--transition);
-        }
-
-        /* Marcador Ativo (Selecionado) */
-        .svg-marker-container.active {
-            border-color: var(--accent-cyan);
-            transform: scale(1.18);
-            box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-            background-color: #090d16;
-        }
-
-        .svg-marker-container.active .svg-marker-icon {
-            transform: scale(1.1);
-            filter: drop-shadow(0 0 3px var(--color-marker));
-        }
-
-        /* Estilizações Leaflet Base */
-        .leaflet-control-layers {
-            background: var(--bg-panel) !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-primary) !important;
-            border-radius: var(--radius-md) !important;
-            box-shadow: var(--shadow-soft) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            font-family: 'Inter', sans-serif !important;
-        }
-
-        /* Ajuste do botão de zoom para dark mode */
-        .leaflet-bar a {
-            background-color: var(--bg-panel-solid) !important;
-            color: var(--text-primary) !important;
-            border-bottom: 1px solid var(--border-color) !important;
-            transition: var(--transition);
-        }
-
-        .leaflet-bar a:hover {
-            background-color: rgba(255,255,255,0.1) !important;
-        }
-
-        /* Estilização e suavização da Bússola do Pannellum (Seta Norte) */
-        .pnlm-compass {
-            transform: scale(0.65) !important;
-            transform-origin: bottom left !important;
-            opacity: 0.45 !important;
-            transition: var(--transition) !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
-        }
-        .pnlm-compass:hover {
-            opacity: 0.95 !important;
-        }
-
-        /* 5. Customização Premium Dark para Pop-ups do Leaflet */
-        .leaflet-popup-content-wrapper {
-            background: rgba(15, 23, 42, 0.96) !important;
-            border: 1px solid var(--border-color) !important;
-            border-radius: var(--radius-md) !important;
-            color: var(--text-primary) !important;
-            box-shadow: var(--shadow-primary) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
-            padding: 4px 2px !important;
-        }
-
-        .leaflet-popup-content {
-            margin: 12px 14px !important;
-            line-height: 1.4 !important;
-        }
-
-        .leaflet-popup-tip {
-            background: rgba(15, 23, 42, 0.96) !important;
-            border-left: 1px solid var(--border-color) !important;
-            border-bottom: 1px solid var(--border-color) !important;
-            box-shadow: none !important;
-        }
-
-        .leaflet-popup-close-button {
-            color: var(--text-secondary) !important;
-            padding: 8px 10px !important;
-            font-size: 14px !important;
-            transition: var(--transition) !important;
-        }
-
-        .leaflet-popup-close-button:hover {
-            color: #f87171 !important;
-            background: transparent !important;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .workspace.split-active {
-                flex-direction: column;
-            }
-            .workspace.split-active .map-section {
-                flex: 1 1 50%;
-            }
-            .workspace.split-active .viewer-section {
-                flex: 1 1 50%;
-            }
-            .gis-attribute-drawer {
-                height: 160px;
-                transform: translateY(calc(160px - 40px));
-            }
-            .gis-attribute-drawer.expanded {
-                }
-        }
-
-        /* 6. Hotspot de Radar Pulsante Premium no Pannellum 360 */
-        .radar-pulse-hotspot {
-            width: 16px !important;
-            height: 16px !important;
-            background-color: var(--accent-cyan) !important;
-            background-image: none !important; /* Remove o ícone padrão de info/seta do Pannellum */
-            border-radius: 50% !important;
-            border: 2px solid #ffffff !important;
-            box-shadow: 0 0 8px rgba(6, 182, 212, 0.8) !important;
-            cursor: pointer;
-            /* Mantemos o posicionamento absoluto e o transform dinâmico padrão do Pannellum */
-        }
-
-        .radar-pulse-hotspot::after {
-            content: '' !important;
-            width: 100% !important;
-            height: 100% !important;
-            border-radius: 50% !important;
-            background-color: transparent !important;
-            background-image: none !important;
-            border: 2px solid var(--accent-cyan) !important;
-            position: absolute !important;
-            top: -2px !important;
-            left: -2px !important;
-            box-sizing: content-box !important;
-            animation: pulse-radar 2.0s cubic-bezier(0.215, 0.610, 0.355, 1) infinite !important;
-            pointer-events: none !important;
-            opacity: 0;
-        }
-
-        @keyframes pulse-radar {
-            0% {
-                transform: scale(0.6);
-                opacity: 0;
-            }
-            30% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: scale(2.6);
-                opacity: 0;
-            }
-        }
-
-        /* Tooltip Customizado para o Hotspot */
-        .custom-tooltip-container {
-            position: relative;
-        }
-
-        .custom-tooltip-text {
-            visibility: hidden;
-            background-color: rgba(15, 23, 42, 0.95);
-            color: var(--text-primary);
-            text-align: center;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 6px 12px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 150%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 0.72rem;
-            font-weight: 500;
-            box-shadow: var(--shadow-soft);
-            opacity: 0;
-            transition: opacity 0.2s, visibility 0.2s;
-            pointer-events: none;
-        }
-
-        .custom-tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: rgba(15, 23, 42, 0.95) transparent transparent transparent;
-        }
-
-        .radar-pulse-hotspot:hover .custom-tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* 7. Estilos do Painel de Edição Visual do Ponto (Hotspot / Informações) */
-        .btn-edit-viewer {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            outline: none;
-            font-size: 0.65rem;
-            margin-right: 2px;
-        }
-
-        .btn-edit-viewer:hover {
-            background: rgba(6, 182, 212, 0.2);
-            border-color: rgba(6, 182, 212, 0.4);
-            color: var(--accent-cyan);
-            transform: scale(1.05);
-        }
-
-        .btn-edit-viewer.active {
-            background: var(--accent-cyan);
-            border-color: var(--accent-cyan);
-            color: #ffffff;
-        }
-
-        .viewer-editor-panel {
-            position: absolute;
-            top: 75px;
-            right: 20px;
-            width: 300px;
-            background: rgba(15, 23, 42, 0.94);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-primary);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 1001; /* Fica acima de tudo no visualizador */
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .editor-panel-header {
-            padding: 10px 14px;
-            background: rgba(6, 182, 212, 0.15);
-            border-bottom: 1px solid rgba(6, 182, 212, 0.2);
-            font-size: 0.72rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--accent-cyan);
-        }
-
-        .editor-panel-body {
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .editor-field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-        }
-
-        .editor-field-group-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .editor-label {
-            font-size: 0.6rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .editor-input {
-            width: 100%;
-            background: rgba(30, 41, 59, 0.8);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: var(--text-primary);
-            font-size: 0.75rem;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .editor-input:focus {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 0 6px rgba(6, 182, 212, 0.25);
-        }
-
-        .editor-input[readonly] {
-            background: rgba(30, 41, 59, 0.4);
-            color: var(--text-secondary);
-            cursor: not-allowed;
-        }
-
-        .editor-instructions {
-            font-size: 0.65rem;
-            color: var(--text-secondary);
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.15);
-            padding: 8px;
-            border-radius: 6px;
-            line-height: 1.3;
-        }
-
-        .editor-actions {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: 5px;
-        }
-
-        .btn-editor-action {
-            flex: 1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            border: none;
-            outline: none;
-        }
-
-        .btn-editor-cancel {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-editor-cancel:hover {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #f87171;
-        }
-
-        .btn-editor-save {
-            background: var(--accent-cyan);
-            color: #ffffff;
-            box-shadow: 0 4px 10px rgba(6, 182, 212, 0.3);
-        }
-
-        .btn-editor-save:hover {
-            background: #0891b2;
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.45);
-        }
-
-        /* Notificação / Toast Premium */
-        .toast-notification {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: var(--bg-panel-solid);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-green);
-            padding: 10px 16px;
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 0.72rem;
-            font-weight: 500;
-            z-index: 2000;
-            box-shadow: var(--shadow-primary);
-            display: none;
-            align-items: center;
-            gap: 8px;
-            animation: slideIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        /* 8. Visualizador Plano (Híbrido) */
-        .flat-viewer-blur-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: blur(24px) brightness(0.3);
-            opacity: 0.75;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .flat-viewer-image-wrapper {
+        /* Linha decorativa de gradiente superior */
+        .top-glow {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-orange));
+            z-index: 10;
+        }
+
+        header {
+            padding: 24px 5%;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            z-index: 2;
-            overflow: hidden;
-            cursor: grab;
-        }
-
-        .flat-viewer-image-wrapper:active {
-            cursor: grabbing;
-        }
-
-        .flat-viewer-image {
-            max-width: 92%;
-            max-height: 92%;
-            object-fit: contain;
-            transition: transform 0.15s cubic-bezier(0.25, 0.8, 0.25, 1);
-            user-select: none;
-            -webkit-user-drag: none;
-            transform-origin: center center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-            border-radius: 4px;
-        }
-
-        .flat-viewer-controls {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            z-index: 3;
-            display: flex;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.85);
-            border: 1px solid var(--border-color);
-            padding: 6px;
-            border-radius: var(--radius-md);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(6, 9, 19, 0.4);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: var(--shadow-soft);
+            z-index: 5;
         }
 
-        .btn-flat-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            border-radius: 6px;
-            width: 32px;
-            height: 32px;
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.1rem;
+            gap: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+            font-weight: 800;
+        }
+
+        .logo-tag {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--accent-cyan);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
             font-weight: 500;
             transition: var(--transition);
-            outline: none;
         }
 
-        .btn-flat-control:hover {
-            background: rgba(6, 182, 212, 0.25);
-            border-color: rgba(6, 182, 212, 0.45);
-            color: var(--accent-cyan);
-            transform: scale(1.05);
+        .nav-link:hover {
+            color: var(--text-primary);
         }
 
-        /* 9. Card de Análise Temporal Flutuante */
-        .temporal-analysis-card {
-            position: absolute;
-            top: 85px;
-            left: 20px;
-            width: 320px;
-            background: var(--bg-panel);
+        main {
+            flex: 1;
+            padding: 40px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* Seção Hero */
+        .hero-section {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 48px;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .hero-meta {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-meta::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-orange);
+            box-shadow: 0 0 10px var(--accent-orange);
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: #ffffff;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, #ffffff 40%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 10px 0;
+        }
+
+        .hero-stat-card {
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            z-index: 1002;
-            display: flex;
-            flex-direction: column;
-            transition: var(--transition);
+            padding: 16px;
+            text-align: center;
         }
 
-        .temporal-header {
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
+        .hero-stat-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--accent-orange);
         }
 
-        .temporal-title {
-            font-size: 0.7rem;
-            font-weight: 600;
-            letter-spacing: 0.8px;
+        .hero-stat-label {
+            font-size: 0.65rem;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .temporal-toggle-icon {
-            transition: var(--transition);
-            transform: rotate(0deg);
-        }
-
-        .temporal-body {
-            border-top: 1px solid var(--border-color);
-            padding: 12px 14px;
-            max-height: 280px;
-            overflow-y: auto;
-            transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.4s ease;
-        }
-
-        .temporal-analysis-card.collapsed .temporal-body {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top-color: transparent;
-            overflow: hidden;
-        }
-
-        .temporal-analysis-card.collapsed .temporal-toggle-icon {
-            transform: rotate(-90deg);
-        }
-
-        .temporal-range {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--accent-cyan);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .temporal-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .temporal-item {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .temporal-item-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.68rem;
-        }
-
-        .temporal-date {
-            color: var(--text-primary);
+            margin-top: 4px;
             font-weight: 500;
         }
 
-        .temporal-count {
-            color: var(--text-secondary);
-            font-size: 0.65rem;
-        }
-
-        .temporal-bar-bg {
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 3px;
+        /* Botão CTA Principal */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 20px rgba(37, 99, 235, 0.35);
+            transition: var(--transition);
+            align-self: flex-start;
+            position: relative;
             overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .temporal-bar-fill {
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
-            border-radius: 3px;
-            width: 0;
-            transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.6s;
         }
 
-        /* 10. Card de Monitoramento Climático e Estiagem */
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(6, 182, 212, 0.5), 0 0 0 4px rgba(6, 182, 212, 0.15);
+        }
+
+        .cta-btn:hover::before {
+            left: 150%;
+        }
+
+        .cta-btn svg {
+            transition: var(--transition);
+        }
+
+        .cta-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Imagem Hero Conceitual */
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .hero-image-wrapper:hover .hero-image {
+            transform: scale(1.03);
+        }
+
+        .hero-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(6, 9, 19, 0.8) 0%, rgba(6, 9, 19, 0) 50%);
+            pointer-events: none;
+        }
+
+        .hero-image-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            font-size: 0.72rem;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Seção Dashboard */
+        .dashboard-section {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .section-subtitle {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+        }
+
+        /* Card Clima */
         .climate-card {
             background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-premium);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
-            transition: var(--transition);
+            overflow: hidden;
         }
 
         .climate-header {
-            padding: 10px 14px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
+            gap: 10px;
         }
 
         .climate-title {
-            font-size: 0.7rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
             font-weight: 600;
             letter-spacing: 0.8px;
             text-transform: uppercase;
@@ -1008,41 +387,20 @@
             gap: 8px;
         }
 
-        .climate-toggle-icon {
-            transition: var(--transition);
-            transform: rotate(0deg);
-        }
-
         .climate-body {
-            border-top: 1px solid var(--border-color);
-            padding: 12px 14px;
-            max-height: 400px;
-            overflow-y: auto;
-            transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.4s ease;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-
-        .climate-card.collapsed .climate-body {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top-color: transparent;
-            overflow: hidden;
-        }
-
-        .climate-card.collapsed .climate-toggle-icon {
-            transform: rotate(-90deg);
+            gap: 16px;
         }
 
         .climate-current {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px 0;
+            padding: 16px;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: var(--radius-sm);
+            border-radius: var(--radius-md);
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
@@ -1053,20 +411,20 @@
         }
 
         .climate-temp-val {
-            font-size: 2rem;
+            font-size: 2.8rem;
             font-weight: 700;
             color: #ffffff;
-            font-family: 'Outfit', 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         .climate-temp-unit {
-            font-size: 1rem;
-            font-weight: 500;
+            font-size: 1.4rem;
+            font-weight: 600;
             color: var(--accent-cyan);
         }
 
         .climate-condition {
-            font-size: 0.72rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             margin-top: 4px;
             font-weight: 500;
@@ -1075,21 +433,21 @@
         .climate-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         .climate-stat-item {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius-sm);
-            padding: 8px;
+            border-radius: var(--radius-md);
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
         }
 
         .climate-stat-label {
-            font-size: 0.58rem;
+            font-size: 0.6rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-secondary);
@@ -1097,1463 +455,278 @@
         }
 
         .climate-stat-value {
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
             color: #ffffff;
-            margin: 2px 0;
         }
 
-        .climate-stat-desc {
-            font-size: 0.55rem;
-            color: var(--text-secondary);
-        }
-
-        .climate-alert {
+        /* Alerta Climático */
+        .climate-alert-box {
             display: flex;
             align-items: flex-start;
-            background: rgba(249, 115, 22, 0.1);
-            border: 1px solid rgba(249, 115, 22, 0.2);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            font-size: 0.68rem;
-            color: #ffedd5;
-            line-height: 1.35;
-        }
-
-        .climate-footer {
-            font-size: 0.55rem;
-            color: var(--text-secondary);
-            text-align: center;
-            line-height: 1.3;
-            margin-top: 4px;
-            opacity: 0.8;
-        }
-
-        .climate-chart-container {
-            width: 100%;
-            height: 185px;
-            margin-top: 6px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: var(--radius-sm);
-            padding: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Ajuste do editor para descrições */
-        textarea.editor-input {
-            resize: none;
-            font-family: inherit;
+            gap: 10px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.72rem;
             line-height: 1.4;
+            color: var(--text-primary);
         }
 
-        /* 10. Coluna Lateral Esquerda Flutuante */
-        .sidebar-left {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 320px;
-            z-index: 1002;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            pointer-events: none;
-        }
-
-        .sidebar-left > div {
-            pointer-events: auto;
-        }
-
-        /* 11. Marcadores de Sonar Pulsante no Mapa Leaflet */
-        .sonar-marker {
-            position: relative;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .sonar-center {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            z-index: 2;
-            transition: var(--transition);
-        }
-
-        /* Cores do Sonar */
-        .sonar-marker.ribeirinha .sonar-center {
-            background-color: var(--accent-cyan);
-            box-shadow: 0 0 6px var(--accent-cyan);
-        }
-
-        .sonar-marker.rodoviaria .sonar-center {
-            background-color: var(--accent-orange);
-            box-shadow: 0 0 6px var(--accent-orange);
-        }
-
-        .sonar-wave {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .sonar-marker.ribeirinha .sonar-wave {
-            border: 2px solid var(--accent-cyan);
-            animation: sonar-pulse 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
-        }
-
-        .sonar-marker.rodoviaria .sonar-wave {
-            border: 2px solid var(--accent-orange);
-            animation: sonar-pulse 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
-        }
-
-        /* Marcador Ativo (Selecionado) */
-        .sonar-marker.active .sonar-center {
-            transform: scale(1.4);
-            border: 1px solid #ffffff;
-        }
-
-        .sonar-marker.active .sonar-wave {
-            animation-duration: 1.2s;
-        }
-
-        @keyframes sonar-pulse {
-            0% {
-                width: 8px;
-                height: 8px;
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            100% {
-                width: 32px;
-                height: 32px;
-                opacity: 0;
-            }
-        }
-
-        /* 12. Card de Filtros de Escola */
-        .filter-card {
+        /* Card Gráfico */
+        .chart-card {
             background: var(--bg-panel);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-soft);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-premium);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            transition: var(--transition);
+            gap: 20px;
         }
 
-        .filter-header {
-            padding: 10px 14px;
+        .chart-card-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
+            align-items: center;
         }
 
-        .filter-title {
-            font-size: 0.7rem;
+        .chart-card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
             font-weight: 600;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            color: var(--text-secondary);
+            color: #ffffff;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .filter-body {
-            border-top: 1px solid var(--border-color);
-            padding: 12px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: max-height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.3s ease;
-        }
-
-        .filter-card.collapsed .filter-body {
-            max-height: 0;
-            padding-top: 0;
-            padding-bottom: 0;
-            border-top-color: transparent;
-            overflow: hidden;
-        }
-
-        .filter-card.collapsed .temporal-toggle-icon {
-            transform: rotate(-90deg);
-        }
-
-        .filter-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .chart-card-desc {
             font-size: 0.72rem;
-            cursor: pointer;
-            color: var(--text-primary);
-            user-select: none;
+            color: var(--text-secondary);
+            margin-top: 2px;
         }
 
-        .filter-option-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Checkbox Customizado */
-        .filter-checkbox {
-            appearance: none;
-            -webkit-appearance: none;
-            width: 14px;
-            height: 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 3px;
-            background: rgba(255, 255, 255, 0.03);
-            cursor: pointer;
+        .chart-wrapper {
+            flex: 1;
+            min-height: 320px;
             position: relative;
-            outline: none;
+        }
+
+        footer {
+            padding: 30px 5%;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            background: rgba(6, 9, 19, 0.6);
+            margin-top: auto;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
             transition: var(--transition);
         }
 
-        .filter-checkbox:checked {
-            background: var(--accent-cyan);
-            border-color: var(--accent-cyan);
+        footer a:hover {
+            color: var(--text-primary);
         }
 
-        .filter-checkbox:checked::after {
-            content: "✓";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.65rem;
-            color: #ffffff;
-            font-weight: bold;
+        /* Responsividade */
+        @media (max-width: 1024px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+
+            .hero-image-wrapper {
+                height: 320px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .filter-checkbox.checkbox-rodoviaria:checked {
-            background: var(--accent-orange);
-            border-color: var(--accent-orange);
-        }
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
 
-        .filter-legend-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
+            .nav-links {
+                display: none; /* Simplifica em mobile */
+            }
 
-        .filter-legend-dot.ribeirinha {
-            background-color: var(--accent-cyan);
-            box-shadow: 0 0 4px var(--accent-cyan);
-        }
-
-        .filter-legend-dot.rodoviaria {
-            background-color: var(--accent-orange);
-            box-shadow: 0 0 4px var(--accent-orange);
-        }
-
-        /* Tags de Tipo de Acesso */
-        .tag-ribeirinha {
-            background-color: rgba(6, 182, 212, 0.12);
-            color: var(--accent-cyan);
-            margin-left: 4px;
-        }
-
-        .tag-rodoviaria {
-            background-color: rgba(245, 158, 11, 0.12);
-            color: var(--accent-orange);
-            margin-left: 4px;
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Painel Lateral Esquerdo (Contêiner Flexível) -->
-    <div class="sidebar-left">
-        <!-- 1. Barra de Busca Compacta (Google Maps Style) -->
-        <div class="floating-search-box" style="position: static; width: 100%;">
-            <div class="search-input-group">
-                <!-- Lupa Fina em SVG Monocromático -->
-                <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 8px;">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" id="searchInput" class="search-input" placeholder="Buscar panoramas..." oninput="onSearchInput()">
-            </div>
-            <!-- Resultados suspensos (autocomplete) -->
-            <div class="search-autocomplete-results" id="searchResults"></div>
-        </div>
+    <div class="top-glow"></div>
 
-        <!-- Card de Análise Temporal Flutuante -->
-        <div class="temporal-analysis-card" id="temporalCard" style="position: static; width: 100%;">
-            <div class="temporal-header" onclick="toggleTemporalCard()">
-                <div class="temporal-title">
-                    <!-- Ícone de Calendário em SVG Monocromático -->
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 4px; vertical-align: middle;">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    Análise Temporal
-                </div>
-                <div class="drawer-toggle-btn" style="padding: 0;">
-                    <!-- Chevron Fino em SVG -->
-                    <svg class="temporal-toggle-icon" id="temporalToggleIcon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </div>
-            </div>
-            <div class="temporal-body">
-                <div class="temporal-range" id="temporalRange">
-                    Carregando período...
-                </div>
-                <div class="temporal-list" id="temporalList">
-                    <!-- Preenchido dinamicamente via JS -->
-                </div>
-            </div>
-        </div>
+    <header>
+        <a href="index.html" class="logo">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            IGeotecnologia <span>360</span>
+            <div class="logo-tag">Estiagem</div>
+        </a>
+        <nav class="nav-links">
+            <a href="#dashboard" class="nav-link">Painel Climático</a>
+            <a href="mapa.html" class="nav-link">Acessar Web GIS</a>
+            <a href="https://github.com/Charles-Igeotecnologia/estiagem-manaus.git" target="_blank" class="nav-link">GitHub</a>
+        </nav>
+    </header>
 
-        <!-- Card de Filtros de Camadas de Escola -->
-        <div class="filter-card" id="filterCard">
-            <div class="filter-header" onclick="toggleFilterCard()">
-                <div class="filter-title">
-                    <!-- Ícone de Camadas em SVG Monocromático -->
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 4px; vertical-align: middle;">
-                        <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                        <polyline points="2 17 12 22 22 17"></polyline>
-                        <polyline points="2 12 12 17 22 12"></polyline>
-                    </svg>
-                    Filtro de Escolas Rurais
-                </div>
-                <div class="drawer-toggle-btn" style="padding: 0;">
-                    <!-- Chevron Fino em SVG -->
-                    <svg class="temporal-toggle-icon" id="filterToggleIcon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </div>
-            </div>
-            <div class="filter-body" id="filterBody">
-                <label class="filter-option">
-                    <div class="filter-option-left">
-                        <span class="filter-legend-dot ribeirinha"></span>
-                        <span>Escolas Ribeirinhas</span>
-                    </div>
-                    <input type="checkbox" id="chkRibeirinha" class="filter-checkbox" checked onchange="filterSchools()">
-                </label>
-                <label class="filter-option">
-                    <div class="filter-option-left">
-                        <span class="filter-legend-dot rodoviaria"></span>
-                        <span>Escolas Rodoviárias</span>
-                    </div>
-                    <input type="checkbox" id="chkRodoviaria" class="filter-checkbox checkbox-rodoviaria" checked onchange="filterSchools()">
-                </label>
-            </div>
-        </div>
-
-        <!-- Card de Monitoramento Climático (Open-Meteo) -->
-        <div class="climate-card collapsed" id="climateCard">
-            <div class="climate-header" onclick="toggleClimateCard()">
-                <div class="climate-title">
-                    <!-- Ícone de Clima (Nuvem com Sol) em SVG -->
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 4px; vertical-align: middle;">
-                        <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42 0-.83.04-1.24.12A7 7 0 1 0 3 13.5A3.5 3.5 0 0 0 6.5 17h11"></path>
-                    </svg>
-                    Painel de Clima & Estiagem
-                </div>
-                <div class="drawer-toggle-btn" style="padding: 0;">
-                    <svg class="climate-toggle-icon" id="climateToggleIcon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </div>
-            </div>
-            <div class="climate-body" id="climateBody">
-                <div class="climate-current">
-                    <div class="climate-temp-section">
-                        <span class="climate-temp-val" id="climateTempVal">--</span><span class="climate-temp-unit">°C</span>
-                    </div>
-                    <div class="climate-condition" id="climateCond">Carregando dados...</div>
-                </div>
+    <main>
+        <!-- Seção Hero -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-meta">Histórico & Monitoramento</div>
+                <h1 class="hero-title">
+                    A Grande Seca de 2023 <span>em Manaus</span>
+                </h1>
+                <p class="hero-description">
+                    Em 2023, o Amazonas vivenciou uma das estiagens mais severas registradas na história recente. O nível do Rio Negro em Manaus atingiu a mínima histórica de <b>12,70 metros</b>, isolando comunidades ribeirinhas, paralisando o transporte hidroviário e gerando severos impactos ambientais e sociais.
+                </p>
+                <p class="hero-description" style="margin-top: -12px;">
+                    Esta plataforma foi criada para catalogar imagens panorâmicas de alta resolução das escolas rurais e comunidades atingidas, correlacionar os dados de satélite e oferecer um diagnóstico climático contínuo da região metropolitana.
+                </p>
                 
-                <div class="climate-grid">
-                    <div class="climate-stat-item">
-                        <div class="climate-stat-label">Chuva Recente</div>
-                        <div class="climate-stat-value" id="climatePrecip">-- mm</div>
-                        <div class="climate-stat-desc">Últimos 7 dias</div>
+                <div class="hero-stats">
+                    <div class="hero-stat-card">
+                        <div class="hero-stat-val">12.70m</div>
+                        <div class="hero-stat-label">Cota Mínima Histórica</div>
                     </div>
-                    <div class="climate-stat-item">
-                        <div class="climate-stat-label">Umidade do Ar</div>
-                        <div class="climate-stat-value" id="climateHumidity">--%</div>
-                        <div class="climate-stat-desc">Umidade atual</div>
+                    <div class="hero-stat-card">
+                        <div class="hero-stat-val">Out/2023</div>
+                        <div class="hero-stat-label">Pico da Estiagem</div>
                     </div>
-                    <div class="climate-stat-item">
-                        <div class="climate-stat-label">Evapotranspiração</div>
-                        <div class="climate-stat-value" id="climateEvapo">-- mm</div>
-                        <div class="climate-stat-desc">Perda de umidade (7d)</div>
-                    </div>
-                    <div class="climate-stat-item">
-                        <div class="climate-stat-label">Balanço de Água</div>
-                        <div class="climate-stat-value" id="climateBalance">-- mm</div>
-                        <div class="climate-stat-desc">Chuva - Evapo (7d)</div>
+                    <div class="hero-stat-card">
+                        <div class="hero-stat-val">121 anos</div>
+                        <div class="hero-stat-label">Maior Seca Registrada</div>
                     </div>
                 </div>
 
-                <div class="climate-alert" id="climateAlertBox" style="display: none;">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; flex-shrink: 0; color: var(--accent-orange);">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                <a href="mapa.html" class="cta-btn">
+                    Explorar Web GIS e Fotos 360°
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
-                    <span id="climateAlertText">Alerta de estiagem severa na região.</span>
-                </div>
-
-                <!-- Gráfico Comparativo Mensal (Janeiro a Dezembro) -->
-                <div class="climate-chart-container">
-                    <canvas id="climateComparisonChart"></canvas>
-                </div>
-                
-                <div class="climate-footer">
-                    Dados atualizados em tempo real via Open-Meteo para a região de Manaus.
-                </div>
+                </a>
             </div>
-        </div>
-    </div>
 
-    <!-- Área Principal de Trabalho (Mapa + 360) -->
-    <main class="workspace" id="workspace">
-        
-        <!-- Seção do Mapa -->
-        <section class="map-section">
-            <div id="map"></div>
-
-            <!-- 2. Tabela de Atributos Retrátil Inferior (Flutuando exclusivamente AQUI no Mapa) -->
-            <div class="gis-attribute-drawer" id="gisDrawer">
-                <div class="drawer-header" onclick="toggleDrawer()">
-                    <div class="drawer-title">
-                        <!-- Tabela Fina em SVG Monocromático -->
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 8px; vertical-align: middle;">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="3" y1="9" x2="21" y2="9"></line>
-                            <line x1="3" y1="15" x2="21" y2="15"></line>
-                            <line x1="12" y1="3" x2="12" y2="21"></line>
-                        </svg>
-                        Tabela de Atributos (<span id="pointsCount">0</span> cadastrados)
-                    </div>
-                    <div class="drawer-toggle-btn">
-                        <span id="drawerToggleText">Abrir Tabela</span>
-                        <!-- Chevron Fino em SVG para expandir -->
-                        <svg id="drawerToggleIcon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition: var(--transition); transform: rotate(0deg); vertical-align: middle;">
-                            <polyline points="18 15 12 9 6 15"></polyline>
-                        </svg>
-                    </div>
-                </div>
-                <div class="drawer-body">
-                    <table class="attribute-table">
-                        <thead>
-                            <tr>
-                                <th>Título</th>
-                                <th>Categoria</th>
-                                <th>Data de Registro</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                            </tr>
-                        </thead>
-                        <tbody id="attributeTableBody">
-                            <!-- Preenchido dinamicamente via JS -->
-                        </tbody>
-                    </table>
+            <div class="hero-image-wrapper">
+                <img src="media/drought_rio_negro.png" alt="Seca histórica do Rio Negro em Manaus" class="hero-image">
+                <div class="hero-image-overlay"></div>
+                <div class="hero-image-caption">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange); flex-shrink: 0;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>Registro conceitual da severa seca de 2023: leito exposto, barcos encalhados e impacto profundo na bacia amazônica.</span>
                 </div>
             </div>
         </section>
-        
-        <!-- Seção do Visualizador 360 -->
-        <section class="viewer-section" id="viewerSection">
-            <!-- Badge de Título Discreto e Pequeno (Marca d'água) -->
-            <div class="viewer-mini-badge" id="viewerBadge">
-                <div class="badge-info">
-                    <span class="badge-category" id="badgeCategory">Categoria</span>
-                    <span class="badge-title" id="badgeTitle">Título do Panorama</span>
-                </div>
-                <!-- Botão Editar (Lápis) -->
-                <button class="btn-edit-viewer" id="btnEditViewer" onclick="toggleEditMode()" title="Editar Informações / Radar 360°">✎</button>
-                <button class="btn-close-viewer" onclick="closeViewer()" title="Fechar Visualização 360">✕</button>
-            </div>
-            
-            <!-- Painel Flutuante do Editor (Modo Edição) -->
-            <div class="viewer-editor-panel" id="viewerEditorPanel">
-                <div class="editor-panel-header">Modo Edição de Ponto</div>
-                <div class="editor-panel-body">
-                    <div class="editor-field-group">
-                        <label class="editor-label">Título do Ponto</label>
-                        <input type="text" id="editFieldTitle" class="editor-input">
-                    </div>
-                    <div class="editor-field-group">
-                        <label class="editor-label">Categoria</label>
-                        <select id="editFieldCategory" class="editor-input">
-                            <option value="Aérea">Aérea</option>
-                            <option value="Terrestre">Terrestre</option>
-                        </select>
-                    </div>
-                    <div class="editor-field-group">
-                        <label class="editor-label">Descrição do Local</label>
-                        <textarea id="editFieldDescription" class="editor-input" rows="2" placeholder="Adicione uma breve descrição sobre o local..."></textarea>
-                    </div>
 
-                    <div class="editor-field-group-row">
-                        <div class="editor-field-group">
-                            <label class="editor-label">Latitude (Mapa)</label>
-                            <input type="number" step="any" id="editFieldLat" class="editor-input">
-                        </div>
-                        <div class="editor-field-group">
-                            <label class="editor-label">Longitude (Mapa)</label>
-                            <input type="number" step="any" id="editFieldLon" class="editor-input">
-                        </div>
-                    </div>
-                    <div class="editor-field-group-row">
-                        <div class="editor-field-group">
-                            <label class="editor-label">Pitch (Radar 360)</label>
-                            <input type="number" step="any" id="editFieldPitch" class="editor-input" readonly>
-                        </div>
-                        <div class="editor-field-group">
-                            <label class="editor-label">Yaw (Radar 360)</label>
-                            <input type="number" step="any" id="editFieldYaw" class="editor-input" readonly>
-                        </div>
-                    </div>
-                    <div class="editor-instructions">
-                        💡 <b>Como ajustar:</b> Dê um clique na imagem 360° para reposicionar o ícone de radar.
-                    </div>
-                    <div class="editor-actions">
-                        <button class="btn-editor-action btn-editor-cancel" onclick="toggleEditMode(false)">Cancelar</button>
-                        <button class="btn-editor-action btn-editor-save" onclick="savePointChanges()">Salvar</button>
-                    </div>
-                </div>
+        <!-- Seção Dashboard Climático -->
+        <section id="dashboard" class="dashboard-section">
+            <div class="section-header">
+                <div class="section-subtitle">Dados em Tempo Real</div>
+                <h2 class="section-title">Painel de Análise Climática Atual vs Histórica</h2>
             </div>
-            
-            <!-- Container do Panorama -->
-            <div id="panorama"></div>
-            
-            <!-- Container do Visualizador Plano -->
-            <div id="flatViewer" style="display: none; width: 100%; height: 100%; position: relative;">
-                <img id="flatBlurBg" class="flat-viewer-blur-bg" src="" alt="">
-                <div id="flatImageWrapper" class="flat-viewer-image-wrapper">
-                    <img id="flatImage" class="flat-viewer-image" src="" alt="" draggable="false">
+
+            <div class="dashboard-grid">
+                <!-- Coluna 1: Painel do Clima de Manaus -->
+                <div class="climate-card">
+                    <div class="climate-header">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+                            <circle cx="12" cy="12" r="4"></circle>
+                        </svg>
+                        <div class="climate-title">Clima de Manaus (Tempo Real)</div>
+                    </div>
+                    <div class="climate-body">
+                        <div class="climate-current">
+                            <div class="climate-temp-section">
+                                <span class="climate-temp-val" id="climateTempVal">--.-</span>
+                                <span class="climate-temp-unit">°C</span>
+                            </div>
+                            <div class="climate-condition" id="climateCond">Buscando informações climáticas...</div>
+                        </div>
+                        
+                        <div class="climate-grid">
+                            <div class="climate-stat-item">
+                                <div class="climate-stat-label">Umidade Relativa</div>
+                                <div class="climate-stat-value" id="climateHumidity">--%</div>
+                            </div>
+                            <div class="climate-stat-item">
+                                <div class="climate-stat-label">Chuva (7 dias)</div>
+                                <div class="climate-stat-value" id="climatePrecip">--.- mm</div>
+                            </div>
+                            <div class="climate-stat-item">
+                                <div class="climate-stat-label">Evaporação (7d)</div>
+                                <div class="climate-stat-value" id="climateEvapo">--.- mm</div>
+                            </div>
+                            <div class="climate-stat-item">
+                                <div class="climate-stat-label">Balanço Hídrico</div>
+                                <div class="climate-stat-value" id="climateBalance">--.- mm</div>
+                            </div>
+                        </div>
+
+                        <!-- Caixa de Alerta Climático Dinâmico -->
+                        <div class="climate-alert-box" id="climateAlertBox" style="display: none;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                            <span id="climateAlertText"></span>
+                        </div>
+                    </div>
                 </div>
-                <div class="flat-viewer-controls">
-                    <button class="btn-flat-control" onclick="zoomInFlat()" title="Aumentar Zoom">+</button>
-                    <button class="btn-flat-control" onclick="zoomOutFlat()" title="Diminuir Zoom">-</button>
-                    <button class="btn-flat-control" onclick="resetFlatZoom()" title="Redefinir Vista">⟲</button>
+
+                <!-- Coluna 2: Gráfico Comparativo 2023 vs Ano Atual -->
+                <div class="chart-card">
+                    <div class="chart-card-header">
+                        <div>
+                            <div class="chart-card-title">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange);">
+                                    <line x1="18" y1="20" x2="18" y2="10"></line>
+                                    <line x1="12" y1="20" x2="12" y2="4"></line>
+                                    <line x1="6" y1="20" x2="6" y2="14"></line>
+                                </svg>
+                                Distribuição de Chuva Mensal (Precipitação)
+                            </div>
+                            <div class="chart-card-desc">Comparação mês a mês entre o ano da seca crítica (2023) e o ano atual</div>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="climateComparisonChart"></canvas>
+                    </div>
                 </div>
             </div>
         </section>
-        
     </main>
 
-    <!-- Leaflet Map JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    
-    <!-- Pannellum 360 Viewer JS -->
-    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-
-    <!-- Chart.js para o Dashboard Climático -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <footer>
+        <p>© 2026 IGeotecnologia. Desenvolvido para fins de monitoramento e pesquisa geográfica na Amazônia.</p>
+        <p style="margin-top: 6px;"><a href="mapa.html">Acesse o Web GIS completo</a> para visualizar as imagens panorâmicas 360°.</p>
+    </footer>
 
     <script>
-        let map;
-        let pViewer = null;
-        let geojsonData = null;
-        let markers = {};
-        let escolasRuraisData = null;
-        let ruralMarkers = {};
         let climateChart = null;
-        let activeId = null;
-        
-        // Variáveis globais para o Modo Edição
-        let isEditMode = false;
-        let tempPitch = 0;
-        let tempYaw = 0;
-
-        // Variáveis globais para o Visualizador Plano (Zoom e Pan)
-        let flatScale = 1;
-        let flatPanX = 0;
-        let flatPanY = 0;
-        let isPanning = false;
-        let startX = 0;
-        let startY = 0;
-
-        // Inicializa mapa e camadas base
-        function initMap() {
-            const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-                attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
-            });
-
-            const darkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-            });
-
-            const lightPositron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-            });
-
-            const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            });
-
-            map = L.map('map', {
-                zoomControl: false,
-                layers: [darkMatter] // Padrão escuro
-            }).setView([-2.97, -60.19], 13);
-
-            // Adiciona o Zoom Control no topo direito
-            L.control.zoom({ position: 'topright' }).addTo(map);
-
-            const basemaps = {
-                "Satélite": satelite,
-                "Mapa Escuro": darkMatter,
-                "Mapa Claro": lightPositron,
-                "Mapa de Ruas": osm
-            };
-
-            L.control.layers(basemaps, null, { position: 'topright' }).addTo(map);
-        }
-
-        // Abre/Fecha a Tabela de Atributos inferior
-        function toggleDrawer(forceOpen = null) {
-            const drawer = document.getElementById('gisDrawer');
-            const toggleText = document.getElementById('drawerToggleText');
-            const toggleIcon = document.getElementById('drawerToggleIcon');
-            
-            const isCurrentlyExpanded = drawer.classList.contains('expanded');
-            const shouldExpand = forceOpen !== null ? forceOpen : !isCurrentlyExpanded;
-
-            if (shouldExpand) {
-                drawer.classList.add('expanded');
-                toggleText.innerText = 'Fechar Tabela';
-                toggleIcon.style.transform = 'rotate(180deg)';
-            } else {
-                drawer.classList.remove('expanded');
-                toggleText.innerText = 'Abrir Tabela';
-                toggleIcon.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        // Carrega dados dinâmicos
-        async function loadGeoJSON() {
-            try {
-                const response = await fetch('data.geojson?v=' + Date.now());
-                geojsonData = await response.json();
-                
-                // Carrega também a camada de escolas rurais da SEMED
-                try {
-                    const responseRurais = await fetch('escolas_rurais.geojson?v=' + Date.now());
-                    escolasRuraisData = await responseRurais.json();
-                } catch (err) {
-                    console.error("Erro ao ler escolas_rurais.geojson:", err);
-                }
-                
-                document.getElementById('pointsCount').innerText = geojsonData.features.length;
-                renderDashboard();
-                renderRuralSchools();
-                updateTemporalAnalysis();
-            } catch (error) {
-                console.error("Erro ao ler data.geojson:", error);
-            }
-        }
-
-        // Renderiza a camada de Escolas Rurais (com sonares pulsantes)
-        function renderRuralSchools() {
-            // Limpa marcadores de escolas rurais antigos do mapa
-            Object.values(ruralMarkers).forEach(m => map.removeLayer(m));
-            ruralMarkers = {};
-
-            if (!escolasRuraisData || !escolasRuraisData.features) return;
-
-            escolasRuraisData.features.forEach(feature => {
-                const props = feature.properties;
-                const coords = feature.geometry.coordinates;
-                const lat = coords[1];
-                const lon = coords[0];
-                const sType = props.schoolType; // 'ribeirinha' ou 'rodoviaria'
-
-                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-
-                const popupContent = `
-                    <div style="font-family: 'Inter', sans-serif; color: var(--text-primary); min-width: 220px; max-width: 280px;">
-                        <h4 style="margin: 0 0 6px 0; font-size: 0.85rem; font-weight: 600; color: #ffffff;">${props.title}</h4>
-                        <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
-                            <span style="font-size: 0.65rem; text-transform: uppercase; color: ${sType === 'ribeirinha' ? 'var(--accent-cyan)' : 'var(--accent-orange)'}; font-weight: 700;">
-                                Escola Rural - ${sType === 'ribeirinha' ? 'Ribeirinha' : 'Rodoviária'}
-                            </span>
-                        </div>
-                        <p style="margin: 0 0 6px 0; font-size: 0.72rem; color: #cbd5e1; line-height: 1.45; border-left: 2px solid ${sType === 'ribeirinha' ? 'var(--accent-cyan)' : 'var(--accent-orange)'}; padding-left: 6px;">
-                            <b>Modalidade:</b> ${props.modalidade}<br>
-                            <b>Alunos Matriculados:</b> ${props.alunos}<br>
-                            <b>Endereço:</b> ${props.address}<br>
-                            <b>Bairro/Local:</b> ${props.bairro}
-                        </p>
-                        <a href="${gmapsUrl}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; background-color: var(--accent-blue); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 500; transition: background-color 0.2s; width: 100%; text-align: center; margin-top: 8px;">
-                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            Rotas no Google Maps
-                        </a>
-                    </div>
-                `;
-
-                const customIcon = L.divIcon({
-                    html: `
-                        <div class="sonar-marker ${sType}">
-                            <div class="sonar-center"></div>
-                            <div class="sonar-wave"></div>
-                        </div>
-                    `,
-                    className: '',
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                });
-
-                const marker = L.marker([lat, lon], { icon: customIcon })
-                    .bindPopup(popupContent, { offset: [0, -10] })
-                    .bindTooltip(`<b>${props.title}</b><br><small>Escola Rural (${sType === 'ribeirinha' ? 'Ribeirinha' : 'Rodoviária'})</small>`, { direction: 'top', offset: [0, -10] });
-
-                ruralMarkers[props.id] = marker;
-            });
-        }
-
-        // Retorna o HTML do marcador temático discreto e estático (Drone e Câmera)
-        function getSVGIconHTML(category, isActive) {
-            let color = 'var(--accent-orange)'; // terrestre
-            let iconPath = ''; // Câmera de Solo
-            
-            if (category.toLowerCase() === 'aérea' || category.toLowerCase() === 'aerea') {
-                color = 'var(--accent-green)'; // aérea
-                // Ícone de Drone
-                iconPath = '<path fill="currentColor" d="M12 2a3 3 0 0 0-3 3c0 1 .4 2.1 1.2 2.6L7.4 10.4C5 9.7 2.7 11.2 2 13.5c-.7 2.3.6 4.7 3 5.4 2.4.7 4.9-.8 5.6-3.1l2.2-2c1.7.9 3.9.5 5.2-1l2.2 2c.7 2.3 3.1 3.8 5.5 3.1 2.3-.7 3.7-3.1 3-5.4-.7-2.3-3-3.8-5.4-3.1l-2.8-2.8C20.6 7.1 21 6 21 5a3 3 0 0 0-9-3zm0 2c.6 0 1 .4 1 1s-.4 1-1 1-1-.4-1-1 .4-1 1-1z"/>';
-            } else {
-                // Ícone de Câmera Fotográfica
-                iconPath = '<path fill="currentColor" d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>';
-            }
-
-            const activeClass = isActive ? 'active' : '';
-
-            return `
-                <div class="svg-marker-container ${activeClass}" style="--color-marker: ${color}">
-                    <svg class="svg-marker-icon" viewBox="0 0 24 24" style="color: ${color};">
-                        ${iconPath}
-                    </svg>
-                </div>
-            `;
-        }
-
-        // Renderiza tudo (Mapa + Tabela)
-        function renderDashboard() {
-            // Limpa marcadores
-            Object.values(markers).forEach(m => map.removeLayer(m));
-            markers = {};
-
-            const tableBody = document.getElementById('attributeTableBody');
-            tableBody.innerHTML = '';
-
-            const bounds = [];
-
-            geojsonData.features.forEach(feature => {
-                const props = feature.properties;
-                const coords = feature.geometry.coordinates;
-                const lat = coords[1];
-                const lon = coords[0];
-                const isSelected = activeId === props.id;
-
-                // 1. Criar conteúdo HTML do Pop-up com design Dark Premium e link do Google Maps
-                const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-                
-                // Formatar data (AAAA-MM-DD para DD/MM/AAAA)
-                const dataFormatada = props.date ? props.date.split('-').reverse().join('/') : 'Sem data';
-                const descHtml = props.description ? `<p style="margin: 0 0 10px 0; font-size: 0.72rem; color: #cbd5e1; line-height: 1.35; border-left: 2px solid var(--accent-cyan); padding-left: 6px;">${props.description}</p>` : '';
-
-                const popupContent = `
-                    <div style="font-family: 'Inter', sans-serif; color: var(--text-primary); min-width: 190px; max-width: 250px;">
-                        <h4 style="margin: 0 0 4px 0; font-size: 0.82rem; font-weight: 600; color: #ffffff;">${props.title}</h4>
-                        <div style="display: flex; gap: 6px; align-items: center; margin-bottom: 8px;">
-                            <span style="font-size: 0.65rem; color: var(--text-secondary); font-weight: 500;">Modificado: ${dataFormatada}</span>
-                        </div>
-                        ${descHtml}
-                        <a href="${gmapsUrl}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; gap: 6px; background-color: var(--accent-blue); color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 0.72rem; font-weight: 500; transition: background-color 0.2s; width: 100%; text-align: center;">
-                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                                <circle cx="12" cy="10" r="3"></circle>
-                            </svg>
-                            Abrir no Google Maps
-                        </a>
-                    </div>
-                `;
-
-                // 2. Plotar marcadores estáticos de mídia no mapa Leaflet (Drone/Câmera)
-                const customIcon = L.divIcon({
-                    html: getSVGIconHTML(props.category, isSelected),
-                    className: '',
-                    iconSize: [36, 36],
-                    iconAnchor: [18, 18]
-                });
-
-                const marker = L.marker([lat, lon], { icon: customIcon })
-                    .addTo(map)
-                    .bindPopup(popupContent, { offset: [0, -10] })
-                    .bindTooltip(`<b>${props.title}</b>`, { direction: 'top', offset: [0, -10] });
-
-                marker.on('click', () => selectLocation(props.id));
-                markers[props.id] = marker;
-                bounds.push([lat, lon]);
-
-                // 3. Preencher a Tabela de Atributos inferior com tag de Categoria
-                const row = document.createElement('tr');
-                row.className = isSelected ? 'active' : '';
-                row.id = `row-${props.id}`;
-                
-                const catTagClass = props.category.toLowerCase() === 'aérea' || props.category.toLowerCase() === 'aerea' ? 'tag-aerea' : 'tag-terrestre';
-
-                row.innerHTML = `
-                    <td>${props.title}</td>
-                    <td>
-                        <span class="table-tag ${catTagClass}">${props.category}</span>
-                    </td>
-                    <td>${props.date}</td>
-                    <td class="table-coordinates">${lat.toFixed(6)}</td>
-                    <td class="table-coordinates">${lon.toFixed(6)}</td>
-                `;
-
-                row.addEventListener('click', () => selectLocation(props.id));
-                tableBody.appendChild(row);
-            });
-
-            // Ajusta o foco
-            if (bounds.length > 0) {
-                map.fitBounds(bounds, { padding: [80, 80], maxZoom: 17 });
-            }
-
-            // Aplica os filtros dinâmicos de visualização
-            filterSchools();
-        }
-
-        // Evento de digitação na busca (Autocomplete)
-        function onSearchInput() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const resultsBox = document.getElementById('searchResults');
-            
-            if (!query) {
-                resultsBox.classList.remove('visible');
-                return;
-            }
-
-            resultsBox.innerHTML = '';
-            let hasResults = false;
-
-            // 1. Buscar nas mídias (fotos 360° e panorâmicas)
-            geojsonData.features.forEach(feature => {
-                const props = feature.properties;
-                if (props.title.toLowerCase().includes(query)) {
-                    hasResults = true;
-                    const item = document.createElement('div');
-                    item.className = 'search-result-item';
-                    item.innerHTML = `
-                        <span>${props.title}</span>
-                        <span class="result-meta">${props.category}</span>
-                    `;
-                    item.addEventListener('click', () => {
-                        selectLocation(props.id);
-                        document.getElementById('searchInput').value = '';
-                        resultsBox.classList.remove('visible');
-                    });
-                    resultsBox.appendChild(item);
-                }
-            });
-
-            // 2. Buscar na camada vetorial de escolas rurais da SEMED
-            if (escolasRuraisData && escolasRuraisData.features) {
-                escolasRuraisData.features.forEach(feature => {
-                    const props = feature.properties;
-                    if (props.title.toLowerCase().includes(query)) {
-                        hasResults = true;
-                        const item = document.createElement('div');
-                        item.className = 'search-result-item';
-                        
-                        const labelType = props.schoolType === 'ribeirinha' ? 'Escola Ribeirinha' : 'Escola Rodoviária';
-                        const metaColor = props.schoolType === 'ribeirinha' ? 'var(--accent-cyan)' : 'var(--accent-orange)';
-                        
-                        item.innerHTML = `
-                            <span>${props.title}</span>
-                            <span class="result-meta" style="color: ${metaColor}; font-weight: 600;">${labelType}</span>
-                        `;
-                        item.addEventListener('click', () => {
-                            const marker = ruralMarkers[props.id];
-                            if (marker) {
-                                // Se a escola estiver oculta pelo filtro, ativa o checkbox correspondente
-                                const showRibeirinha = document.getElementById('chkRibeirinha');
-                                const showRodoviaria = document.getElementById('chkRodoviaria');
-                                
-                                if (props.schoolType === 'ribeirinha' && !showRibeirinha.checked) {
-                                    showRibeirinha.checked = true;
-                                    filterSchools();
-                                } else if (props.schoolType === 'rodoviaria' && !showRodoviaria.checked) {
-                                    showRodoviaria.checked = true;
-                                    filterSchools();
-                                }
-
-                                // Ajusta foco e abre o pop-up da escola
-                                map.setView(marker.getLatLng(), 17);
-                                marker.openPopup();
-                            }
-                            
-                            document.getElementById('searchInput').value = '';
-                            resultsBox.classList.remove('visible');
-                        });
-                        resultsBox.appendChild(item);
-                    }
-                });
-            }
-
-            if (hasResults) {
-                resultsBox.classList.add('visible');
-            } else {
-                resultsBox.classList.remove('visible');
-            }
-        }
-
-        // Renderiza o tooltip customizado premium para o hotspot animado 360°
-        function hotspotTooltip(hotSpotDiv, args) {
-            hotSpotDiv.classList.add('custom-tooltip-container');
-            const span = document.createElement('span');
-            span.className = 'custom-tooltip-text';
-            span.innerText = args;
-            hotSpotDiv.appendChild(span);
-        }
-
-        // Selecionar um local
-        function selectLocation(id) {
-            if (activeId === id) return;
-
-            const prevId = activeId;
-            activeId = id;
-
-            // Remove destaque da tabela
-            if (prevId) {
-                const prevRow = document.getElementById(`row-${prevId}`);
-                if (prevRow) prevRow.classList.remove('active');
-            }
-
-            // Destaca nova linha na tabela
-            const activeRow = document.getElementById(`row-${id}`);
-            if (activeRow) activeRow.classList.add('active');
-
-            // Redesenha os marcadores para atualizar o estado selecionado
-            renderDashboard();
-
-            // Pega dados do ponto
-            const feature = geojsonData.features.find(f => f.properties.id === id);
-            if (!feature) return;
-
-            const coords = feature.geometry.coordinates;
-            const props = feature.properties;
-
-            // Carrega coordenadas temporárias para edição
-            tempPitch = props.hotspotPitch !== undefined ? props.hotspotPitch : -20;
-            tempYaw = props.hotspotYaw !== undefined ? props.hotspotYaw : 0;
-
-            // Centraliza o mapa com zoom adequado (15) para manter contexto
-            map.flyTo([coords[1], coords[0]], 15, {
-                animate: true,
-                duration: 1.2
-            });
-
-            // Abre o pop-up correspondente no mapa de forma automática
-            if (markers[id]) {
-                setTimeout(() => {
-                    markers[id].openPopup();
-                }, 400); // Aguarda o início do zoom/vôo
-            }
-
-            // Ativa Split Screen no Workspace
-            const workspace = document.getElementById('workspace');
-            workspace.classList.add('split-active');
-
-            // Exibe o Badge de Título Discreto no canto superior direito do 360
-            const badge = document.getElementById('viewerBadge');
-            document.getElementById('badgeTitle').innerText = props.title;
-            document.getElementById('badgeCategory').innerText = props.category;
-            badge.classList.add('visible');
-
-            // Inicializa ou atualiza o visualizador
-            if (pViewer) {
-                try { pViewer.destroy(); } catch (e) {}
-                pViewer = null;
-            }
-
-            if (props.viewType === "flat") {
-                // Configuração para foto plana
-                document.getElementById('panorama').style.display = 'none';
-                document.getElementById('flatViewer').style.display = 'block';
-                document.getElementById('btnEditViewer').style.display = 'none';
-
-                document.getElementById('flatBlurBg').src = props.image360Url;
-                document.getElementById('flatImage').src = props.image360Url;
-                
-                resetFlatZoom();
-
-                setTimeout(() => {
-                    map.invalidateSize(); // Notifica o Leaflet da mudança de split-screen
-                }, 350);
-            } else {
-                // Configuração para foto 360°
-                document.getElementById('panorama').style.display = 'block';
-                document.getElementById('flatViewer').style.display = 'none';
-                document.getElementById('btnEditViewer').style.display = 'flex';
-
-                setTimeout(() => {
-                    map.invalidateSize(); // Notifica o Leaflet da mudança de split-screen
-                    
-                    // Recupera coordenadas do hotspot ou usa fallback padrão
-                    const hPitch = props.hotspotPitch !== undefined ? props.hotspotPitch : -20;
-                    const hYaw = props.hotspotYaw !== undefined ? props.hotspotYaw : 0;
-
-                    pViewer = pannellum.viewer('panorama', {
-                        "type": "equirectangular",
-                        "panorama": props.image360Url,
-                        "autoLoad": true,
-                        "compass": true,
-                        "northOffset": 0,
-                        "showControls": true,
-                        "hfov": 100,
-                        "pitch": hPitch,
-                        "yaw": hYaw,
-                        "hotSpots": [
-                            {
-                                "pitch": hPitch,
-                                "yaw": hYaw,
-                                "cssClass": "radar-pulse-hotspot",
-                                "createTooltipFunc": hotspotTooltip,
-                                "createTooltipArgs": props.title,
-                                "id": "school-radar-hotspot"
-                            }
-                        ]
-                    });
-
-                    // Adiciona o ouvinte de clique no panorama se estiver em Modo Edição
-                    pViewer.on('mousedown', (event) => {
-                        if (!isEditMode) return;
-                        
-                        const coords = pViewer.mouseEventToCoords(event);
-                        if (coords) {
-                            tempPitch = parseFloat(coords[0].toFixed(2));
-                            tempYaw = parseFloat(coords[1].toFixed(2));
-                            
-                            // Atualiza os inputs
-                            document.getElementById('editFieldPitch').value = tempPitch;
-                            document.getElementById('editFieldYaw').value = tempYaw;
-                            
-                            // Move o hotspot visualmente
-                            try { pViewer.removeHotSpot("school-radar-hotspot"); } catch (e) {}
-                            pViewer.addHotSpot({
-                                "pitch": tempPitch,
-                                "yaw": tempYaw,
-                                "cssClass": "radar-pulse-hotspot",
-                                "createTooltipFunc": hotspotTooltip,
-                                "createTooltipArgs": document.getElementById('editFieldTitle').value || props.title,
-                                "id": "school-radar-hotspot"
-                            });
-                        }
-                    });
-                }, 350);
-            }
-        }
-
-        // Fecha visualizador 360 e volta a ocupar 100% de tela com o mapa
-        function closeViewer() {
-            toggleEditMode(false);
-
-            const prevId = activeId;
-            activeId = null;
-
-            if (prevId) {
-                const prevRow = document.getElementById(`row-${prevId}`);
-                if (prevRow) prevRow.classList.remove('active');
-            }
-
-            // Redesenha para remover marcação ativa no mapa e tabela
-            renderDashboard();
-
-            // Fecha qualquer pop-up ativo no mapa
-            map.closePopup();
-
-            // Oculta o badge de informação
-            document.getElementById('viewerBadge').classList.remove('visible');
-
-            // Retorna o mapa para tela cheia
-            const workspace = document.getElementById('workspace');
-            workspace.classList.remove('split-active');
-
-            if (pViewer) {
-                try { pViewer.destroy(); } catch (e) {}
-                pViewer = null;
-            }
-            document.getElementById('flatViewer').style.display = 'none';
-
-            setTimeout(() => {
-                map.invalidateSize({ animate: true });
-            }, 400);
-        }
-
-        // Ativa ou desativa o Modo Edição
-        function toggleEditMode(forceState = null) {
-            const btn = document.getElementById('btnEditViewer');
-            const panel = document.getElementById('viewerEditorPanel');
-            
-            isEditMode = forceState !== null ? forceState : !isEditMode;
-            
-            if (isEditMode) {
-                btn.classList.add('active');
-                panel.style.display = 'flex';
-                
-                const feature = geojsonData.features.find(f => f.properties.id === activeId);
-                if (feature) {
-                    const props = feature.properties;
-                    const coords = feature.geometry.coordinates;
-                    
-                    document.getElementById('editFieldTitle').value = props.title;
-                    document.getElementById('editFieldCategory').value = props.category;
-                    document.getElementById('editFieldDescription').value = props.description || '';
-                    
-
-                    
-                    document.getElementById('editFieldLat').value = coords[1];
-                    document.getElementById('editFieldLon').value = coords[0];
-                    document.getElementById('editFieldPitch').value = tempPitch;
-                    document.getElementById('editFieldYaw').value = tempYaw;
-                }
-            } else {
-                btn.classList.remove('active');
-                panel.style.display = 'none';
-            }
-        }
-
-        // Salva as alterações feitas no ponto selecionado via chamada POST
-        async function savePointChanges() {
-            if (!activeId) return;
-            
-            const featureIndex = geojsonData.features.findIndex(f => f.properties.id === activeId);
-            if (featureIndex === -1) return;
-            
-            const newTitle = document.getElementById('editFieldTitle').value.trim();
-            const newCategory = document.getElementById('editFieldCategory').value;
-            const newDescription = document.getElementById('editFieldDescription').value.trim();
-            const newLat = parseFloat(document.getElementById('editFieldLat').value);
-            const newLon = parseFloat(document.getElementById('editFieldLon').value);
-            
-            if (!newTitle) {
-                alert("O título não pode ficar vazio!");
-                return;
-            }
-            if (isNaN(newLat) || isNaN(newLon)) {
-                alert("Coordenadas geográficas inválidas!");
-                return;
-            }
-
-            // Atualiza os dados locais na memória
-            geojsonData.features[featureIndex].properties.title = newTitle;
-            geojsonData.features[featureIndex].properties.category = newCategory;
-            geojsonData.features[featureIndex].properties.description = newDescription;
-            geojsonData.features[featureIndex].geometry.coordinates = [newLon, newLat];
-            geojsonData.features[featureIndex].properties.hotspotPitch = tempPitch;
-            geojsonData.features[featureIndex].properties.hotspotYaw = tempYaw;
-            
-            try {
-                const response = await fetch('/api/salvar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(geojsonData)
-                });
-                
-                const result = await response.json();
-                
-                if (result.status === "success") {
-                    showToast("Dados salvos e atualizados!");
-                    toggleEditMode(false);
-                    
-                    // Atualiza o mapa e a tabela
-                    renderDashboard();
-                    
-                    // Reabre os dados do local atualizado
-                    const currentId = activeId;
-                    activeId = null;
-                    selectLocation(currentId);
-                } else {
-                    alert("Erro ao salvar: " + result.message);
-                }
-            } catch (error) {
-                console.error("Erro na requisição de salvamento:", error);
-                alert("Não foi possível salvar os dados. Certifique-se de que o servidor local 'servidor.py' está rodando!");
-            }
-        }
-
-        // Mostra um toast discreto temporário na tela
-        function showToast(message) {
-            const toast = document.getElementById('toastNotification');
-            document.getElementById('toastMessage').innerText = message;
-            toast.style.display = 'flex';
-            
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        // Fecha dropdown ao clicar fora da busca
-        document.addEventListener('click', (e) => {
-            const searchBox = document.querySelector('.floating-search-box');
-            if (searchBox && !searchBox.contains(e.target)) {
-                document.getElementById('searchResults').classList.remove('visible');
-            }
-        });
-
-        // Funções para controle do Visualizador Plano (Zoom e Pan)
-        function updateFlatTransform() {
-            const img = document.getElementById('flatImage');
-            if (img) {
-                img.style.transform = `translate(${flatPanX}px, ${flatPanY}px) scale(${flatScale})`;
-            }
-        }
-
-        function zoomInFlat() {
-            flatScale = Math.min(flatScale + 0.25, 5); // Limite de 5x
-            updateFlatTransform();
-        }
-
-        function zoomOutFlat() {
-            flatScale = Math.max(flatScale - 0.25, 0.5); // Limite de 0.5x
-            updateFlatTransform();
-        }
-
-        function resetFlatZoom() {
-            flatScale = 1;
-            flatPanX = 0;
-            flatPanY = 0;
-            updateFlatTransform();
-        }
-
-        function initFlatViewerEvents() {
-            const wrapper = document.getElementById('flatImageWrapper');
-            if (!wrapper) return;
-
-            // Arrastar a imagem (Pan)
-            wrapper.addEventListener('mousedown', (e) => {
-                isPanning = true;
-                wrapper.style.cursor = 'grabbing';
-                startX = e.clientX - flatPanX;
-                startY = e.clientY - flatPanY;
-                e.preventDefault();
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isPanning) return;
-                flatPanX = e.clientX - startX;
-                flatPanY = e.clientY - startY;
-                updateFlatTransform();
-            });
-
-            window.addEventListener('mouseup', () => {
-                if (isPanning) {
-                    isPanning = false;
-                    wrapper.style.cursor = 'grab';
-                }
-            });
-
-            // Zoom com a roda do mouse (Scroll Wheel)
-            wrapper.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const delta = e.deltaY;
-                if (delta < 0) {
-                    zoomInFlat();
-                } else {
-                    zoomOutFlat();
-                }
-            }, { passive: false });
-        }
-
-        // Abre/Fecha o card de Análise Temporal flutuante
-        function toggleTemporalCard(forceOpen = null) {
-            const card = document.getElementById('temporalCard');
-            const toggleIcon = document.getElementById('temporalToggleIcon');
-            const isCurrentlyCollapsed = card.classList.contains('collapsed');
-            const shouldOpen = forceOpen !== null ? forceOpen : isCurrentlyCollapsed;
-
-            if (shouldOpen) {
-                card.classList.remove('collapsed');
-            } else {
-                card.classList.add('collapsed');
-            }
-        }
-
-        // Calcula e renderiza a distribuição temporal das imagens do GeoJSON
-        function updateTemporalAnalysis() {
-            if (!geojsonData || !geojsonData.features) return;
-
-            const dates = [];
-            const dateCounts = {};
-
-            // Extrai datas válidas das propriedades das features
-            geojsonData.features.forEach(f => {
-                const dateStr = f.properties.date;
-                if (dateStr) {
-                    dates.push(dateStr);
-                    dateCounts[dateStr] = (dateCounts[dateStr] || 0) + 1;
-                }
-            });
-
-            if (dates.length === 0) {
-                document.getElementById('temporalRange').innerText = 'Nenhuma data registrada';
-                document.getElementById('temporalList').innerHTML = '';
-                return;
-            }
-
-            // Ordena datas em ordem crescente
-            dates.sort();
-
-            const minDate = dates[0];
-            const maxDate = dates[dates.length - 1];
-
-            // Formata as datas para o padrão brasileiro DD/MM/AAAA
-            const formatBR = (dStr) => dStr.split('-').reverse().join('/');
-            
-            const rangeText = minDate === maxDate 
-                ? `Período: ${formatBR(minDate)}`
-                : `Período: ${formatBR(minDate)} a ${formatBR(maxDate)}`;
-            
-            document.getElementById('temporalRange').innerText = rangeText;
-
-            // Encontra a contagem máxima para dimensionar as barras de progresso
-            const maxCount = Math.max(...Object.values(dateCounts));
-
-            // Ordena as chaves de datas de forma crescente
-            const sortedUniqueDates = Object.keys(dateCounts).sort();
-
-            const listBody = document.getElementById('temporalList');
-            listBody.innerHTML = '';
-
-            sortedUniqueDates.forEach(date => {
-                const count = dateCounts[date];
-                const percentage = maxCount > 0 ? (count / maxCount) * 100 : 0;
-                
-                const item = document.createElement('div');
-                item.className = 'temporal-item';
-                item.innerHTML = `
-                    <div class="temporal-item-meta">
-                        <span class="temporal-date">${formatBR(date)}</span>
-                        <span class="temporal-count">${count} foto${count > 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="temporal-bar-bg">
-                        <div class="temporal-bar-fill" style="width: 0%;"></div>
-                    </div>
-                `;
-                
-                listBody.appendChild(item);
-                
-                // Animação das barras
-                setTimeout(() => {
-                    const fill = item.querySelector('.temporal-bar-fill');
-                    if (fill) fill.style.width = `${percentage}%`;
-                }, 100);
-            });
-        }
-
-        // Abre/Fecha o card de Filtro de Escolas
-        function toggleFilterCard(forceOpen = null) {
-            const card = document.getElementById('filterCard');
-            const toggleIcon = document.getElementById('filterToggleIcon');
-            const isCurrentlyCollapsed = card.classList.contains('collapsed');
-            const shouldOpen = forceOpen !== null ? forceOpen : isCurrentlyCollapsed;
-
-            if (shouldOpen) {
-                card.classList.remove('collapsed');
-            } else {
-                card.classList.add('collapsed');
-            }
-        }
-
-        // Filtra os marcadores no mapa e as linhas na tabela com base nos filtros marcados
-        function filterSchools() {
-            const showRibeirinha = document.getElementById('chkRibeirinha').checked;
-            const showRodoviaria = document.getElementById('chkRodoviaria').checked;
-
-            // Filtra os marcadores das escolas rurais (camada extra) no mapa
-            if (escolasRuraisData && escolasRuraisData.features) {
-                escolasRuraisData.features.forEach(feature => {
-                    const props = feature.properties;
-                    const marker = ruralMarkers[props.id];
-                    const sType = props.schoolType;
-
-                    const isVisible = (sType === 'ribeirinha' && showRibeirinha) || (sType === 'rodoviaria' && showRodoviaria);
-
-                    if (marker) {
-                        if (isVisible) {
-                            if (!map.hasLayer(marker)) {
-                                marker.addTo(map);
-                            }
-                        } else {
-                            if (map.hasLayer(marker)) {
-                                map.removeLayer(marker);
-                            }
-                        }
-                    }
-                });
-            }
-
-            // As fotos originais em geojsonData.features permanecem sempre visíveis e inalteradas na tabela e mapa
-            geojsonData.features.forEach(feature => {
-                const props = feature.properties;
-                const marker = markers[props.id];
-                const row = document.getElementById(`row-${props.id}`);
-                
-                if (marker && !map.hasLayer(marker)) {
-                    marker.addTo(map);
-                }
-                if (row) {
-                    row.style.display = '';
-                }
-            });
-
-            // O contador pointsCount exibe a quantidade total de fotos/imagens panorâmicas (como estava antes)
-            document.getElementById('pointsCount').innerText = geojsonData.features.length;
-        }
-
-        // Alterna a exibição do card de Monitoramento Climático
-        function toggleClimateCard(forceOpen = null) {
-            const card = document.getElementById('climateCard');
-            const toggleIcon = document.getElementById('climateToggleIcon');
-            const isCurrentlyCollapsed = card.classList.contains('collapsed');
-            const shouldOpen = forceOpen !== null ? forceOpen : isCurrentlyCollapsed;
-
-            if (shouldOpen) {
-                card.classList.remove('collapsed');
-            } else {
-                card.classList.add('collapsed');
-            }
-        }
 
         // Traduz códigos WMO meteorológicos para português
         function translateWeatherCode(code) {
@@ -2580,25 +753,25 @@
                         {
                             label: 'Estiagem 2023 (Crítica)',
                             data: new Array(12).fill(0),
-                            borderColor: '#f97316', // Laranja do alerta/estiagem
-                            borderWidth: 2,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2.5,
                             borderDash: [5, 5],
                             backgroundColor: 'rgba(249, 115, 22, 0.05)',
                             fill: true,
                             tension: 0.35,
-                            pointRadius: 2,
-                            pointHoverRadius: 4
+                            pointRadius: 3,
+                            pointHoverRadius: 5
                         },
                         {
                             label: `Ano Atual (${currentYear})`,
                             data: new Array(12).fill(null),
-                            borderColor: '#06b6d4', // Ciano de escolas/chuva
-                            borderWidth: 2.5,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 3,
                             backgroundColor: 'rgba(6, 182, 212, 0.1)',
                             fill: true,
                             tension: 0.35,
-                            pointRadius: 3,
-                            pointHoverRadius: 5
+                            pointRadius: 4,
+                            pointHoverRadius: 6
                         }
                     ]
                 },
@@ -2612,11 +785,12 @@
                             labels: {
                                 color: '#94a3b8',
                                 font: {
-                                    size: 9,
-                                    family: "'Inter', sans-serif"
+                                    size: 11,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
                                 },
-                                boxWidth: 10,
-                                boxHeight: 6
+                                boxWidth: 12,
+                                boxHeight: 8
                             }
                         },
                         tooltip: {
@@ -2626,13 +800,14 @@
                             bodyColor: '#cbd5e1',
                             borderColor: 'rgba(255, 255, 255, 0.1)',
                             borderWidth: 1,
+                            padding: 12,
                             titleFont: {
-                                size: 10,
-                                family: "'Inter', sans-serif",
+                                size: 12,
+                                family: "'Outfit', 'Inter', sans-serif",
                                 weight: '600'
                             },
                             bodyFont: {
-                                size: 10,
+                                size: 11,
                                 family: "'Inter', sans-serif"
                             },
                             callbacks: {
@@ -2644,7 +819,7 @@
                                     if (context.parsed.y !== null) {
                                         label += context.parsed.y.toFixed(1) + ' mm';
                                     } else {
-                                        label += 'Sem dados';
+                                        label += 'Sem dados ainda';
                                     }
                                     return label;
                                 }
@@ -2654,23 +829,25 @@
                     scales: {
                         x: {
                             grid: {
-                                display: false
+                                color: 'rgba(255, 255, 255, 0.03)'
                             },
                             ticks: {
-                                color: '#64748b',
+                                color: '#94a3b8',
                                 font: {
-                                    size: 8
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
                                 }
                             }
                         },
                         y: {
                             grid: {
-                                color: 'rgba(255, 255, 255, 0.04)'
+                                color: 'rgba(255, 255, 255, 0.05)'
                             },
                             ticks: {
-                                color: '#64748b',
+                                color: '#94a3b8',
                                 font: {
-                                    size: 8
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
                                 },
                                 callback: function(value) {
                                     return value + ' mm';
@@ -2736,7 +913,7 @@
                     alertBox.style.background = 'rgba(249, 115, 22, 0.12)';
                     alertBox.style.borderColor = 'rgba(249, 115, 22, 0.25)';
                     alertBox.querySelector('svg').style.color = 'var(--accent-orange)';
-                    alertText.innerHTML = `<b>Alerta de Estiagem:</b> A evaporação superou as chuvas em ${Math.abs(waterBalance).toFixed(1)}mm nos últimos 7 dias. Região sob forte estresse hídrico.`;
+                    alertText.innerHTML = `<b>Alerta de Estiagem:</b> A evaporação superou as chuvas em ${Math.abs(waterBalance).toFixed(1)}mm nos últimos 7 dias. Região sob estresse hídrico moderado.`;
                 } else {
                     alertBox.style.display = 'flex';
                     alertBox.style.background = 'rgba(6, 182, 212, 0.12)';
@@ -2757,17 +934,17 @@
                     .then(data2023 => {
                         const monthly2023 = new Array(12).fill(0);
                         data2023.daily.time.forEach((dateStr, idx) => {
-                            const month = new Date(dateStr + 'T00:00:00').getMonth(); // Evita fuso horário local
+                            const month = new Date(dateStr + 'T00:00:00').getMonth();
                             monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
                         });
                         
                         // Atualiza a série de 2023 no gráfico
-                        climateChart.data.datasets[0].data = monthly2023;
+                        climateChart.data.datasets[0].data = monthly2023.map(v => parseFloat(v.toFixed(1)));
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
 
-                // Busca dados do ano atual (2026/futuro)
+                // Busca dados do ano atual
                 fetch(urlCurrentYear)
                     .then(res => res.json())
                     .then(dataCurrent => {
@@ -2788,7 +965,7 @@
                         });
                         
                         // Atualiza a série do ano atual no gráfico
-                        climateChart.data.datasets[1].data = monthlyCurrent;
+                        climateChart.data.datasets[1].data = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
@@ -2800,18 +977,8 @@
         }
 
         window.addEventListener('load', () => {
-            initMap();
-            loadGeoJSON();
-            initFlatViewerEvents();
             fetchClimateData();
         });
     </script>
-    <!-- Toast de Notificação Premium -->
-    <div class="toast-notification" id="toastNotification">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-green); vertical-align: middle; margin-right: 4px;">
-            <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-        <span id="toastMessage">Dados salvos com sucesso!</span>
-    </div>
 </body>
 </html>
