@@ -17,8 +17,7 @@
         "image360Url": "media/uploads/em_sao_sebastiao_ii_DJI_0947.JPG",
         "category": "Aérea",
         "viewType": "360",
-        "description": "Escola Municipal São Sebastião II. O acesso ao local é realizado por via fluvial e terrestre.",
-        "schoolType": "ribeirinha"
+        "description": "Escola Municipal São Sebastião II. O acesso ao local é realizado por via fluvial e terrestre."
       }
     },
     {
@@ -72,8 +71,7 @@
         "date": "2023-10-06",
         "image360Url": "media/uploads/em_paulo_freire_DJI_0951.JPG",
         "category": "Aérea",
-        "viewType": "flat",
-        "schoolType": "rodoviaria"
+        "viewType": "flat"
       }
     },
     {
@@ -504,7 +502,7 @@
         "title": "E.M. Estrela da Manhã - DJI_0900",
         "date": "2023-10-03",
         "image360Url": "media/uploads/em_estrela_da_manha_DJI_0900.JPG",
-        "category": "Terrestre",
+        "category": "Aérea",
         "viewType": "360",
         "description": "",
         "hotspotPitch": -20,
@@ -561,7 +559,7 @@
         "title": "E.M. Raimunda Brasil - DJI_0891",
         "date": "2023-10-03",
         "image360Url": "media/uploads/em_raimunda_brasil_DJI_0891.JPG",
-        "category": "Terrestre",
+        "category": "Aérea",
         "viewType": "360",
         "description": "",
         "hotspotPitch": -20,
@@ -1356,6 +1354,618 @@
         "title": "E.M São Lázaro - DJI_0435",
         "date": "2023-10-19",
         "image360Url": "media/uploads/em_sao_lazaro_DJI_0435.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.48376288888889,
+          -2.820170944444444
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_sebastiao_i_dji_0180",
+        "title": "E. M. São Sebastião I - DJI_0180",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_sao_sebastiao_i_DJI_0180.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.48376252777778,
+          -2.820167361111111
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_sebastiao_i_dji_0181",
+        "title": "E. M. São Sebastião I - DJI_0181",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_sao_sebastiao_i_DJI_0181.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.48526463888889,
+          -2.817263111111111
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_sebastiao_i_dji_0186",
+        "title": "E. M. São Sebastião I - DJI_0186",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_sao_sebastiao_i_DJI_0186.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.484780666666666,
+          -2.818416194444444
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_sebastiao_i_dji_0188",
+        "title": "E. M. São Sebastião I - DJI_0188",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_sao_sebastiao_i_DJI_0188.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8098585,
+          -3.035133194444444
+        ]
+      },
+      "properties": {
+        "id": "e_m_francisco_coelho_dji_0118",
+        "title": "E. M. Francisco Coelho - DJI_0118",
+        "date": "2023-10-13",
+        "image360Url": "media/uploads/e_m_francisco_coelho_DJI_0118.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.809825305555556,
+          -3.0351489722222222
+        ]
+      },
+      "properties": {
+        "id": "e_m_francisco_coelho_dji_0119",
+        "title": "E. M. Francisco Coelho - DJI_0119",
+        "date": "2023-10-13",
+        "image360Url": "media/uploads/e_m_francisco_coelho_DJI_0119.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.810768277777775,
+          -3.0365276666666667
+        ]
+      },
+      "properties": {
+        "id": "e_m_francisco_coelho_dji_0122",
+        "title": "E. M. Francisco Coelho - DJI_0122",
+        "date": "2023-10-13",
+        "image360Url": "media/uploads/e_m_francisco_coelho_DJI_0122.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.810768555555555,
+          -3.036528888888889
+        ]
+      },
+      "properties": {
+        "id": "e_m_francisco_coelho_dji_0123",
+        "title": "E. M. Francisco Coelho - DJI_0123",
+        "date": "2023-10-13",
+        "image360Url": "media/uploads/e_m_francisco_coelho_DJI_0123.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.82366069444445,
+          -3.0296043888888886
+        ]
+      },
+      "properties": {
+        "id": "e_m_francisco_coelho_dji_0125",
+        "title": "E. M. Francisco Coelho - DJI_0125",
+        "date": "2023-10-13",
+        "image360Url": "media/uploads/e_m_francisco_coelho_DJI_0125.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.50352211111111,
+          -2.8252396666666666
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_kanata_t-yuna_dji_0191",
+        "title": "E. M. Indígena Kanata T-Yuna - DJI_0191",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_kanata_t-yuna_DJI_0191.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.50351097222222,
+          -2.8252101944444443
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_kanata_t-yuna_dji_0192",
+        "title": "E. M. Indígena Kanata T-Yuna - DJI_0192",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_kanata_t-yuna_DJI_0192.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.50331275,
+          -2.8245426111111107
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_kanata_t-yuna_dji_0193",
+        "title": "E. M. Indígena Kanata T-Yuna - DJI_0193",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_kanata_t-yuna_DJI_0193.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.50472613888889,
+          -2.8238851111111107
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_kanata_t-yuna_dji_0197",
+        "title": "E. M. Indígena Kanata T-Yuna - DJI_0197",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_kanata_t-yuna_DJI_0197.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.431269416666666,
+          -2.7470246944444443
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0163",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0163",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0163.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.43281344444444,
+          -2.749920611111111
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0166",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0166",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0166.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.43335505555555,
+          -2.7508488888888887
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0168",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0168",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0168.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.431574777777776,
+          -2.7513850833333335
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0171",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0171",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0171.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.43148297222222,
+          -2.7501024166666665
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0172",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0172",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0172.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.431459527777776,
+          -2.749776361111111
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0173",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0173",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0173.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.431258,
+          -2.7469597222222224
+        ]
+      },
+      "properties": {
+        "id": "e_m_indigena_puranga_pisasu_dji_0175",
+        "title": "E. M. Indígena Puranga Pisasu - DJI_0175",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_indigena_puranga_pisasu_DJI_0175.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.45431636111111,
+          -2.7890860277777776
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0150",
+        "title": "E. M. Rui Barbosa - DJI_0150",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0150.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.45431669444445,
+          -2.7890865833333334
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0151",
+        "title": "E. M. Rui Barbosa - DJI_0151",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0151.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.44919758333333,
+          -2.788326333333333
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0154",
+        "title": "E. M. Rui Barbosa - DJI_0154",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0154.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.448996027777774,
+          -2.7871555
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0155",
+        "title": "E. M. Rui Barbosa - DJI_0155",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0155.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.44900136111111,
+          -2.787155888888889
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0156",
+        "title": "E. M. Rui Barbosa - DJI_0156",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0156.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -60.45329297222222,
+          -2.7878033055555553
+        ]
+      },
+      "properties": {
+        "id": "e_m_rui_barbosa_dji_0161",
+        "title": "E. M. Rui Barbosa - DJI_0161",
+        "date": "2023-10-11",
+        "image360Url": "media/uploads/e_m_rui_barbosa_DJI_0161.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.81878691666667,
+          -3.037362472222222
+        ]
+      },
+      "properties": {
+        "id": "e_m_santa_luzia_dji_0107",
+        "title": "E. M. Santa Luzia - DJI_0107",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_santa_luzia_DJI_0107.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.81944063888889,
+          -3.0343234722222223
+        ]
+      },
+      "properties": {
+        "id": "e_m_santa_luzia_dji_0111",
+        "title": "E. M. Santa Luzia - DJI_0111",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_santa_luzia_DJI_0111.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.819437722222226,
+          -3.0343228055555556
+        ]
+      },
+      "properties": {
+        "id": "e_m_santa_luzia_dji_0112",
+        "title": "E. M. Santa Luzia - DJI_0112",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_santa_luzia_DJI_0112.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.82603255555556,
+          -2.992864638888889
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_luiz_gonzaga_dji_0134",
+        "title": "E. M. São Luiz Gonzaga - DJI_0134",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_sao_luiz_gonzaga_DJI_0134.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.822388333333336,
+          -2.996717972222222
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_luiz_gonzaga_dji_0136",
+        "title": "E. M. São Luiz Gonzaga - DJI_0136",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_sao_luiz_gonzaga_DJI_0136.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.824839888888896,
+          -2.9966148333333336
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_luiz_gonzaga_dji_0138",
+        "title": "E. M. São Luiz Gonzaga - DJI_0138",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_sao_luiz_gonzaga_DJI_0138.JPG",
+        "category": "Aérea",
+        "viewType": "flat"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.82484433333334,
+          -2.9966140833333332
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_luiz_gonzaga_dji_0139",
+        "title": "E. M. São Luiz Gonzaga - DJI_0139",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_sao_luiz_gonzaga_DJI_0139.JPG",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.82280613888889,
+          -3.0011094722222222
+        ]
+      },
+      "properties": {
+        "id": "e_m_sao_luiz_gonzaga_dji_0145",
+        "title": "E. M. São Luiz Gonzaga - DJI_0145",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/e_m_sao_luiz_gonzaga_DJI_0145.JPG",
         "category": "Aérea",
         "viewType": "flat"
       }
