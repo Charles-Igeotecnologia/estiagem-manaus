@@ -1129,6 +1129,20 @@
             opacity: 0.8;
         }
 
+        .climate-chart-container {
+            width: 100%;
+            height: 185px;
+            margin-top: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         /* Ajuste do editor para descrições */
         textarea.editor-input {
             resize: none;
@@ -1509,6 +1523,11 @@
                     </svg>
                     <span id="climateAlertText">Alerta de estiagem severa na região.</span>
                 </div>
+
+                <!-- Gráfico Comparativo Mensal (Janeiro a Dezembro) -->
+                <div class="climate-chart-container">
+                    <canvas id="climateComparisonChart"></canvas>
+                </div>
                 
                 <div class="climate-footer">
                     Dados atualizados em tempo real via Open-Meteo para a região de Manaus.
@@ -1652,6 +1671,9 @@
     <!-- Pannellum 360 Viewer JS -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
+    <!-- Chart.js para o Dashboard Climático -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         let map;
         let pViewer = null;
@@ -1659,6 +1681,7 @@
         let markers = {};
         let escolasRuraisData = null;
         let ruralMarkers = {};
+        let climateChart = null;
         let activeId = null;
         
         // Variáveis globais para o Modo Edição
@@ -2544,18 +2567,140 @@
             return "Nublado";
         }
 
+        // Inicializa o gráfico de linha comparativo mensal com Chart.js
+        function initClimateChart() {
+            const ctx = document.getElementById('climateComparisonChart').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            climateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Crítica)',
+                            data: new Array(12).fill(0),
+                            borderColor: '#f97316', // Laranja do alerta/estiagem
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: new Array(12).fill(null),
+                            borderColor: '#06b6d4', // Ciano de escolas/chuva
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(1) + ' mm';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' mm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         // Busca dados climáticos em tempo real de Manaus/AM via Open-Meteo
         async function fetchClimateData() {
             const lat = -3.119027;
             const lon = -60.021731;
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
+            
+            // 1. URL do Clima atual e histórico de curto prazo (7 dias)
+            const urlCurrent = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
 
             try {
-                const response = await fetch(url);
+                // Instancia o gráfico se ainda não foi feito
+                if (!climateChart) {
+                    initClimateChart();
+                }
+
+                const response = await fetch(urlCurrent);
                 if (!response.ok) throw new Error("Erro de resposta da API de Clima");
                 const data = await response.json();
 
-                // 1. Clima atual
+                // Atualiza dados atuais de temperatura, umidade, etc.
                 const temp = data.current.temperature_2m;
                 const humidity = data.current.relative_humidity_2m;
                 const code = data.current.weather_code;
@@ -2564,7 +2709,6 @@
                 document.getElementById('climateHumidity').innerText = `${humidity}%`;
                 document.getElementById('climateCond').innerText = translateWeatherCode(code);
 
-                // 2. Histórico recente de 7 dias (past_days=7)
                 const precipArray = data.daily.precipitation_sum.slice(0, 7);
                 const evapoArray = data.daily.et0_fao_evapotranspiration.slice(0, 7);
 
@@ -2578,14 +2722,12 @@
                 const balanceVal = document.getElementById('climateBalance');
                 balanceVal.innerText = `${waterBalance.toFixed(1)} mm`;
 
-                // Colore de acordo com a severidade do déficit hídrico
                 if (waterBalance < 0) {
                     balanceVal.style.color = 'var(--accent-orange)';
                 } else {
                     balanceVal.style.color = 'var(--accent-cyan)';
                 }
 
-                // 3. Alertas e Análise Ambiental da estiagem
                 const alertBox = document.getElementById('climateAlertBox');
                 const alertText = document.getElementById('climateAlertText');
 
@@ -2602,6 +2744,54 @@
                     alertBox.querySelector('svg').style.color = 'var(--accent-cyan)';
                     alertText.innerHTML = `<b>Equilíbrio Hídrico:</b> Nível aceitável de umidade acumulada na semana (+${waterBalance.toFixed(1)}mm).`;
                 }
+
+                // 2. BUSCA DE DADOS ANUAIS COMPARATIVOS
+                const currentYear = new Date().getFullYear();
+                
+                const url2023 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2023-01-01&end_date=2023-12-31&daily=precipitation_sum&timezone=America/Manaus`;
+                const urlCurrentYear = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${currentYear}-12-31&daily=precipitation_sum&timezone=America/Manaus`;
+
+                // Busca dados históricos de 2023
+                fetch(url2023)
+                    .then(res => res.json())
+                    .then(data2023 => {
+                        const monthly2023 = new Array(12).fill(0);
+                        data2023.daily.time.forEach((dateStr, idx) => {
+                            const month = new Date(dateStr + 'T00:00:00').getMonth(); // Evita fuso horário local
+                            monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
+                        });
+                        
+                        // Atualiza a série de 2023 no gráfico
+                        climateChart.data.datasets[0].data = monthly2023;
+                        climateChart.update();
+                    })
+                    .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
+
+                // Busca dados do ano atual (2026/futuro)
+                fetch(urlCurrentYear)
+                    .then(res => res.json())
+                    .then(dataCurrent => {
+                        const monthlyCurrent = new Array(12).fill(null);
+                        const today = new Date();
+                        
+                        dataCurrent.daily.time.forEach((dateStr, idx) => {
+                            const date = new Date(dateStr + 'T00:00:00');
+                            const month = date.getMonth();
+                            
+                            // Apenas soma se for no passado ou mês atual
+                            if (date <= today) {
+                                if (monthlyCurrent[month] === null) {
+                                    monthlyCurrent[month] = 0;
+                                }
+                                monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
+                            }
+                        });
+                        
+                        // Atualiza a série do ano atual no gráfico
+                        climateChart.data.datasets[1].data = monthlyCurrent;
+                        climateChart.update();
+                    })
+                    .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
 
             } catch (error) {
                 console.error("Falha ao buscar dados de clima:", error);
