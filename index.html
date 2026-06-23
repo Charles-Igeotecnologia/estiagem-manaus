@@ -564,6 +564,61 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Estilos da Seção de Equipe */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .team-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            transition: var(--transition);
+        }
+        .team-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan) !important;
+            box-shadow: var(--shadow-premium) !important;
+        }
+        .team-card.highlighted {
+            border-color: rgba(16, 185, 129, 0.25) !important;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(16, 185, 129, 0.02) 100%);
+        }
+        .team-card.highlighted:hover {
+            border-color: var(--accent-green) !important;
+        }
+        .team-badge {
+            font-size: 0.68rem;
+            font-weight: 500;
+            padding: 6px 10px;
+            border-radius: 6px;
+            line-height: 1.3;
+            display: block;
+        }
+        .badge-eq1 {
+            background: rgba(37, 99, 235, 0.08);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.15);
+        }
+        .badge-eq2 {
+            background: rgba(6, 182, 212, 0.08);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+        .badge-eq3 {
+            background: rgba(16, 185, 129, 0.08);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
     </style>
 </head>
 <body>
@@ -775,12 +830,160 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+
+    <!-- Seção Equipe Técnica -->
+    <section id="equipe" class="team-section" style="display: flex; flex-direction: column; gap: 28px; margin-top: 48px;">
+        <div class="section-header">
+            <div class="section-subtitle">Corpo Técnico</div>
+            <h2 class="section-title">Profissionais e Especialistas do Projeto</h2>
+        </div>
+
+        <div class="team-grid">
+            <!-- Charles Silva de Araújo -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(249, 115, 22, 0.1); border: 1px solid var(--accent-orange); display: flex; align-items: center; justify-content: center; color: var(--accent-orange); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        CA
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Charles Silva de Araújo</h4>
+                        <span style="font-size: 0.7rem; color: var(--accent-orange); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Coordenador Geral / Gerência</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                    <span class="team-badge badge-eq2">Equipe 02: SIG e Banco de Dados Geográficos</span>
+                    <span class="team-badge badge-eq3">Equipe 03: Análise Espacial, Geo BI e Geo Portais</span>
+                </div>
+            </div>
+
+            <!-- Caio Ronan Lisboa Pereira -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); border: 1px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        CR
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Caio Ronan Lisboa Pereira</h4>
+                        <span style="font-size: 0.7rem; color: var(--accent-cyan); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Especialista SIG & Cartografia</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                    <span class="team-badge badge-eq2">Equipe 02: SIG e Banco de Dados Geográficos</span>
+                </div>
+            </div>
+
+            <!-- Humberto Marques Cruz -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        HC
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Humberto Marques Cruz</h4>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Membro Técnico</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                    <span class="team-badge badge-eq2">Equipe 02: SIG e Banco de Dados Geográficos</span>
+                </div>
+            </div>
+
+            <!-- Gilmar Seixas da Silva -->
+            <div class="team-card highlighted">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); display: flex; align-items: center; justify-content: center; color: var(--accent-green); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        GS
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Gilmar Seixas da Silva</h4>
+                            <span style="font-size: 0.55rem; background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 1px 5px; border-radius: 3px; font-weight: 600;">Destaque</span>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Membro Técnico</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                    <span class="team-badge badge-eq3">Equipe 03: Análise Espacial, Geo BI e Geo Portais</span>
+                </div>
+            </div>
+
+            <!-- Norberto Augusto Vieira Pereira -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        NP
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Norberto A. Vieira Pereira</h4>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Membro Técnico</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                </div>
+            </div>
+
+            <!-- Denis da Silva Bastos -->
+            <div class="team-card highlighted">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); display: flex; align-items: center; justify-content: center; color: var(--accent-green); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        DB
+                    </div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Denis da Silva Bastos</h4>
+                            <span style="font-size: 0.55rem; background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 1px 5px; border-radius: 3px; font-weight: 600;">Destaque</span>
+                        </div>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Membro Técnico</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                </div>
+            </div>
+
+            <!-- Hildebrando Silva Rodrigues -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        HR
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Hildebrando S. Rodrigues</h4>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Membro Técnico</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                </div>
+            </div>
+
+            <!-- Janemar Hounsell Cruz -->
+            <div class="team-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;">
+                        JC
+                    </div>
+                    <div>
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 700; color: #ffffff;">Janemar Hounsell Cruz</h4>
+                        <span style="font-size: 0.7rem; color: var(--text-secondary); font-weight: 500;">Apoio Administrativo / SIGED</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <span class="team-badge badge-eq1">Equipe 01: Georreferenciamento, Aerofotogrametria e Cartografia</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
     <footer>
         <p>© 2026 IGeotecnologia. Desenvolvido para fins de monitoramento e pesquisa geográfica na Amazônia.</p>
-        <p style="margin-top: 6px;"><a href="mapa.html">Acesse o Web GIS completo</a> para visualizar as imagens panorâmicas 360°.</p>
+        <p style="margin-top: 6px;">Visualização de <a href="mapa.html">Web GIS interativo</a>. Acesse o portal de <a href="https://geoprocessamento.org/semed-estiagem-2023" target="_blank">Vídeos Históricos</a>.</p>
     </footer>
 
     <script>
