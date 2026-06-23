@@ -975,6 +975,160 @@
             transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
+        /* 10. Card de Monitoramento Climático e Estiagem */
+        .climate-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+
+        .climate-header {
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .climate-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .climate-toggle-icon {
+            transition: var(--transition);
+            transform: rotate(0deg);
+        }
+
+        .climate-body {
+            border-top: 1px solid var(--border-color);
+            padding: 12px 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .climate-card.collapsed .climate-body {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top-color: transparent;
+            overflow: hidden;
+        }
+
+        .climate-card.collapsed .climate-toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .climate-current {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .climate-temp-section {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+
+        .climate-temp-val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+            font-family: 'Outfit', 'Inter', sans-serif;
+        }
+
+        .climate-temp-unit {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent-cyan);
+        }
+
+        .climate-condition {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .climate-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .climate-stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .climate-stat-label {
+            font-size: 0.58rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .climate-stat-value {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 2px 0;
+        }
+
+        .climate-stat-desc {
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+        }
+
+        .climate-alert {
+            display: flex;
+            align-items: flex-start;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            font-size: 0.68rem;
+            color: #ffedd5;
+            line-height: 1.35;
+        }
+
+        .climate-footer {
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.3;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
         /* Ajuste do editor para descrições */
         textarea.editor-input {
             resize: none;
@@ -1297,6 +1451,68 @@
                     </div>
                     <input type="checkbox" id="chkRodoviaria" class="filter-checkbox checkbox-rodoviaria" checked onchange="filterSchools()">
                 </label>
+            </div>
+        </div>
+
+        <!-- Card de Monitoramento Climático (Open-Meteo) -->
+        <div class="climate-card collapsed" id="climateCard">
+            <div class="climate-header" onclick="toggleClimateCard()">
+                <div class="climate-title">
+                    <!-- Ícone de Clima (Nuvem com Sol) em SVG -->
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-secondary); margin-right: 4px; vertical-align: middle;">
+                        <path d="M17.5 19A3.5 3.5 0 0 0 21 15.5c0-2.79-2.54-4.5-5-4.5-.42 0-.83.04-1.24.12A7 7 0 1 0 3 13.5A3.5 3.5 0 0 0 6.5 17h11"></path>
+                    </svg>
+                    Painel de Clima & Estiagem
+                </div>
+                <div class="drawer-toggle-btn" style="padding: 0;">
+                    <svg class="climate-toggle-icon" id="climateToggleIcon" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="climate-body" id="climateBody">
+                <div class="climate-current">
+                    <div class="climate-temp-section">
+                        <span class="climate-temp-val" id="climateTempVal">--</span><span class="climate-temp-unit">°C</span>
+                    </div>
+                    <div class="climate-condition" id="climateCond">Carregando dados...</div>
+                </div>
+                
+                <div class="climate-grid">
+                    <div class="climate-stat-item">
+                        <div class="climate-stat-label">Chuva Recente</div>
+                        <div class="climate-stat-value" id="climatePrecip">-- mm</div>
+                        <div class="climate-stat-desc">Últimos 7 dias</div>
+                    </div>
+                    <div class="climate-stat-item">
+                        <div class="climate-stat-label">Umidade do Ar</div>
+                        <div class="climate-stat-value" id="climateHumidity">--%</div>
+                        <div class="climate-stat-desc">Umidade atual</div>
+                    </div>
+                    <div class="climate-stat-item">
+                        <div class="climate-stat-label">Evapotranspiração</div>
+                        <div class="climate-stat-value" id="climateEvapo">-- mm</div>
+                        <div class="climate-stat-desc">Perda de umidade (7d)</div>
+                    </div>
+                    <div class="climate-stat-item">
+                        <div class="climate-stat-label">Balanço de Água</div>
+                        <div class="climate-stat-value" id="climateBalance">-- mm</div>
+                        <div class="climate-stat-desc">Chuva - Evapo (7d)</div>
+                    </div>
+                </div>
+
+                <div class="climate-alert" id="climateAlertBox" style="display: none;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; flex-shrink: 0; color: var(--accent-orange);">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span id="climateAlertText">Alerta de estiagem severa na região.</span>
+                </div>
+                
+                <div class="climate-footer">
+                    Dados atualizados em tempo real via Open-Meteo para a região de Manaus.
+                </div>
             </div>
         </div>
     </div>
@@ -2302,10 +2518,102 @@
             document.getElementById('pointsCount').innerText = geojsonData.features.length;
         }
 
+        // Alterna a exibição do card de Monitoramento Climático
+        function toggleClimateCard(forceOpen = null) {
+            const card = document.getElementById('climateCard');
+            const toggleIcon = document.getElementById('climateToggleIcon');
+            const isCurrentlyCollapsed = card.classList.contains('collapsed');
+            const shouldOpen = forceOpen !== null ? forceOpen : isCurrentlyCollapsed;
+
+            if (shouldOpen) {
+                card.classList.remove('collapsed');
+            } else {
+                card.classList.add('collapsed');
+            }
+        }
+
+        // Traduz códigos WMO meteorológicos para português
+        function translateWeatherCode(code) {
+            if (code === 0) return "Céu limpo";
+            if ([1, 2, 3].includes(code)) return "Parcialmente nublado";
+            if ([45, 48].includes(code)) return "Nevoeiro";
+            if ([51, 53, 55].includes(code)) return "Chuvisco leve";
+            if ([61, 63, 65].includes(code)) return "Chuva moderada a forte";
+            if ([80, 81, 82].includes(code)) return "Pancadas de chuva";
+            if ([95, 96, 99].includes(code)) return "Tempestade com trovões";
+            return "Nublado";
+        }
+
+        // Busca dados climáticos em tempo real de Manaus/AM via Open-Meteo
+        async function fetchClimateData() {
+            const lat = -3.119027;
+            const lon = -60.021731;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Erro de resposta da API de Clima");
+                const data = await response.json();
+
+                // 1. Clima atual
+                const temp = data.current.temperature_2m;
+                const humidity = data.current.relative_humidity_2m;
+                const code = data.current.weather_code;
+
+                document.getElementById('climateTempVal').innerText = temp.toFixed(1);
+                document.getElementById('climateHumidity').innerText = `${humidity}%`;
+                document.getElementById('climateCond').innerText = translateWeatherCode(code);
+
+                // 2. Histórico recente de 7 dias (past_days=7)
+                const precipArray = data.daily.precipitation_sum.slice(0, 7);
+                const evapoArray = data.daily.et0_fao_evapotranspiration.slice(0, 7);
+
+                const totalPrecip = precipArray.reduce((a, b) => a + (b || 0), 0);
+                const totalEvapo = evapoArray.reduce((a, b) => a + (b || 0), 0);
+                const waterBalance = totalPrecip - totalEvapo;
+
+                document.getElementById('climatePrecip').innerText = `${totalPrecip.toFixed(1)} mm`;
+                document.getElementById('climateEvapo').innerText = `${totalEvapo.toFixed(1)} mm`;
+                
+                const balanceVal = document.getElementById('climateBalance');
+                balanceVal.innerText = `${waterBalance.toFixed(1)} mm`;
+
+                // Colore de acordo com a severidade do déficit hídrico
+                if (waterBalance < 0) {
+                    balanceVal.style.color = 'var(--accent-orange)';
+                } else {
+                    balanceVal.style.color = 'var(--accent-cyan)';
+                }
+
+                // 3. Alertas e Análise Ambiental da estiagem
+                const alertBox = document.getElementById('climateAlertBox');
+                const alertText = document.getElementById('climateAlertText');
+
+                if (totalPrecip < 15 || waterBalance < -15) {
+                    alertBox.style.display = 'flex';
+                    alertBox.style.background = 'rgba(249, 115, 22, 0.12)';
+                    alertBox.style.borderColor = 'rgba(249, 115, 22, 0.25)';
+                    alertBox.querySelector('svg').style.color = 'var(--accent-orange)';
+                    alertText.innerHTML = `<b>Alerta de Estiagem:</b> A evaporação superou as chuvas em ${Math.abs(waterBalance).toFixed(1)}mm nos últimos 7 dias. Região sob forte estresse hídrico.`;
+                } else {
+                    alertBox.style.display = 'flex';
+                    alertBox.style.background = 'rgba(6, 182, 212, 0.12)';
+                    alertBox.style.borderColor = 'rgba(6, 182, 212, 0.25)';
+                    alertBox.querySelector('svg').style.color = 'var(--accent-cyan)';
+                    alertText.innerHTML = `<b>Equilíbrio Hídrico:</b> Nível aceitável de umidade acumulada na semana (+${waterBalance.toFixed(1)}mm).`;
+                }
+
+            } catch (error) {
+                console.error("Falha ao buscar dados de clima:", error);
+                document.getElementById('climateCond').innerText = "Dados meteorológicos temporariamente indisponíveis";
+            }
+        }
+
         window.addEventListener('load', () => {
             initMap();
             loadGeoJSON();
             initFlatViewerEvents();
+            fetchClimateData();
         });
     </script>
     <!-- Toast de Notificação Premium -->
