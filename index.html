@@ -273,7 +273,7 @@
             transform: translateX(4px);
         }
 
-        /* Imagem Hero Conceitual */
+        /* Imagem Hero Conceitual e Carrossel */
         .hero-image-wrapper {
             position: relative;
             width: 100%;
@@ -283,32 +283,54 @@
             overflow: hidden;
             box-shadow: var(--shadow-premium);
         }
+        
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         .hero-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: var(--transition);
+            transition: transform 6s ease-out;
         }
-
-        .hero-image-wrapper:hover .hero-image {
-            transform: scale(1.03);
+        
+        .carousel-slide.active .hero-image {
+            transform: scale(1.04); /* Efeito suave Ken Burns */
         }
 
         .hero-image-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(6, 9, 19, 0.8) 0%, rgba(6, 9, 19, 0) 50%);
+            background: linear-gradient(to top, rgba(6, 9, 19, 0.85) 0%, rgba(6, 9, 19, 0.2) 60%, rgba(6, 9, 19, 0) 100%);
             pointer-events: none;
+            z-index: 2;
         }
 
         .hero-image-caption {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            right: 20px;
+            right: 80px; /* Dá espaço para os dots no canto direito */
             font-size: 0.72rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(8px);
             padding: 8px 12px;
@@ -317,6 +339,64 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            z-index: 3;
+        }
+
+        /* Controles de Setas */
+        .carousel-control-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 4;
+        }
+        .hero-image-wrapper:hover .carousel-control-btn {
+            opacity: 1;
+        }
+        .carousel-control-btn:hover {
+            background: var(--accent-cyan);
+            color: #060913;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+        }
+        .carousel-control-btn.prev { left: 16px; }
+        .carousel-control-btn.next { right: 16px; }
+
+        /* Indicadores (Dots) */
+        .carousel-dots {
+            position: absolute;
+            bottom: 22px;
+            right: 20px;
+            display: flex;
+            gap: 6px;
+            z-index: 4;
+        }
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0;
+        }
+        .carousel-dot.active {
+            background: var(--accent-cyan);
+            transform: scale(1.25);
+            box-shadow: 0 0 8px var(--accent-cyan);
         }
 
         /* Seção Dashboard */
@@ -991,15 +1071,55 @@
             </div>
 
             <div class="hero-image-wrapper">
-                <img src="media/drought_rio_negro.png" alt="Seca histórica do Rio Negro em Manaus" class="hero-image">
-                <div class="hero-image-overlay"></div>
-                <div class="hero-image-caption">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange); flex-shrink: 0;">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="12" y1="16" x2="12" y2="12"></line>
-                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                    </svg>
-                    <span>Registro conceitual da severa seca de 2023: leito exposto, barcos encalhados e impacto profundo na bacia amazônica.</span>
+                <div class="carousel-container">
+                    <!-- Slides do Carrossel (Crossfade) -->
+                    <div class="carousel-slide active">
+                        <img src="media/drought_rio_negro.png" alt="Seca histórica do Rio Negro em Manaus" class="hero-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="media/destaques/dji_0136.jpg" alt="Estiagem crítica em Manaus" class="hero-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="media/destaques/dji_0910.jpg" alt="Impacto severo nas escolas" class="hero-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="media/destaques/dji_0921.jpg" alt="Bancos de areia no Rio Negro" class="hero-image">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="media/destaques/dji_0923.jpg" alt="Diagnóstico geográfico" class="hero-image">
+                    </div>
+
+                    <!-- Controles do Carrossel -->
+                    <button class="carousel-control-btn prev" onclick="changeHeroSlide(-1)" title="Anterior">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="carousel-control-btn next" onclick="changeHeroSlide(1)" title="Próximo">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
+
+                    <!-- Indicadores (Dots) -->
+                    <div class="carousel-dots">
+                        <button class="carousel-dot active" onclick="setHeroSlide(0)"></button>
+                        <button class="carousel-dot" onclick="setHeroSlide(1)"></button>
+                        <button class="carousel-dot" onclick="setHeroSlide(2)"></button>
+                        <button class="carousel-dot" onclick="setHeroSlide(3)"></button>
+                        <button class="carousel-dot" onclick="setHeroSlide(4)"></button>
+                    </div>
+
+                    <div class="hero-image-overlay"></div>
+                    
+                    <div class="hero-image-caption">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange); flex-shrink: 0;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span style="transition: opacity 0.2s ease-in-out;">Registro conceitual da severa seca de 2023: leito exposto, barcos encalhados e impacto profundo na bacia amazônica.</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1898,6 +2018,88 @@
             }, 300);
         }
 
+        // Dados do carrossel da seção Hero
+        const carouselData = [
+            { src: "media/drought_rio_negro.png", caption: "Registro conceitual da severa seca de 2023: leito exposto, barcos encalhados e impacto profundo na bacia amazônica." },
+            { src: "media/destaques/dji_0136.jpg", caption: "Estiagem crítica 2023: leito do rio completamente exposto e comunidades isoladas pelo recuo das águas." },
+            { src: "media/destaques/dji_0910.jpg", caption: "Monitoramento aéreo: drone registrando o impacto severo da seca no transporte e abastecimento das escolas rurais." },
+            { src: "media/destaques/dji_0921.jpg", caption: "Crise hídrica na Amazônia: bancos de areia e vegetação expostos onde antes navegavam embarcações escolares." },
+            { src: "media/destaques/dji_0923.jpg", caption: "Estudo e diagnóstico geográfico: mapeamento fotográfico aéreo das áreas mais impactadas no município de Manaus." }
+        ];
+
+        let currentHeroSlide = 0;
+        let heroCarouselInterval = null;
+
+        function initHeroCarousel() {
+            startHeroAutoplay();
+        }
+
+        function showHeroSlide(index) {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.carousel-dot');
+            const captionSpan = document.querySelector('.hero-image-caption span');
+            
+            if (slides.length === 0) return;
+            
+            if (index >= slides.length) {
+                currentHeroSlide = 0;
+            } else if (index < 0) {
+                currentHeroSlide = slides.length - 1;
+            } else {
+                currentHeroSlide = index;
+            }
+            
+            slides.forEach((slide, idx) => {
+                if (idx === currentHeroSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            dots.forEach((dot, idx) => {
+                if (idx === currentHeroSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            if (captionSpan && carouselData[currentHeroSlide]) {
+                captionSpan.style.opacity = '0';
+                setTimeout(() => {
+                    captionSpan.innerText = carouselData[currentHeroSlide].caption;
+                    captionSpan.style.opacity = '1';
+                }, 200);
+            }
+        }
+
+        function changeHeroSlide(direction) {
+            stopHeroAutoplay();
+            showHeroSlide(currentHeroSlide + direction);
+            startHeroAutoplay();
+        }
+
+        function setHeroSlide(index) {
+            stopHeroAutoplay();
+            showHeroSlide(index);
+            startHeroAutoplay();
+        }
+
+        function startHeroAutoplay() {
+            if (heroCarouselInterval) clearInterval(heroCarouselInterval);
+            heroCarouselInterval = setInterval(() => {
+                showHeroSlide(currentHeroSlide + 1);
+            }, 6000);
+        }
+
+        function stopHeroAutoplay() {
+            if (heroCarouselInterval) {
+                clearInterval(heroCarouselInterval);
+                heroCarouselInterval = null;
+            }
+        }
+
         // Fecha o modal ao clicar no fundo desfocado (overlay) ou ao pressionar Escape
         document.addEventListener('DOMContentLoaded', () => {
             const overlay = document.getElementById('compareModal');
@@ -1920,6 +2122,7 @@
             updateClimateDate();
             fetchClimateData();
             initRiverLevelChart();
+            initHeroCarousel();
         });
     </script>
 
