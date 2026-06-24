@@ -99,6 +99,31 @@
             font-family: 'Inter', sans-serif;
         }
 
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .logo-subtext {
+            font-size: 0.62rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            opacity: 0.8;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .logo-subtext {
+                white-space: normal;
+                max-width: 250px;
+                line-height: 1.2;
+            }
+        }
+
         .nav-links {
             display: flex;
             gap: 24px;
@@ -301,10 +326,13 @@
     <div class="top-glow"></div>
 
     <header>
-        <a href="index.html" class="logo">
-            <img src="https://www.manaus.am.gov.br/wp-content/uploads/2026/04/LogoRetBraTransp.png" alt="Prefeitura de Manaus" style="height: 38px; object-fit: contain; width: auto; vertical-align: middle;">
-            <div class="logo-tag">Estiagem</div>
-        </a>
+        <div class="logo-container">
+            <a href="index.html" class="logo">
+                <img src="https://www.manaus.am.gov.br/wp-content/uploads/2026/04/LogoRetBraTransp.png" alt="Prefeitura de Manaus" style="height: 38px; object-fit: contain; width: auto; vertical-align: middle;">
+                <div class="logo-tag">Estiagem</div>
+            </a>
+            <div class="logo-subtext">Secretaria Municipal de Educação - Divisão de Gestão de Tecnologia da Informação - Setor de Geotecnologia</div>
+        </div>
         <nav class="nav-links">
             <a href="index.html#dashboard" class="nav-link">Painel Climático</a>
             <a href="mapa.html" class="nav-link">Acessar Web GIS</a>
