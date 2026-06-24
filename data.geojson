@@ -1969,6 +1969,96 @@
         "category": "Aérea",
         "viewType": "flat"
       }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.8098585,
+          -3.035133194444444
+        ]
+      },
+      "properties": {
+        "id": "dji_0118",
+        "title": "E. M. Francisco Coelho - Foto 0118",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/dji_0118.jpg",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.809825305555556,
+          -3.0351489722222222
+        ]
+      },
+      "properties": {
+        "id": "dji_0119",
+        "title": "E. M. Francisco Coelho - Foto 0119",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/dji_0119.jpg",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.810768277777775,
+          -3.0365276666666667
+        ]
+      },
+      "properties": {
+        "id": "dji_0122",
+        "title": "E. M. Francisco Coelho - Foto 0122",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/dji_0122.jpg",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.810768555555555,
+          -3.036528888888889
+        ]
+      },
+      "properties": {
+        "id": "dji_0123",
+        "title": "E. M. Francisco Coelho - Foto 0123",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/dji_0123.jpg",
+        "category": "Aérea",
+        "viewType": "360"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -59.82366069444445,
+          -3.0296043888888886
+        ]
+      },
+      "properties": {
+        "id": "dji_0125",
+        "title": "E. M. Francisco Coelho - Foto 0125",
+        "date": "2023-10-10",
+        "image360Url": "media/uploads/dji_0125.jpg",
+        "category": "Aérea",
+        "viewType": "360"
+      }
     }
   ]
 }

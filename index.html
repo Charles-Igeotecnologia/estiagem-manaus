@@ -1021,18 +1021,75 @@
             overflow: hidden;
             border-bottom: 1px solid var(--border-color);
         }
+        
+        .banner-carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .banner-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .banner-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .hero-banner-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center 35%; /* Enquadra a bacia do rio e a floresta */
-            filter: brightness(0.95);
+            filter: brightness(0.92);
+            transition: transform 8s ease-out;
         }
+
+        .banner-slide.active .hero-banner-img {
+            transform: scale(1.03); /* Suave efeito Ken Burns no banner */
+        }
+
         .hero-banner-overlay {
             position: absolute;
             inset: 0;
             background: linear-gradient(to bottom, rgba(6, 9, 19, 0) 50%, rgba(6, 9, 19, 0.8) 100%);
             pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Dots do Banner */
+        .banner-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 3;
+        }
+        
+        .banner-dot {
+            width: 24px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 0;
+        }
+        
+        .banner-dot.active {
+            background: var(--accent-cyan);
+            width: 36px;
+            box-shadow: 0 0 8px var(--accent-cyan);
         }
 
         /* Ajustes de responsividade do banner */
@@ -1065,10 +1122,25 @@
         </nav>
     </header>
 
-    <!-- Banner Panorâmico Horizontal (Full-Width) -->
+    <!-- Banner Panorâmico Horizontal (Full-Width) - Carrossel -->
     <div class="hero-banner-wrapper">
-        <img src="media/banner_panoramico.jpg" alt="Vista aérea panorâmica da estiagem crítica em Manaus" class="hero-banner-img">
-        <div class="hero-banner-overlay"></div>
+        <div class="banner-carousel-container">
+            <!-- Slides do Banner -->
+            <div class="banner-slide active">
+                <img src="media/banner_panoramico.jpg" alt="Vista aérea panorâmica da seca em Manaus - Foto 1" class="hero-banner-img">
+            </div>
+            <div class="banner-slide">
+                <img src="media/banner_panoramico2.jpg" alt="Vista aérea panorâmica da seca em Manaus - Foto 2" class="hero-banner-img">
+            </div>
+
+            <!-- Indicadores do Banner (Dots) -->
+            <div class="banner-dots">
+                <button class="banner-dot active" onclick="setBannerSlide(0)"></button>
+                <button class="banner-dot" onclick="setBannerSlide(1)"></button>
+            </div>
+
+            <div class="hero-banner-overlay"></div>
+        </div>
     </div>
 
     <main>
@@ -2163,11 +2235,71 @@
             });
         });
 
+        // Lógica do Carrossel do Banner Superior (Panorâmico)
+        let currentBannerSlide = 0;
+        let bannerCarouselInterval = null;
+
+        function initBannerCarousel() {
+            startBannerAutoplay();
+        }
+
+        function showBannerSlide(index) {
+            const slides = document.querySelectorAll('.banner-slide');
+            const dots = document.querySelectorAll('.banner-dot');
+            
+            if (slides.length === 0) return;
+            
+            if (index >= slides.length) {
+                currentBannerSlide = 0;
+            } else if (index < 0) {
+                currentBannerSlide = slides.length - 1;
+            } else {
+                currentBannerSlide = index;
+            }
+            
+            slides.forEach((slide, idx) => {
+                if (idx === currentBannerSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            
+            dots.forEach((dot, idx) => {
+                if (idx === currentBannerSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function setBannerSlide(index) {
+            stopBannerAutoplay();
+            showBannerSlide(index);
+            startBannerAutoplay();
+        }
+
+        function startBannerAutoplay() {
+            if (bannerCarouselInterval) clearInterval(bannerCarouselInterval);
+            bannerCarouselInterval = setInterval(() => {
+                showBannerSlide(currentBannerSlide + 1);
+            }, 8000);
+        }
+
+        function stopBannerAutoplay() {
+            if (bannerCarouselInterval) {
+                clearInterval(bannerCarouselInterval);
+                bannerCarouselInterval = null;
+            }
+        }
+
         window.addEventListener('load', () => {
             updateClimateDate();
             fetchClimateData();
             initRiverLevelChart();
             initHeroCarousel();
+            initBannerCarousel();
         });
     </script>
 

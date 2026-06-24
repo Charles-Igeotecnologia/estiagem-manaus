@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web GIS 360° — Visão de Redesign Profissional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#060913;
+  --bg-grad:radial-gradient(circle at 85% -10%, #0d2138 0%, #060913 55%, #02040a 100%);
+  --panel:rgba(15,23,42,0.72);
+  --panel-2:rgba(15,23,42,0.55);
+  --border:rgba(255,255,255,0.08);
+  --border-2:rgba(255,255,255,0.05);
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --muted-2:#64748b;
+  --blue:#2563eb;
+  --cyan:#06b6d4;
+  --green:#10b981;
+  --orange:#f97316;
+  --amber:#f59e0b;
+  --r-lg:16px; --r-md:12px; --r-sm:8px;
+  --sh:0 30px 60px -15px rgba(0,0,0,.8),0 15px 30px -10px rgba(0,0,0,.6);
+  --t:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.011em}
+html,body{height:100%}
+body{background:var(--bg-grad);background-color:var(--bg-main);color:var(--text);overflow:hidden}
+
+/* ===== Banner de contexto (faixa superior fina) ===== */
+.vision-bar{
+  position:fixed;top:0;left:0;right:0;height:34px;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;font-size:.66rem;color:var(--muted);
+  background:linear-gradient(90deg,rgba(6,182,212,.10),rgba(37,99,235,.06),rgba(249,115,22,.10));
+  border-bottom:1px solid var(--border);backdrop-filter:blur(12px);letter-spacing:.4px;
+}
+.vision-bar b{color:var(--cyan);font-weight:600}
+.vision-bar .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--border);padding:3px 9px;border-radius:20px}
+.vision-bar .dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+
+/* ===== Estrutura principal ===== */
+.app{position:fixed;inset:34px 0 0 0;display:flex;flex-direction:column}
+
+/* Topbar */
+.topbar{
+  height:62px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;border-bottom:1px solid var(--border);background:rgba(6,9,19,.55);backdrop-filter:blur(16px);z-index:50;
+}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-mark{
+  width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+  background:conic-gradient(from 210deg at 50% 50%, #06b6d4, #2563eb, #10b981, #f97316, #06b6d4);
+  box-shadow:0 0 0 1px rgba(255,255,255,.10), 0 8px 24px rgba(6,182,212,.25);
+  position:relative;
+}
+.brand-mark::after{content:"";position:absolute;inset:3px;border-radius:9px;background:#060913}
+.brand-mark svg{position:relative;z-index:2}
+.brand-txt{display:flex;flex-direction:column;line-height:1.1}
+.brand-txt h1{font-family:'Outfit',sans-serif;font-size:1rem;font-weight:700;color:#fff;letter-spacing:.2px}
+.brand-txt span{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:600}
+.brand-txt span i{color:var(--orange);font-style:normal}
+
+.topnav{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.03);border:1px solid var(--border);padding:4px;border-radius:10px}
+.topnav a{font-size:.76rem;color:var(--muted);text-decoration:none;padding:7px 14px;border-radius:7px;font-weight:500;transition:.2s}
+.topnav a.on{background:rgba(6,182,212,.12);color:var(--cyan)}
+.topnav a:hover{color:#fff}
+
+.top-actions{display:flex;align-items:center;gap:12px}
+.kpi{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;padding:0 12px;border-left:1px solid var(--border)}
+.kpi b{font-family:'Outfit',sans-serif;font-size:1.02rem;font-weight:700}
+.kpi small{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.kpi.orange b{color:var(--orange)}
+.kpi.cyan b{color:var(--cyan)}
+.avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid var(--border);display:grid;place-items:center;font-family:'Outfit';font-weight:700;font-size:.72rem;color:var(--cyan)}
+
+/* ===== Workspace (sidebar | map | viewer) ===== */
+.workspace{flex:1;display:grid;grid-template-columns:286px 1fr 1fr;min-height:0;position:relative}
+
+/* Sidebar */
+.sidebar{
+  border-right:1px solid var(--border);background:rgba(6,9,19,.35);
+  display:flex;flex-direction:column;gap:14px;padding:16px;overflow-y:auto;
+}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r-md);backdrop-filter:blur(16px);overflow:hidden}
+.card-h{display:flex;align-items:center;gap:9px;padding:12px 14px;border-bottom:1px solid var(--border-2);font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+.card-h .ic{width:15px;height:15px;color:var(--cyan);flex:0 0 auto}
+.card-b{padding:12px 14px}
+
+/* Search */
+.search{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:9px;padding:9px 11px;transition:border-color .2s}
+.search:focus-within{border-color:rgba(6,182,212,.4);box-shadow:0 0 0 3px rgba(6,182,212,.10)}
+.search svg{width:15px;height:15px;color:var(--muted-2);flex:0 0 auto}
+.search input{flex:1;background:transparent;border:0;outline:0;color:#fff;font-size:.8rem}
+.search input::placeholder{color:var(--muted-2)}
+.kbd{font-family:'Outfit';font-size:.6rem;color:var(--muted-2);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:2px 6px}
+
+/* Filters as chips */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:.7rem;font-weight:500;padding:6px 11px;border-radius:20px;cursor:pointer;transition:.2s;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--muted)}
+.chip.on{background:rgba(255,255,255,.05);color:#fff;border-color:rgba(255,255,255,.12)}
+.chip .lg{width:9px;height:9px;border-radius:50%}
+.lg.cy{background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.lg.or{background:var(--orange);box-shadow:0 0 6px var(--orange)}
+.lg.gr{background:var(--green);box-shadow:0 0 6px var(--green)}
+.chip .n{font-size:.6rem;color:var(--muted-2);font-weight:600}
+
+/* Climate mini */
+.climate{display:flex;flex-direction:column;gap:12px}
+.cl-top{display:flex;align-items:baseline;gap:6px}
+.cl-top .big{font-family:'Outfit';font-size:2rem;font-weight:700;line-height:1}
+.cl-top .u{font-size:.95rem;color:var(--cyan);font-weight:600}
+.cl-top .cond{margin-left:auto;font-size:.66rem;color:var(--muted);background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);padding:4px 9px;border-radius:6px}
+.cl-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cl-item{background:rgba(255,255,255,.02);border:1px solid var(--border-2);border-radius:8px;padding:9px 10px}
+.cl-item small{display:block;font-size:.56rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600}
+.cl-item b{font-size:.82rem;font-weight:600}
+.cl-item.warn b{color:var(--orange)}
+.cl-alert{display:flex;gap:9px;align-items:flex-start;font-size:.68rem;line-height:1.45;padding:10px;border-radius:8px;background:rgba(249,115,22,.10);border:1px solid rgba(249,115,22,.25);color:#fcd9b6}
+.cl-alert svg{width:15px;height:15px;color:var(--orange);flex:0 0 auto;margin-top:1px}
+.spark{height:46px;width:100%;display:block}
+
+/* ===== Mapa (placeholder estilizado) ===== */
+.map{position:relative;overflow:hidden;background:#080b14}
+.map svg.river{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.map .grid-overlay{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:46px 46px;pointer-events:none;mask-image:radial-gradient(circle at 60% 45%, #000 30%, transparent 90%)}
+
+/* Map controls (right-top) */
+.map-ctrls{position:absolute;top:16px;right:16px;display:flex;flex-direction:column;gap:8px;z-index:20}
+.mbtn{width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(14px);display:grid;place-items:center;color:var(--muted);cursor:pointer;transition:.2s;box-shadow:var(--sh)}
+.mbtn:hover{color:#fff;border-color:rgba(255,255,255,.18)}
+.mbtn svg{width:17px;height:17px}
+.layer-switch{position:absolute;top:16px;right:16px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:6px;backdrop-filter:blur(14px);display:flex;gap:3px;z-index:20;box-shadow:var(--sh)}
+.layer-switch button{border:0;background:transparent;color:var(--muted);font-size:.68rem;font-weight:600;padding:7px 10px;border-radius:7px;cursor:pointer;transition:.2s}
+.layer-switch button.on{background:rgba(6,182,212,.14);color:var(--cyan)}
+.scale{position:absolute;bottom:54px;left:16px;font-size:.6rem;color:var(--muted);background:var(--panel);border:1px solid var(--border);padding:4px 9px;border-radius:6px;backdrop-filter:blur(10px);z-index:20}
+.attrib{position:absolute;bottom:14px;right:16px;font-size:.55rem;color:var(--muted-2);z-index:20}
+
+/* Markers */
+.marker{position:absolute;transform:translate(-50%,-50%);cursor:pointer;z-index:5}
+.pin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.6);transition:var(--t)}
+.pin .dot{transform:rotate(45deg);width:10px;height:10px;border-radius:50%;background:#fff}
+.pin.aerea{background:radial-gradient(circle at 35% 30%, #34d399, #10b981)}
+.pin.terr{background:radial-gradient(circle at 35% 30%, #fbbf24, #f59e0b)}
+.marker.sel .pin{width:42px;height:42px}
+.marker.sel::after{content:"";position:absolute;left:50%;top:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(16,185,129,.5);animation:ring 2.4s ease-out infinite}
+@keyframes ring{0%{transform:translate(-50%,-50%) scale(.5);opacity:.9}100%{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
+.label{position:absolute;left:50%;top:115%;transform:translateX(-50%);white-space:nowrap;font-size:.6rem;font-weight:600;color:#fff;background:rgba(6,9,19,.85);border:1px solid var(--border);padding:3px 8px;border-radius:6px;backdrop-filter:blur(8px);opacity:0;transition:.2s;pointer-events:none}
+.marker:hover .label,.marker.sel .label{opacity:1;top:120%}
+.cluster{position:absolute;transform:translate(-50%,-50%);z-index:4;cursor:pointer}
+.cluster .c{width:40px;height:40px;border-radius:50%;background:rgba(37,99,235,.18);border:1px solid rgba(37,99,235,.4);display:grid;place-items:center;font-family:'Outfit';font-size:.72rem;font-weight:700;color:#93c5fd;backdrop-filter:blur(6px)}
+.cluster .c2{position:absolute;inset:0;border-radius:50%;background:rgba(37,99,235,.08);animation:pulse 3s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+
+/* ===== Viewer 360 (direita) ===== */
+.viewer{position:relative;border-left:1px solid var(--border);background:#03050a;overflow:hidden}
+.viewer .sky{position:absolute;inset:0;background:
+  radial-gradient(120% 80% at 50% 120%, #1a3a2e 0%, #0a1f17 35%, #05070c 75%),
+  linear-gradient(180deg, #0a1424 0%, #102a3a 40%, #1a3a2e 100%);
+}
+.viewer .sky::before{content:"";position:absolute;left:50%;top:18%;width:120px;height:120px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle, rgba(245,158,11,.55), rgba(245,158,11,0) 70%);filter:blur(6px)}
+.viewer .horizon{position:absolute;left:0;right:0;top:58%;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent)}
+.viewer .haze{position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(249,115,22,.06) 58%,transparent 70%)}
+
+/* Radar hotspot */
+.radar{position:absolute;left:54%;top:62%;transform:translate(-50%,-50%);z-index:6}
+.radar .core{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#34d399,#10b981);box-shadow:0 0 12px rgba(16,185,129,.8)}
+.radar .wave{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(16,185,129,.5);animation:rwave 2.6s ease-out infinite}
+@keyframes rwave{0%{transform:scale(1);opacity:.8}100%{transform:scale(4.5);opacity:0}}
+.radar-tip{position:absolute;left:54%;top:62%;transform:translate(14px,-44px);background:rgba(6,9,19,.92);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:7px 11px;font-size:.66rem;color:#fff;backdrop-filter:blur(8px);box-shadow:var(--sh);white-space:nowrap;z-index:7}
+.radar-tip b{color:#34d399}
+
+/* viewer chrome */
+.viewer .badge{position:absolute;top:16px;left:16px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:9px 13px;backdrop-filter:blur(14px);z-index:10;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)}
+.badge .tag{font-size:.55rem;text-transform:uppercase;letter-spacing:.8px;color:var(--green);font-weight:700;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.25);padding:3px 7px;border-radius:5px}
+.badge .tt{font-family:'Outfit';font-size:.86rem;font-weight:600;color:#fff}
+.badge .sub{font-size:.62rem;color:var(--muted)}
+
+.viewer .loader{position:absolute;bottom:16px;left:16px;z-index:10;display:flex;align-items:center;gap:9px;font-size:.64rem;color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:7px 11px;backdrop-filter:blur(10px)}
+.viewer .loader .spin{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:var(--cyan);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.viewer .vtools{position:absolute;top:16px;right:16px;z-index:10;display:flex;gap:8px}
+.vtool{background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:8px 11px;backdrop-filter:blur(14px);color:var(--muted);cursor:pointer;font-size:.66rem;font-weight:600;display:flex;align-items:center;gap:6px;transition:.2s;box-shadow:var(--sh)}
+.vtool:hover{color:#fff;border-color:rgba(255,255,255,.18)}
+.vtool svg{width:14px;height:14px}
+.vtool.pri{background:linear-gradient(135deg,var(--blue),var(--cyan));color:#fff;border-color:transparent}
+
+.compass{position:absolute;bottom:16px;right:16px;width:54px;height:54px;border-radius:50%;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(14px);display:grid;place-items:center;z-index:10;box-shadow:var(--sh)}
+.compass .needle{position:relative;width:3px;height:30px}
+.compass .n{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:15px solid var(--orange)}
+.compass .s{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:15px solid var(--muted-2)}
+.compass small{position:absolute;bottom:-16px;font-size:.5rem;color:var(--muted-2);letter-spacing:.5px}
+
+/* ===== Attribute drawer (bottom) ===== */
+.drawer{position:absolute;left:16px;right:16px;bottom:16px;height:38px;z-index:30;border-radius:10px;background:var(--panel);border:1px solid var(--border);backdrop-filter:blur(18px);box-shadow:var(--sh);overflow:hidden;transition:height .4s var(--t)}
+.drawer.open{height:188px}
+.drawer .dh{display:flex;align-items:center;justify-content:space-between;padding:0 14px;height:38px;cursor:pointer}
+.drawer .dh .lt{display:flex;align-items:center;gap:9px;font-size:.72rem;font-weight:600;color:var(--muted)}
+.drawer .dh .lt svg{width:15px;height:15px;color:var(--cyan)}
+.drawer .dh .cnt{font-family:'Outfit';font-size:.66rem;color:var(--cyan);background:rgba(6,182,212,.10);border:1px solid rgba(6,182,212,.22);padding:3px 9px;border-radius:6px;font-weight:600}
+.drawer .dh .chev{transition:.3s;color:var(--muted)}
+.drawer.open .dh .chev{transform:rotate(180deg)}
+.dtable{width:100%;border-collapse:collapse;font-size:.68rem;margin-top:2px}
+.dtable thead th{text-align:left;padding:8px 14px;color:var(--muted-2);font-size:.58rem;text-transform:uppercase;letter-spacing:.6px;font-weight:600;border-bottom:1px solid var(--border-2);position:sticky;top:0;background:rgba(15,23,42,.95)}
+.dtable tbody td{padding:8px 14px;border-bottom:1px solid var(--border-2);color:var(--muted);font-weight:500}
+.dtable tbody tr.sel td{color:#fff;background:rgba(6,182,212,.06)}
+.tagcat{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:3px 8px;border-radius:5px}
+.tagcat.aer{color:#34d399;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.2)}
+.tagcat.ter{color:#fbbf24;background:rgba(245,158,11,.10);border:1px solid rgba(245,158,11,.2)}
+.mono{font-family:'Outfit';font-variant-numeric:tabular-nums;color:var(--muted)}
+
+/* ===== Floating callouts (annotations) ===== */
+.callout{position:absolute;z-index:40;display:flex;align-items:flex-start;gap:8px;font-size:.62rem;color:#cbd5e1;background:rgba(6,9,19,.85);border:1px solid var(--border);border-radius:8px;padding:7px 10px;backdrop-filter:blur(10px);box-shadow:var(--sh);max-width:190px;line-height:1.4}
+.callout b{color:var(--cyan);font-weight:600}
+.callout .ln{position:absolute;background:rgba(255,255,255,.12);z-index:39}
+.c1{top:86px;left:50%;transform:translateX(-50%)}
+.c2{top:50%;left:42%}
+
+/* scrollbar */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:8px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+
+<!-- Faixa de contexto -->
+<div class="vision-bar">
+  <span><b>● Visão de Redesign</b> &nbsp;·&nbsp; Web GIS 360° — ambiente profissional e elegante</span>
+  <span class="pill"><span class="dot"></span> Maquete conceitual · proposta de evolução</span>
+</div>
+
+<div class="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C8 7 8 11 12 16c4-5 4-9 0-14z"/>
+          <path d="M5 14c2 3 5 4 7 4s5-1 7-4"/>
+        </svg>
+      </div>
+      <div class="brand-txt">
+        <h1>Estiagem Manaus <span style="color:var(--cyan)">360</span></h1>
+        <span>SEMED · Monitoramento <i>2023 → atual</i></span>
+      </div>
+    </div>
+
+    <nav class="topnav">
+      <a href="#">Visão Geral</a>
+      <a class="on" href="#">Web GIS</a>
+      <a href="#">Análise Temporal</a>
+      <a href="#">Metodologia</a>
+      <a href="#">Equipe</a>
+    </nav>
+
+    <div class="top-actions">
+      <div class="kpi orange"><b>12,70 m</b><small>Cota mín. 2023</small></div>
+      <div class="kpi cyan"><b>194</b><small>Pontos mapeados</small></div>
+      <div class="avatar">CA</div>
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div class="workspace">
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+
+      <!-- Busca -->
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Buscar escola ou panorama…">
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <!-- Filtros -->
+      <div class="card">
+        <div class="card-h">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          Camadas &amp; Filtros
+        </div>
+        <div class="card-b">
+          <div class="chips">
+            <span class="chip on"><span class="lg cy"></span>Ribeirinha <span class="n">48</span></span>
+            <span class="chip on"><span class="lg or"></span>Rodoviária <span class="n">37</span></span>
+            <span class="chip on"><span class="lg gr"></span>Aérea <span class="n">108</span></span>
+            <span class="chip"><span class="lg or"></span>Terrestre <span class="n">1</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Clima -->
+      <div class="card">
+        <div class="card-h">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          Clima · Manaus (ao vivo)
+        </div>
+        <div class="card-b climate">
+          <div class="cl-top">
+            <span class="big">31,4</span><span class="u">°C</span>
+            <span class="cond">Céu limpo</span>
+          </div>
+          <div class="cl-grid">
+            <div class="cl-item"><small>Umidade</small><b>62%</b></div>
+            <div class="cl-item"><small>Chuva 7d</small><b>8,2 mm</b></div>
+            <div class="cl-item warn"><small>Evaporação 7d</small><b>34,6 mm</b></div>
+            <div class="cl-item warn"><small>Balanço hídrico</small><b>−26,4 mm</b></div>
+          </div>
+          <div class="cl-alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span><b>Alerta de estiagem:</b> evaporação supera chuvas em 26,4 mm na semana.</span>
+          </div>
+          <!-- sparkline -->
+          <svg class="spark" viewBox="0 0 200 46" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#06b6d4" stop-opacity=".4"/><stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/></linearGradient>
+              <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f97316" stop-opacity=".35"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></linearGradient>
+            </defs>
+            <path d="M0 34 L18 30 L36 33 L54 24 L72 28 L90 18 L108 22 L126 14 L144 19 L162 12 L180 16 L200 10" fill="none" stroke="#06b6d4" stroke-width="2"/>
+            <path d="M0 34 L18 30 L36 33 L54 24 L72 28 L90 18 L108 22 L126 14 L144 19 L162 12 L180 16 L200 10 L200 46 L0 46 Z" fill="url(#g1)"/>
+            <path d="M0 20 L18 22 L36 18 L54 21 L72 15 L90 17 L108 11 L126 13 L144 9 L162 11 L180 7 L200 8" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="4 3"/>
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Mapa ===== -->
+    <section class="map">
+      <!-- Rio + releve estilizado -->
+      <svg class="river" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="water" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#0a2a3a"/><stop offset="100%" stop-color="#06223a"/></linearGradient>
+          <radialGradient id="land" cx="50%" cy="40%" r="70%"><stop offset="0%" stop-color="#0c1a14"/><stop offset="100%" stop-color="#070d0a"/></radialGradient>
+        </defs>
+        <rect width="800" height="600" fill="url(#land)"/>
+        <!-- rio principal serpenteando -->
+        <path d="M-20 120 C 120 160, 180 260, 260 300 S 420 360, 520 420 S 700 500, 860 540"
+              fill="none" stroke="url(#water)" stroke-width="120" stroke-linecap="round" opacity=".85"/>
+        <path d="M-20 120 C 120 160, 180 260, 260 300 S 420 360, 520 420 S 700 500, 860 540"
+              fill="none" stroke="#0e3a52" stroke-width="40" stroke-linecap="round" opacity=".5"/>
+        <!-- afluente -->
+        <path d="M520 420 C 560 360, 600 320, 640 250 S 690 120, 720 60"
+              fill="none" stroke="url(#water)" stroke-width="50" stroke-linecap="round" opacity=".7"/>
+        <!-- ilhas -->
+        <ellipse cx="300" cy="295" rx="26" ry="10" fill="#0c1a14" opacity=".8"/>
+        <ellipse cx="470" cy="385" rx="34" ry="12" fill="#0c1a14" opacity=".8"/>
+        <ellipse cx="600" cy="320" rx="20" ry="9" fill="#0c1a14" opacity=".7"/>
+      </svg>
+      <div class="grid-overlay"></div>
+
+      <!-- layer switch -->
+      <div class="layer-switch">
+        <button>Satélite</button>
+        <button class="on">Escuro</button>
+        <button>Claro</button>
+        <button>Ruas</button>
+      </div>
+
+      <!-- markers -->
+      <div class="marker sel" style="left:42%;top:55%">
+        <div class="pin aerea"><div class="dot"></div></div>
+        <div class="label">E.M. Paulo Freire · DJI_0951</div>
+      </div>
+      <div class="marker" style="left:48%;top:48%">
+        <div class="pin aerea"><div class="dot"></div></div>
+        <div class="label">E.M. São Sebastião II</div>
+      </div>
+      <div class="marker" style="left:36%;top:62%">
+        <div class="pin terr"><div class="dot"></div></div>
+        <div class="label">Vista Terrestre</div>
+      </div>
+      <div class="marker" style="left:58%;top:40%">
+        <div class="pin aerea"><div class="dot"></div></div>
+      </div>
+      <div class="marker" style="left:30%;top:70%">
+        <div class="pin aerea"><div class="dot"></div></div>
+      </div>
+
+      <!-- clusters -->
+      <div class="cluster" style="left:64%;top:66%"><div class="c2"></div><div class="c">12</div></div>
+      <div class="cluster" style="left:24%;top:38%"><div class="c2"></div><div class="c">7</div></div>
+
+      <div class="scale">───── 500 m</div>
+      <div class="attrib">© OpenStreetMap · CARTO · Esri</div>
+
+      <!-- Annotation -->
+      <div class="callout c1"><b>Hierarquia visual</b><br>Marcadores discretos; cluster onde há sobreposição; anel pulsante no ponto selecionado.</div>
+    </section>
+
+    <!-- ===== Viewer 360 ===== -->
+    <section class="viewer">
+      <div class="sky"></div>
+      <div class="horizon"></div>
+      <div class="haze"></div>
+
+      <!-- badge -->
+      <div class="badge">
+        <div>
+          <div class="tt">E.M. Paulo Freire — DJI_0951</div>
+          <div class="sub">Aérea · 06/10/2023 · 2.973°, −60.199°</div>
+        </div>
+        <span class="tag">360°</span>
+      </div>
+
+      <!-- tools -->
+      <div class="vtools">
+        <div class="vtool pri">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Editar
+        </div>
+        <div class="vtool">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Compartilhar
+        </div>
+      </div>
+
+      <!-- radar hotspot -->
+      <div class="radar">
+        <div class="wave"></div>
+        <div class="core"></div>
+      </div>
+      <div class="radar-tip">🎯 <b>Ponto de interesse</b><br>clique para ajustar</div>
+
+      <!-- loader -->
+      <div class="loader"><span class="spin"></span> Carregando panorama em alta resolução…</div>
+
+      <!-- compass -->
+      <div class="compass">
+        <div class="needle"><div class="n"></div><div class="s"></div></div>
+        <small>N</small>
+      </div>
+    </section>
+
+  </div><!-- /workspace -->
+</div>
+
+</body>
+</html>
