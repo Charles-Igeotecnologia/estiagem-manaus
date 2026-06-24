@@ -1072,7 +1072,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center 35%; /* Enquadra a bacia do rio e a floresta */
+            object-position: center 65%; /* Foca na área central e inferior (leito do rio e terra) */
             filter: brightness(0.92);
             transition: transform 8s ease-out;
         }
@@ -1120,12 +1120,12 @@
         /* Ajustes de responsividade do banner */
         @media (max-width: 1024px) {
             .hero-banner-wrapper {
-                height: 280px;
+                height: 300px;
             }
         }
         @media (max-width: 640px) {
             .hero-banner-wrapper {
-                height: 180px;
+                height: 220px;
             }
         }
     </style>
@@ -1160,11 +1160,15 @@
             <div class="banner-slide">
                 <img src="media/banner_panoramico2.jpg" alt="Vista aérea panorâmica da seca em Manaus - Foto 2" class="hero-banner-img">
             </div>
+            <div class="banner-slide">
+                <img src="media/banner_panoramico3.jpg" alt="Vista aérea panorâmica da seca em Manaus - Canoas Encalhadas" class="hero-banner-img">
+            </div>
 
             <!-- Indicadores do Banner (Dots) -->
             <div class="banner-dots">
                 <button class="banner-dot active" onclick="setBannerSlide(0)"></button>
                 <button class="banner-dot" onclick="setBannerSlide(1)"></button>
+                <button class="banner-dot" onclick="setBannerSlide(2)"></button>
             </div>
 
             <div class="hero-banner-overlay"></div>
