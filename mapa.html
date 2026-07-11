@@ -1164,13 +1164,47 @@
             gap: 12px;
             pointer-events: none;
             scrollbar-width: none;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
         }
         .sidebar-left::-webkit-scrollbar {
             display: none;
         }
 
+        .sidebar-left.collapsed-horizontal {
+            transform: translateX(-360px);
+            opacity: 0;
+        }
+
         .sidebar-left > div {
             pointer-events: auto;
+        }
+
+        /* Botão para recolher a barra lateral */
+        .sidebar-toggle-btn {
+            position: absolute;
+            top: 20px;
+            left: 360px; /* 20px (margin) + 320px (width) + 20px (gap) = 360px */
+            width: 36px;
+            height: 36px;
+            background: var(--bg-panel-solid);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s, border-color 0.2s, color 0.2s;
+            box-shadow: var(--shadow-premium);
+            z-index: 1003;
+        }
+        .sidebar-toggle-btn:hover {
+            background: var(--bg-panel);
+            color: var(--accent-cyan);
+            border-color: rgba(6, 182, 212, 0.4);
+        }
+        .sidebar-toggle-btn.sidebar-collapsed {
+            left: 20px;
         }
 
         /* 11. Marcadores de Sonar Pulsante no Mapa Leaflet */
@@ -1701,8 +1735,14 @@
                     </details>
                 </div>
             </div>
-        </div>
     </div>
+
+    <!-- Botão de Minimizar/Recolher Barra Lateral -->
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Minimizar painel lateral">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
 
     <!-- Área Principal de Trabalho (Mapa + 360) -->
     <main class="workspace" id="workspace">
@@ -1895,6 +1935,32 @@
             };
 
             L.control.layers(basemaps, null, { position: 'topright' }).addTo(map);
+        }
+
+        // Minimiza/Maximiza a barra lateral esquerda
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar-left');
+            const toggleBtn = document.querySelector('.sidebar-toggle-btn');
+            
+            if (!sidebar || !toggleBtn) return;
+            
+            sidebar.classList.toggle('collapsed-horizontal');
+            toggleBtn.classList.toggle('sidebar-collapsed');
+            
+            const isCollapsed = sidebar.classList.contains('collapsed-horizontal');
+            toggleBtn.innerHTML = isCollapsed ? `
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            ` : `
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            `;
+            
+            setTimeout(() => {
+                if (map) map.invalidateSize();
+            }, 400);
         }
 
         // Abre/Fecha a Tabela de Atributos inferior
