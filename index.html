@@ -1727,6 +1727,24 @@
             }
         };
 
+        // ==========================================================================================
+        // COTA DO RIO NEGRO — ATUALIZAÇÃO MANUAL (checklist para quem for atualizar estes arrays)
+        // ------------------------------------------------------------------------------------------
+        // Por que não é uma API ao vivo: a Estação Manaus (Código ANA: 00090000) é lida por régua
+        // física histórica no Porto de Manaus — não é uma estação telemétrica. Não existe API pública
+        // com CORS liberado para buscar isso direto do navegador (nem ANA/HidroWeb nem SGB/SACE
+        // oferecem um endpoint JSON simples e aberto para este dado). Por isso o valor é inserido
+        // manualmente, igual à própria fonte oficial.
+        //
+        // Onde conferir o valor mais recente:
+        //   - Porto de Manaus:      https://www.portodemanaus.com.br/
+        //   - SGB/CPRM (SACE):      https://www.sgb.gov.br/sace/amazonas
+        //
+        // Frequência recomendada: mensal (ou sempre que o valor do mês corrente mudar de forma
+        // relevante, ex. início/fim de estiagem). Ao atualizar riverData2026, preencher a posição
+        // do mês corrente (índice 0 = Janeiro) e deixar os meses futuros como null.
+        // ==========================================================================================
+
         // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
         // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)

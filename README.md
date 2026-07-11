@@ -140,9 +140,18 @@ Revisão de consistência em `escolas_rurais.geojson` (85 registros) e `data.geo
 
 Nenhuma correção foi feita em coordenadas ou em `id`s por não haver como validar o dado correto sem inspeção de campo — alterações "às cegas" nesses campos poderiam introduzir erro maior do que o atual.
 
-## 🌊 Nota sobre Integração de APIs Climáticas (decisão registrada em 2026-07-11)
+## 🌊 Nota sobre Integração de APIs Climáticas (atualizado em 2026-07-11)
 
-Foi avaliada a possibilidade de substituir os indicadores climáticos estáticos do `index.html` (temperatura, nível do rio) por consumo de API externa (ex: INMET, ANA/Hidroweb). **Decisão: não integrar.** O front-end e a estrutura visual do `index.html` permanecem exatamente como estão — nenhuma alteração de design, estrutura ou dado foi feita nesta rodada por conta dessa avaliação.
+**Temperatura, umidade e precipitação:** já consomem a API pública da **Open-Meteo** ao vivo (`fetch` direto no navegador, sem chave, com CORS liberado) — ver `urlCurrent`, `url2023`, `url2024` e `urlCurrentYear` em `index.html`. Não é dado estático; atualiza a cada carregamento da página.
+
+**Cota do Rio Negro:** permanece com atualização **manual**, por decisão deliberada — não por limitação técnica evitável. A Estação Manaus (Código ANA: 00090000) é lida por régua física no Porto de Manaus, não por telemetria automática. Foi avaliado buscar isso via ANA/HidroWeb ou SGB/SACE, mas nenhum dos dois expõe um endpoint JSON simples com CORS liberado para chamada direta do navegador — e o site roda 100% estático no GitHub Pages, sem backend próprio para servir de ponte. Automatizar exigiria um servidor intermediário fora do escopo deste projeto.
+
+Checklist de atualização manual (ver também o comentário no `index.html`, logo acima de `riverData2023`/`2024`/`2026`):
+- Fonte: [Porto de Manaus](https://www.portodemanaus.com.br/) ou [SGB/CPRM (SACE)](https://www.sgb.gov.br/sace/amazonas)
+- Frequência recomendada: mensal, ou quando houver mudança relevante (início/fim de estiagem)
+- Onde editar: array `riverData2026` em `index.html` (índice 0 = Janeiro), preenchendo o mês corrente e mantendo `null` nos meses futuros
+
+O front-end e a estrutura visual do `index.html` não foram alterados por conta desta avaliação — apenas comentários de manutenção foram adicionados.
 
 ## 💧 Módulo: Monitoramento de Poços (`pocos/`)
 
