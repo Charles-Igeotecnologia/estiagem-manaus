@@ -86,7 +86,7 @@
     .map-search-input { width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color); background:rgba(255,255,255,.04); color:#fff; font-size:.74rem; outline:none; transition:var(--transition); }
     .map-search-input::placeholder { color:var(--text-secondary); }
     .map-search-input:focus { border-color:var(--accent-cyan); background:rgba(255,255,255,.06); }
-    .map-search-results { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--bg-panel-solid); border:1px solid var(--border-color); border-radius:10px; box-shadow:var(--shadow-premium); max-height:240px; overflow-y:auto; z-index:30; display:none; }
+    .map-search-results { position:fixed; background:var(--bg-panel-solid); border:1px solid var(--border-color); border-radius:10px; box-shadow:var(--shadow-premium); max-height:240px; overflow-y:auto; z-index:9999; display:none; }
     .map-search-results.active { display:block; }
     .map-search-item { padding:9px 12px; font-size:.74rem; color:var(--text-secondary); cursor:pointer; border-bottom:1px solid var(--border-color); }
     .map-search-item:last-child { border-bottom:none; }
@@ -110,17 +110,19 @@
     .chart-wrapper { position:relative; height:190px; }
     .chart-panel .panel-title { font-size:.78rem; }
 
-    table.data-table { width:100%; border-collapse:separate; border-spacing:0; font-size:.74rem; }
-    table.data-table thead th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,.14); background-color:#0b1120; position:sticky; top:0; z-index:5; box-shadow:0 6px 12px -6px rgba(0,0,0,.8); }
-    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background-color:var(--bg-panel-solid); position:relative; z-index:1; }
+    /* Tabela de dados: cabecalho vive em uma <table> própria, fora da área que rola,
+       em vez de usar position:sticky (instável dentro de paineis com backdrop-filter). */
+    table.data-table-head, table.data-table { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; font-size:.74rem; }
+    table.data-table-head th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-bottom:1px solid rgba(255,255,255,.14); background-color:#0b1120; }
+    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background-color:var(--bg-panel-solid); overflow:hidden; text-overflow:ellipsis; }
     table.data-table tbody tr:hover td { color:#fff; background-color:#141e33; }
     .tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:.63rem; font-weight:700; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; }
     .tag-normal { background:rgba(16,185,129,.12); color:var(--accent-green); border:1px solid rgba(16,185,129,.25); }
     .tag-atencao { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
     .tag-critico { background:rgba(239,68,68,.14); color:var(--accent-red); border:1px solid rgba(239,68,68,.3); }
 
-    .table-scroll { max-height:360px; overflow-y:auto; overflow-x:auto; isolation:isolate; }
-    .obs-cell { max-width:260px; font-style:italic; color:#cbd5e1; }
+    .table-scroll { max-height:340px; overflow-y:auto; overflow-x:hidden; }
+    .obs-cell { max-width:260px; font-style:italic; color:#cbd5e1; white-space:normal; overflow:visible; text-overflow:clip; }
 
     .panel-note { display:flex; align-items:flex-start; gap:8px; padding:10px 20px; font-size:.72rem; line-height:1.5; color:#a5f3fc; background:rgba(6,182,212,.06); border-bottom:1px solid var(--border-color); }
     .panel-note svg { flex-shrink:0; margin-top:1px; }
@@ -176,7 +178,6 @@
                 <div class="panel-title">🗺️ Mapa de Poços por Cenário de Estiagem</div>
                 <div class="map-search-wrap">
                     <input type="text" id="schoolSearch" class="map-search-input" placeholder="Buscar escola pelo nome..." autocomplete="off">
-                    <div class="map-search-results" id="schoolSearchResults"></div>
                 </div>
             </div>
             <div id="map"></div>
@@ -189,11 +190,17 @@
 
         <div class="panel">
             <div class="panel-header"><div class="panel-title">📋 Escolas em Atenção / Crítico</div></div>
-            <div class="panel-body table-scroll">
-                <table class="data-table" id="criticalTable">
+            <div class="panel-body" style="padding:0;">
+                <table class="data-table-head">
+                    <colgroup><col style="width:28%"><col style="width:16%"><col style="width:56%"></colgroup>
                     <thead><tr><th>Escola</th><th>Cenário</th><th>Observação</th></tr></thead>
-                    <tbody></tbody>
                 </table>
+                <div class="table-scroll">
+                    <table class="data-table" id="criticalTable">
+                        <colgroup><col style="width:28%"><col style="width:16%"><col style="width:56%"></colgroup>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -223,13 +230,19 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <span>Base de dados extraída de <b>TABELA POCOS 2026.csv</b>. A coluna <b>Cenário</b> é uma inferência automática (não oficial), calculada a partir do total de poços e de palavras-chave no campo Observação — use como triagem inicial e valide em campo antes de decisões públicas.</span>
         </div>
-        <div class="panel-body table-scroll">
-            <table class="data-table" id="fullTable">
+        <div class="panel-body" style="padding:0;">
+            <table class="data-table-head">
+                <colgroup><col style="width:4%"><col style="width:8%"><col style="width:18%"><col style="width:6%"><col style="width:9%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:20%"></colgroup>
                 <thead>
                     <tr><th>Nº</th><th>Calha</th><th>Escola</th><th>Alunos</th><th>Poços (E/C/S)</th><th>Total</th><th>Prof. (m)</th><th>Bomba (CV)</th><th>Caixa (L)</th><th>Cenário</th><th>Observação</th></tr>
                 </thead>
-                <tbody></tbody>
             </table>
+            <div class="table-scroll">
+                <table class="data-table" id="fullTable">
+                    <colgroup><col style="width:4%"><col style="width:8%"><col style="width:18%"><col style="width:6%"><col style="width:9%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:20%"></colgroup>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </section>
 </main>
@@ -237,6 +250,9 @@
 <footer>
     Módulo de Monitoramento de Poços · Web Map &amp; Dashboard de Cenários · Cópia sincronizada de <code>TABELA POCOS 2026.csv</code> (fonte de campo: pasta local <code>03 TABELA DOS POCOS</code>) · Parte do <a href="../index.html">Portal de Monitoramento Climático</a>
 </footer>
+
+<!-- Fica fora de qualquer .panel (que tem overflow:hidden + backdrop-filter) para não ser cortado/preso atrás do mapa -->
+<div class="map-search-results" id="schoolSearchResults"></div>
 
 <script>
 const SCENARIO_COLORS = { 'Normal': '#10b981', 'Atenção': '#facc15', 'Crítico': '#ef4444' };
@@ -352,12 +368,20 @@ function initSearch() {
     const results = document.getElementById('schoolSearchResults');
     if (!input || !results) return;
 
+    function positionResults() {
+        const rect = input.getBoundingClientRect();
+        results.style.top = (rect.bottom + 6) + 'px';
+        results.style.left = rect.left + 'px';
+        results.style.width = rect.width + 'px';
+    }
+
     function closeResults() { results.classList.remove('active'); results.innerHTML = ''; }
 
     input.addEventListener('input', () => {
         const q = input.value.trim().toLowerCase();
         if (!q) { closeResults(); return; }
         const matches = markersIndex.filter(m => m.name.toLowerCase().includes(q)).slice(0, 8);
+        positionResults();
         if (!matches.length) {
             results.innerHTML = '<div class="map-search-empty">Nenhuma escola encontrada</div>';
             results.classList.add('active');
@@ -376,8 +400,11 @@ function initSearch() {
         });
     });
 
+    window.addEventListener('resize', () => { if (results.classList.contains('active')) positionResults(); });
+    window.addEventListener('scroll', () => { if (results.classList.contains('active')) positionResults(); }, true);
+
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.map-search-wrap')) closeResults();
+        if (!e.target.closest('.map-search-wrap') && !e.target.closest('.map-search-results')) closeResults();
     });
 }
 
