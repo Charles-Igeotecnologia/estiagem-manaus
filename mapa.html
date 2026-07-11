@@ -1184,7 +1184,10 @@
 
         /* 10. Coluna Lateral Esquerda */
         .sidebar-left {
+            flex: 0 0 350px;
             width: 350px;
+            margin-left: 0;
+            opacity: 1;
             height: 100vh;
             background-color: var(--bg-panel-solid);
             border-right: 1px solid var(--border-color);
@@ -1196,7 +1199,6 @@
             padding: 20px;
             box-sizing: border-box;
             scrollbar-width: none;
-            flex-shrink: 0;
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                         margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                         opacity 0.4s ease, 
@@ -1207,6 +1209,7 @@
         }
 
         .sidebar-left.collapsed-horizontal {
+            flex: 0 0 0px;
             width: 0;
             margin-left: -350px;
             padding-left: 0;
