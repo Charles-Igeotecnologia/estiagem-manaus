@@ -470,6 +470,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            grid-row: span 2;
         }
 
         .climate-header {
@@ -680,6 +681,9 @@
 
             .dashboard-grid {
                 grid-template-columns: 1fr;
+            }
+            .climate-card {
+                grid-row: auto;
             }
         }
 
@@ -1364,7 +1368,7 @@
                                             <line x1="12" y1="20" x2="12" y2="4"></line>
                                             <line x1="6" y1="20" x2="6" y2="14"></line>
                                         </svg>
-                                        Distribuição de Chuva Mensal (Precipitação)
+                                        Distribuição de Chuva Mensal (Precipitação) - 2023
                                     </div>
                                     <div class="chart-card-desc">Comparação mês a mês entre o ano da seca crítica (2023) e o ano atual</div>
                                 </div>
@@ -1397,9 +1401,9 @@
                                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
                                             <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                                         </svg>
-                                        Cota Hidrométrica (Nível do Rio Negro)
+                                        Cota Hidrométrica (Nível do Rio Negro) - 2023
                                     </div>
-                                    <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM</div>
+                                    <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM comparando 2023 e o ano atual</div>
                                 </div>
                                 <button class="compare-link-btn" onclick="openCompareModal('river')">
                                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1412,6 +1416,74 @@
                         </div>
                         <div class="chart-wrapper">
                             <canvas id="riverLevelChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span>Fontes: Porto de Manaus & SGB/CPRM</span>
+                        <a href="https://www.sgb.gov.br/sace/amazonas" target="_blank">SACE Amazonas ↗</a>
+                    </div>
+                </div>
+
+                <!-- Coluna 4: Gráfico Comparativo de Precipitação 2024 vs Ano Atual -->
+                <div class="chart-card">
+                    <div class="chart-card-body">
+                        <div class="chart-card-header">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div class="chart-card-title">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange);">
+                                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                                        </svg>
+                                        Distribuição de Chuva Mensal (Precipitação) - 2024
+                                    </div>
+                                    <div class="chart-card-desc">Comparação mês a mês entre o ano do recorde de seca (2024) e o ano atual</div>
+                                </div>
+                                <button class="compare-link-btn" onclick="openCompareModal('rain')">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Análise Comparativa
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="climateComparisonChart2024"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span>Fontes: Open-Meteo & ECMWF (ERA5)</span>
+                        <a href="https://open-meteo.com/" target="_blank">Mais detalhes ↗</a>
+                    </div>
+                </div>
+
+                <!-- Coluna 5: Gráfico do Nível do Rio Negro 2024 vs Ano Atual -->
+                <div class="chart-card">
+                    <div class="chart-card-body">
+                        <div class="chart-card-header">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div class="chart-card-title">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                        Cota Hidrométrica (Nível do Rio Negro) - 2024
+                                    </div>
+                                    <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM comparando 2024 e o ano atual</div>
+                                </div>
+                                <button class="compare-link-btn" onclick="openCompareModal('river')">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Análise Comparativa
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="riverLevelChart2024"></canvas>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -1476,7 +1548,9 @@
 
     <script>
         let climateChart = null;
+        let climateChart2024 = null;
         let riverLevelChart = null;
+        let riverLevelChart2024 = null;
 
         // Plugin customizado para aplicar efeito de Neon/Glow nas linhas do Chart.js
         const glowPlugin = {
@@ -1516,11 +1590,13 @@
             return "Nublado";
         }
 
-        // Inicializa o gráfico de linha comparativo de chuva (Precipitação) com Chart.js
+        // Inicializa os gráficos de linha comparativos de chuva (Precipitação) com Chart.js
         function initClimateChart() {
             const ctx = document.getElementById('climateComparisonChart').getContext('2d');
+            const ctx2024 = document.getElementById('climateComparisonChart2024').getContext('2d');
             const currentYear = new Date().getFullYear();
             
+            // Gráfico 2023 vs Atual
             climateChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1538,6 +1614,113 @@
                             pointRadius: 3,
                             pointHoverRadius: 5
                         },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: new Array(12).fill(null),
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 3,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
+                                },
+                                boxWidth: 12,
+                                boxHeight: 8
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 12,
+                                family: "'Outfit', 'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 11,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(1) + ' mm';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                },
+                                callback: function(value) {
+                                    return value + ' mm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 2024 vs Atual
+            climateChart2024 = new Chart(ctx2024, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
                         {
                             label: 'Ano 2024 (Recorde Seca)',
                             data: new Array(12).fill(0),
@@ -1651,11 +1834,13 @@
             });
         }
 
-        // Inicializa o gráfico do Nível do Rio Negro com Chart.js
+        // Inicializa os gráficos do Nível do Rio Negro com Chart.js
         function initRiverLevelChart() {
             const ctx = document.getElementById('riverLevelChart').getContext('2d');
+            const ctx2024 = document.getElementById('riverLevelChart2024').getContext('2d');
             const currentYear = new Date().getFullYear();
             
+            // Gráfico 2023 vs Atual
             riverLevelChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1673,6 +1858,115 @@
                             pointRadius: 3,
                             pointHoverRadius: 5
                         },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: riverData2026,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 3,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
+                                },
+                                boxWidth: 12,
+                                boxHeight: 8
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 12,
+                                family: "'Outfit', 'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 11,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 2024 vs Atual
+            riverLevelChart2024 = new Chart(ctx2024, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
                         {
                             label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
                             data: riverData2024,
@@ -1780,7 +2074,7 @@
                                     return value + ' m';
                                 }
                             },
-                            min: 10, // Destaca a descida acentuada e a cota de 12.70m
+                            min: 10,
                             max: 31
                         }
                     }
@@ -2002,7 +2296,7 @@
                             monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
                         });
                         
-                        // Atualiza a série de 2023 no gráfico (datasets[0])
+                        // Atualiza a série de 2023 no gráfico 1 (datasets[0])
                         climateChart.data.datasets[0].data = monthly2023.map(v => parseFloat(v.toFixed(1)));
                         climateChart.update();
                     })
@@ -2018,9 +2312,9 @@
                             monthly2024[month] += (data2024.daily.precipitation_sum[idx] || 0);
                         });
                         
-                        // Atualiza a série de 2024 no gráfico (datasets[1])
-                        climateChart.data.datasets[1].data = monthly2024.map(v => parseFloat(v.toFixed(1)));
-                        climateChart.update();
+                        // Atualiza a série de 2024 no gráfico 2 (datasets[0])
+                        climateChart2024.data.datasets[0].data = monthly2024.map(v => parseFloat(v.toFixed(1)));
+                        climateChart2024.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos de 2024:", err));
 
@@ -2040,9 +2334,13 @@
                             monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
                         });
                         
-                        // Atualiza a série do ano atual no gráfico (datasets[2])
-                        climateChart.data.datasets[2].data = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
+                        // Atualiza a série do ano atual no gráfico 1 (datasets[1]) e no gráfico 2 (datasets[1])
+                        const currentDataMapped = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
+                        climateChart.data.datasets[1].data = currentDataMapped;
+                        climateChart2024.data.datasets[1].data = currentDataMapped;
+                        
                         climateChart.update();
+                        climateChart2024.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
 
