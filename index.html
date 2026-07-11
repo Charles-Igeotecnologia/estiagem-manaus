@@ -1499,8 +1499,10 @@
 
         // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
-        // Dados de 2026 consolidados até Junho e projetados/nulos para o restante
-        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, null, null, null, null, null, null];
+        // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)
+        const riverData2024 = [20.06, 21.68, 22.72, 23.87, 25.84, 26.83, 26.29, 23.60, 16.23, 12.11, 13.15, 15.22];
+        // Dados de 2026 consolidados até Julho e nulos para o restante
+        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, 28.30, null, null, null, null, null];
 
         // Traduz códigos WMO meteorológicos para português
         function translateWeatherCode(code) {
@@ -1531,6 +1533,17 @@
                             borderWidth: 2.5,
                             borderDash: [5, 5],
                             backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Ano 2024 (Recorde Seca)',
+                            data: new Array(12).fill(0),
+                            borderColor: '#eab308', // Amber/Amarelo
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
                             fill: true,
                             tension: 0.35,
                             pointRadius: 3,
@@ -1655,6 +1668,17 @@
                             borderWidth: 2.5,
                             borderDash: [5, 5],
                             backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
+                            data: riverData2024,
+                            borderColor: '#eab308', // Amber
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
                             fill: true,
                             tension: 0.3,
                             pointRadius: 3,
@@ -1965,6 +1989,7 @@
                 const formattedYesterday = yesterday.toISOString().split('T')[0];
 
                 const url2023 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2023-01-01&end_date=2023-12-31&daily=precipitation_sum&timezone=America/Manaus`;
+                const url2024 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2024-01-01&end_date=2024-12-31&daily=precipitation_sum&timezone=America/Manaus`;
                 const urlCurrentYear = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${formattedYesterday}&daily=precipitation_sum&timezone=America/Manaus`;
 
                 // Busca dados históricos de 2023
@@ -1977,13 +2002,29 @@
                             monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
                         });
                         
-                        // Atualiza a série de 2023 no gráfico
+                        // Atualiza a série de 2023 no gráfico (datasets[0])
                         climateChart.data.datasets[0].data = monthly2023.map(v => parseFloat(v.toFixed(1)));
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
 
-                // Busca dados do ano atual (usando archive-api para dados reais consolidados de jan-jun)
+                // Busca dados históricos de 2024
+                fetch(url2024)
+                    .then(res => res.json())
+                    .then(data2024 => {
+                        const monthly2024 = new Array(12).fill(0);
+                        data2024.daily.time.forEach((dateStr, idx) => {
+                            const month = new Date(dateStr + 'T00:00:00').getMonth();
+                            monthly2024[month] += (data2024.daily.precipitation_sum[idx] || 0);
+                        });
+                        
+                        // Atualiza a série de 2024 no gráfico (datasets[1])
+                        climateChart.data.datasets[1].data = monthly2024.map(v => parseFloat(v.toFixed(1)));
+                        climateChart.update();
+                    })
+                    .catch(err => console.error("Erro ao carregar dados climáticos de 2024:", err));
+
+                // Busca dados do ano atual (usando archive-api para dados reais consolidados de jan-jul)
                 fetch(urlCurrentYear)
                     .then(res => res.json())
                     .then(dataCurrent => {
@@ -1999,8 +2040,8 @@
                             monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
                         });
                         
-                        // Atualiza a série do ano atual no gráfico
-                        climateChart.data.datasets[1].data = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
+                        // Atualiza a série do ano atual no gráfico (datasets[2])
+                        climateChart.data.datasets[2].data = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
                         climateChart.update();
                     })
                     .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
