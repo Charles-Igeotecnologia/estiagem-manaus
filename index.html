@@ -1549,7 +1549,7 @@
                                     </div>
                                     <div class="chart-card-desc">Comparação mês a mês entre o ano do recorde de seca (2024) e o ano atual</div>
                                 </div>
-                                <button class="compare-link-btn" onclick="openCompareModal('rain')">
+                                <button class="compare-link-btn" onclick="openCompareModal('rain2024')">
                                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
@@ -1582,7 +1582,7 @@
                                     </div>
                                     <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM comparando 2024 e o ano atual</div>
                                 </div>
-                                <button class="compare-link-btn" onclick="openCompareModal('river')">
+                                <button class="compare-link-btn" onclick="openCompareModal('river2024')">
                                     <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
@@ -2717,6 +2717,117 @@
                     
                     <p style="font-size: 0.75rem; color: var(--text-secondary); border-left: 2px solid var(--accent-cyan); padding-left: 10px; margin-top: 14px;">
                         💡 <b>Tendência e Alerta:</b> Embora o ano de <b>${currentYear}</b> tenha iniciado com cotas inferiores às de 2023, o pico da cheia em junho foi ligeiramente superior. O fator determinante para evitar um novo desastre será a taxa de descida (recessão) nos meses de agosto a outubro, que em 2023 chegou a registrar descidas diárias assustadoras de mais de 30 centímetros.
+                    </p>
+                `;
+            } else if (type === 'rain2024') {
+                titleEl.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                    </svg>
+                    Análise Comparativa: Distribuição de Chuva (2024 vs ${currentYear})
+                `;
+                
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom: 14px;">
+                        A análise do regime pluviométrico compara a precipitação acumulada mensal da seca recorde de <b>2024</b> com a do ano corrente (<b>${currentYear}</b>). Em 2024, a escassez severa de chuvas no segundo semestre superou os índices críticos de 2023 devido a um bloqueio atmosférico extremamente persistente sobre a Amazônia Ocidental.
+                    </p>
+                    <p style="margin-bottom: 16px;">
+                        Esta forte anomalia pluviométrica impediu a subida do nível dos rios, precipitando o recorde mínimo absoluto da bacia. Veja o comparativo referencial dos principais meses de seca em 2024:
+                    </p>
+                    
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Período / Mês</th>
+                                <th>Precipitação 2024</th>
+                                <th>Comportamento Climático</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Junho</b> (Início da Seca)</td>
+                                <td>Crítico ~35mm</td>
+                                <td>Déficit de chuva precoce nas cabeceiras dos afluentes.</td>
+                            </tr>
+                            <tr>
+                                <td><b>Agosto</b> (Crítico)</td>
+                                <td>Extremo ~8mm</td>
+                                <td>Bloqueio atmosférico severo. Precipitação praticamente nula.</td>
+                            </tr>
+                            <tr>
+                                <td><b>Outubro</b> (Ápice)</td>
+                                <td>Crítico ~25mm</td>
+                                <td>Cota mínima absoluta registrada. Chuvas muito abaixo da média histórica.</td>
+                            </tr>
+                            <tr>
+                                <td><b>Novembro</b> (Retorno)</td>
+                                <td>~90mm</td>
+                                <td>Retorno das chuvas de transição, iniciando uma lenta estabilização.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); border-left: 2px solid var(--accent-orange); padding-left: 10px; margin-top: 14px;">
+                        💡 <b>Diagnóstico Pluviométrico:</b> Diferente do colapso de chuvas ocorrido no segundo semestre de 2024, o ano de <b>${currentYear}</b> apresenta distribuição pluviométrica mais próxima da normalidade, o que possibilita um cenário de recuperação hídrica mais favorável nas cabeceiras dos rios Solimões e Negro.
+                    </p>
+                `;
+            } else if (type === 'river2024') {
+                titleEl.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                    Análise Comparativa: Nível do Rio Negro (2024 vs ${currentYear})
+                `;
+                
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom: 14px;">
+                        A cota hidrométrica do Rio Negro em <b>2024</b> marcou o pior cenário já registrado na história de Manaus, atingindo a mínima absoluta de <b>12,11 metros</b> em 15 de Outubro. O nível superou a seca recorde anterior de 2023 por uma diferença de 59 centímetros.
+                    </p>
+                    <p style="margin-bottom: 16px;">
+                        Evolução temporal comparativa das cotas mensais de cota máxima a mínima absoluta (valores em metros):
+                    </p>
+                    
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Mês de Referência</th>
+                                <th>Cota 2024 (m)</th>
+                                <th>Cota ${currentYear} (m)</th>
+                                <th>Diferença Temporal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Janeiro</b></td>
+                                <td>20.06 m</td>
+                                <td>22.80 m</td>
+                                <td><span style="color: var(--accent-cyan); font-weight: 600;">+2.74 m</span> (Ano atual iniciou melhor que 2024)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Março</b></td>
+                                <td>22.72 m</td>
+                                <td>25.90 m</td>
+                                <td><span style="color: var(--accent-cyan); font-weight: 600;">+3.18 m</span> (Melhor recarga no primeiro trimestre)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Junho</b> (Cheia)</td>
+                                <td>26.83 m</td>
+                                <td>28.50 m</td>
+                                <td><span style="color: var(--accent-cyan); font-weight: 600;">+1.67 m</span> (Cheia de ${currentYear} muito superior à de 2024)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Outubro</b> (Seca)</td>
+                                <td><b>12.11 m</b> (Mínima)</td>
+                                <td>-- m</td>
+                                <td>Fase crítica de recessão hídrica.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); border-left: 2px solid var(--accent-cyan); padding-left: 10px; margin-top: 14px;">
+                        💡 <b>Tendência Comparativa:</b> Em 2024, a cheia máxima do rio Negro mal superou os 26.8 metros, deixando a bacia altamente vulnerável à vazante subsequente. A cota do ano de <b>${currentYear}</b> iniciou e permaneceu acima da curva crítica de 2024 durante todo o ciclo de subida, sinalizando menor risco de desastre fluvial.
                     </p>
                 `;
             } else if (type === 'drought_comparison') {
