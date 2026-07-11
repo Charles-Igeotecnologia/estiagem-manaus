@@ -1131,6 +1131,35 @@
                 height: 220px;
             }
         }
+
+        /* Seção de Diagnóstico Comparativo */
+        .diagnostic-section {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+        .diagnostic-card {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+        }
+        .diagnostic-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+        @media (max-width: 768px) {
+            .diagnostic-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1187,24 +1216,24 @@
                     Histórico & Monitoramento de Estiagem <span>em Manaus</span>
                 </h1>
                 <p class="hero-description">
-                    Em 2023, o Amazonas vivenciou uma das estiagens mais severas registradas na história recente. O nível do Rio Negro em Manaus atingiu a mínima histórica de <b>12,70 metros</b>, isolando comunidades ribeirinhas, paralisando o transporte hidroviário e gerando severos impactos ambientais e sociais.
+                    Entre 2023 e 2024, o Amazonas vivenciou as duas estiagens mais drásticas registradas na história recente. Em <b>2023</b>, o Rio Negro em Manaus recuou para a marca crítica de <b>12,70 metros</b>. No ano seguinte, em <b>2024</b>, a crise hídrica agravou-se ainda mais sob o efeito cumulativo da estiagem anterior, estabelecendo o novo recorde mínimo histórico absoluto de <b>12,11 metros</b>. Este cenário consecutivo isolou dezenas de comunidades ribeirinhas e paralisou o transporte escolar e logístico regional.
                 </p>
                 <p class="hero-description" style="margin-top: -12px;">
-                    Esta plataforma foi criada para catalogar imagens panorâmicas de alta resolução das escolas rurais e comunidades atingidas, correlacionar os dados de satélite e oferecer um diagnóstico climático contínuo da região metropolitana.
+                    Este portal foi criado pela SEMED (Setor de Geotecnologia) para catalogar imagens aéreas panorâmicas (360°) das escolas rurais municipais afetadas, cruzar dados geográficos e fornecer um diagnóstico climático contínuo da bacia metropolitana para mitigar os impactos sociais da estiagem.
                 </p>
                 
                 <div class="hero-stats">
                     <div class="hero-stat-card">
+                        <div class="hero-stat-val">12.11m</div>
+                        <div class="hero-stat-label">Mínima Recorde (2024)</div>
+                    </div>
+                    <div class="hero-stat-card">
                         <div class="hero-stat-val">12.70m</div>
-                        <div class="hero-stat-label">Cota Mínima Histórica</div>
+                        <div class="hero-stat-label">Cota Crítica (2023)</div>
                     </div>
                     <div class="hero-stat-card">
-                        <div class="hero-stat-val">Out/2023</div>
+                        <div class="hero-stat-val">Outubro</div>
                         <div class="hero-stat-label">Pico da Estiagem</div>
-                    </div>
-                    <div class="hero-stat-card">
-                        <div class="hero-stat-val">121 anos</div>
-                        <div class="hero-stat-label">Maior Seca Registrada</div>
                     </div>
                 </div>
 
@@ -1270,6 +1299,54 @@
                             <line x1="12" y1="8" x2="12.01" y2="8"></line>
                         </svg>
                         <span style="transition: opacity 0.2s ease-in-out;">Registro conceitual da severa seca de 2023: leito exposto, barcos encalhados e impacto profundo na bacia amazônica.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção de Diagnóstico Comparativo -->
+        <section class="diagnostic-section">
+            <div class="diagnostic-card">
+                <div style="position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: linear-gradient(to bottom, var(--accent-orange), var(--accent-cyan));"></div>
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.72rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                    Diagnóstico Comparativo das Estiagens
+                </div>
+                <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 14px;">
+                    Análise Crítica: A Evolução da Crise Hídrica (2023 vs 2024)
+                </h3>
+                <div class="diagnostic-grid">
+                    <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65;">
+                        <p style="margin-bottom: 12px;">
+                            A comparação entre as estiagens de <b>2023</b> e <b>2024</b> revela uma mudança de padrão na severidade climática da Amazônia Ocidental. Em 2023, sob a forte influência de um <b>El Niño severo</b> associado ao aquecimento do Atlântico Norte, o Rio Negro desceu a níveis alarmantes, superando o antigo recorde de 2010 ao atingir a cota de <b>12,70 metros</b>. O isolamento de comunidades foi imediato e centenas de escolas municipais da zona rural suspenderam as aulas presenciais devido à impossibilidade de transporte escolar fluvial.
+                        </p>
+                        <p>
+                            Em 2024, a crise atingiu patamares ainda mais graves devido ao <b>efeito cumulativo</b>. O curto período de chuvas no início do ano (inverno amazônico) foi insuficiente para recarregar os aquíferos subterrâneos e os afluentes das cabeceiras. Como resultado, o rio iniciou sua descida a partir de um nível já deficitário, acelerando a vazante e estabelecendo o novo recorde mínimo histórico absoluto de <b>12,11 metros</b> no dia 15 de Outubro. Essa descida sequencial expôs extensos bancos de areia e isolou comunidades de forma muito mais precoce do que no ano anterior, exigindo ações urgentes de logística terrestre e poços artesianos para garantir água potável e merenda escolar nas unidades escolares rurais.
+                        </p>
+                    </div>
+                    <div style="background: rgba(6, 9, 19, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;">
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600; color: #ffffff; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            Métricas Comparativas
+                        </h4>
+                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.72rem;">
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
+                                <span style="color: var(--text-secondary);">Mínima Seca 2023:</span>
+                                <span style="color: var(--accent-orange); font-weight: 600;">12.70 m (26/Out)</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
+                                <span style="color: var(--text-secondary);">Mínima Seca 2024:</span>
+                                <span style="color: var(--accent-cyan); font-weight: 600;">12.11 m (15/Out)</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
+                                <span style="color: var(--text-secondary);">Diferença Extrema:</span>
+                                <span style="color: #ffffff; font-weight: 600;">- 59 cm em 2024</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
+                                <span style="color: var(--text-secondary);">Pico da Estiagem:</span>
+                                <span style="color: #ffffff; font-weight: 500;">Meados de Outubro</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
