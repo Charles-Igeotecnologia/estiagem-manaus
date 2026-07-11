@@ -82,16 +82,38 @@
     .legend-item { display:flex; align-items:center; gap:6px; }
     .legend-dot { width:9px; height:9px; border-radius:50%; }
 
+    .map-search-wrap { position:relative; width:260px; max-width:100%; }
+    .map-search-input { width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border-color); background:rgba(255,255,255,.04); color:#fff; font-size:.74rem; outline:none; transition:var(--transition); }
+    .map-search-input::placeholder { color:var(--text-secondary); }
+    .map-search-input:focus { border-color:var(--accent-cyan); background:rgba(255,255,255,.06); }
+    .map-search-results { position:absolute; top:calc(100% + 6px); left:0; right:0; background:var(--bg-panel-solid); border:1px solid var(--border-color); border-radius:10px; box-shadow:var(--shadow-premium); max-height:240px; overflow-y:auto; z-index:30; display:none; }
+    .map-search-results.active { display:block; }
+    .map-search-item { padding:9px 12px; font-size:.74rem; color:var(--text-secondary); cursor:pointer; border-bottom:1px solid var(--border-color); }
+    .map-search-item:last-child { border-bottom:none; }
+    .map-search-item:hover { background:rgba(255,255,255,.05); color:#fff; }
+    .map-search-item b { color:#fff; }
+    .map-search-empty { padding:9px 12px; font-size:.72rem; color:var(--text-secondary); }
+    @media (max-width:640px) { .map-search-wrap { width:100%; } .panel-header { flex-wrap:wrap; } }
+
+    /* Tema escuro para os controles do Leaflet (seletor de camadas / zoom) */
+    .leaflet-control-layers { background:var(--bg-panel-solid) !important; border:1px solid var(--border-color) !important; border-radius:10px !important; box-shadow:var(--shadow-premium) !important; color:#fff !important; }
+    .leaflet-control-layers-expanded { padding:10px 14px !important; font-size:.74rem !important; }
+    .leaflet-control-layers label { color:#e2e8f0 !important; margin-bottom:6px !important; display:flex !important; align-items:center !important; gap:6px !important; }
+    .leaflet-control-layers-separator { border-top:1px solid var(--border-color) !important; margin:6px 0 !important; }
+    .leaflet-control-layers-toggle { filter:invert(1) hue-rotate(180deg); }
+    .leaflet-bar a { background:var(--bg-panel-solid) !important; color:#fff !important; border-color:var(--border-color) !important; }
+    .leaflet-bar a:hover { background:rgba(255,255,255,.08) !important; }
+
     .chart-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
     @media (max-width:1500px) { .chart-grid { grid-template-columns:repeat(2, 1fr); } }
     @media (max-width:640px) { .chart-grid { grid-template-columns:1fr; } }
     .chart-wrapper { position:relative; height:190px; }
     .chart-panel .panel-title { font-size:.78rem; }
 
-    table.data-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-    table.data-table thead th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; border-bottom:1px solid var(--border-color); background:var(--bg-panel-solid); position:sticky; top:0; z-index:2; box-shadow:0 1px 0 rgba(255,255,255,.08), 0 6px 12px -6px rgba(0,0,0,.7); }
-    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background:var(--bg-panel-solid); }
-    table.data-table tbody tr:hover td { color:#fff; background:rgba(255,255,255,.03); }
+    table.data-table { width:100%; border-collapse:separate; border-spacing:0; font-size:.74rem; }
+    table.data-table thead th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,.14); background-color:#0b1120; position:sticky; top:0; z-index:5; box-shadow:0 6px 12px -6px rgba(0,0,0,.8); }
+    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background-color:var(--bg-panel-solid); position:relative; z-index:1; }
+    table.data-table tbody tr:hover td { color:#fff; background-color:#141e33; }
     .tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:.63rem; font-weight:700; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; }
     .tag-normal { background:rgba(16,185,129,.12); color:var(--accent-green); border:1px solid rgba(16,185,129,.25); }
     .tag-atencao { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
@@ -152,6 +174,10 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">🗺️ Mapa de Poços por Cenário de Estiagem</div>
+                <div class="map-search-wrap">
+                    <input type="text" id="schoolSearch" class="map-search-input" placeholder="Buscar escola pelo nome..." autocomplete="off">
+                    <div class="map-search-results" id="schoolSearchResults"></div>
+                </div>
             </div>
             <div id="map"></div>
             <div class="legend-row">
@@ -220,6 +246,7 @@ const CSV_PATH = 'TABELA POCOS 2026.csv';
 const GEOJSON_PATH = '../escolas_rurais.geojson';
 
 let map, markersLayer;
+let markersIndex = [];
 
 // Converte número em formato brasileiro ("1.234,56" ou "2,5") para float. Retorna null se vazio/"-"
 function parseBR(val) {
@@ -260,11 +287,33 @@ function normalizeTitle(t) {
 
 function initMap() {
     map = L.map('map', { zoomControl: true }).setView([-2.95, -60.05], 9);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO',
-        subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
+
+    const baseDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+    });
+    const baseSatImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics', maxZoom: 19
+    });
+    const baseSatLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Esri', maxZoom: 19
+    });
+    const baseSatelite = L.layerGroup([baseSatImagery, baseSatLabels]);
+    const baseClaro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
+    });
+    const baseRuas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors', subdomains: 'abc', maxZoom: 19
+    });
+
+    baseDark.addTo(map);
+
+    L.control.layers({
+        '🌑 Escuro (Padrão)': baseDark,
+        '🛰️ Satélite': baseSatelite,
+        '☀️ Claro': baseClaro,
+        '🗺️ Ruas (OSM)': baseRuas
+    }, null, { position: 'topright', collapsed: true }).addTo(map);
+
     markersLayer = L.layerGroup().addTo(map);
 }
 
@@ -295,6 +344,41 @@ function addMarker(row) {
         </div>
     `);
     markersLayer.addLayer(marker);
+    markersIndex.push({ name: row.ESCOLA || row['ESCOLA (COORDENADA)'] || 'Sem nome', marker, lat, lon });
+}
+
+function initSearch() {
+    const input = document.getElementById('schoolSearch');
+    const results = document.getElementById('schoolSearchResults');
+    if (!input || !results) return;
+
+    function closeResults() { results.classList.remove('active'); results.innerHTML = ''; }
+
+    input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        if (!q) { closeResults(); return; }
+        const matches = markersIndex.filter(m => m.name.toLowerCase().includes(q)).slice(0, 8);
+        if (!matches.length) {
+            results.innerHTML = '<div class="map-search-empty">Nenhuma escola encontrada</div>';
+            results.classList.add('active');
+            return;
+        }
+        results.innerHTML = matches.map((m, i) => `<div class="map-search-item" data-idx="${i}">${m.name}</div>`).join('');
+        results.classList.add('active');
+        results.querySelectorAll('.map-search-item[data-idx]').forEach(el => {
+            el.addEventListener('click', () => {
+                const m = matches[parseInt(el.dataset.idx, 10)];
+                map.flyTo([m.lat, m.lon], 13, { duration: 0.8 });
+                setTimeout(() => m.marker.openPopup(), 450);
+                input.value = m.name;
+                closeResults();
+            });
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.map-search-wrap')) closeResults();
+    });
 }
 
 function renderKPIs(data) {
@@ -460,6 +544,7 @@ function loadData() {
 function buildDashboard(data) {
     initMap();
     data.forEach(addMarker);
+    initSearch();
     renderKPIs(data);
     renderCriticalTable(data);
     renderFullTable(data);
