@@ -115,6 +115,11 @@
        em vez de usar position:sticky (instável dentro de paineis com backdrop-filter). */
     table.data-table-head, table.data-table { width:100%; table-layout:fixed; border-collapse:separate; border-spacing:0; font-size:.74rem; }
     table.data-table-head th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-bottom:1px solid rgba(255,255,255,.14); background-color:#0b1120; }
+    table.data-table-head th.sortable-th { cursor:pointer; user-select:none; padding-right:20px; position:relative; transition:var(--transition); }
+    table.data-table-head th.sortable-th:hover { color:var(--accent-cyan); background-color:#0d1526; }
+    table.data-table-head th.sortable-th::after { content:'\2195'; position:absolute; right:6px; top:50%; transform:translateY(-50%); font-size:.62rem; opacity:.35; }
+    table.data-table-head th.sortable-th.sort-asc::after { content:'\2191'; opacity:1; color:var(--accent-cyan); }
+    table.data-table-head th.sortable-th.sort-desc::after { content:'\2193'; opacity:1; color:var(--accent-cyan); }
     table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background-color:var(--bg-panel-solid); overflow:hidden; text-overflow:ellipsis; }
     table.data-table tbody tr:hover td { color:#fff; background-color:#141e33; }
     .tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:.63rem; font-weight:700; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; }
@@ -248,7 +253,7 @@
             <table class="data-table-head">
                 <colgroup><col style="width:4%"><col style="width:7%"><col style="width:16%"><col style="width:5%"><col style="width:8%"><col style="width:5%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:7%"><col style="width:22%"><col style="width:8%"></colgroup>
                 <thead>
-                    <tr><th>Nº</th><th>Calha</th><th>Escola</th><th>Alunos</th><th>Poços (E/C/S)</th><th>Total</th><th>Prof. (m)</th><th>Bomba (CV)</th><th>Caixa (L)</th><th>Cenário</th><th>Observação</th><th style="text-align:center;">Local</th></tr>
+                    <tr id="fullTableHeadRow"><th>Nº</th><th>Calha</th><th>Escola</th><th>Alunos</th><th>Poços (E/C/S)</th><th>Total</th><th>Prof. (m)</th><th>Bomba (CV)</th><th>Caixa (L)</th><th>Cenário</th><th>Observação</th><th style="text-align:center;">Local</th></tr>
                 </thead>
             </table>
             <div class="table-scroll">
@@ -462,6 +467,70 @@ function renderCriticalTable(data) {
     `).join('') || '<tr><td colspan="4" style="text-align:center;">Nenhuma escola fora do cenário normal.</td></tr>';
 }
 
+// --- Ordenação clicável da tabela "Base Completa" ---
+let fullTableData = [];
+let fullTableSort = { index: null, dir: 1 }; // dir 1 = crescente, -1 = decrescente
+
+const FULLTABLE_COLUMNS = [
+    { key: 'Nº', type: 'num' },
+    { key: 'CALHA', type: 'str' },
+    { key: 'ESCOLA', type: 'str' },
+    { key: '_alunos', type: 'num' },
+    { key: '_pocosSum', type: 'num' },
+    { key: 'TOTAL POÇOS', type: 'num' },
+    { key: 'PROFUNDIDADE (m)', type: 'num' },
+    { key: 'BOMBA (CV)', type: 'num' },
+    { key: 'CAIXA (L)', type: 'num' },
+    { key: '_cenario', type: 'str' },
+    { key: 'OBSERVAÇÃO', type: 'str' },
+    null // coluna "Local" — apenas o link do mapa, não ordenável
+];
+
+function getSortValue(row, col) {
+    const raw = row[col.key];
+    if (col.type === 'num') {
+        const n = typeof raw === 'number' ? raw : parseBR(raw);
+        return (n === null || n === undefined || isNaN(n)) ? -Infinity : n;
+    }
+    return (raw || '').toString().toLowerCase();
+}
+
+function sortFullTable(colIndex) {
+    const col = FULLTABLE_COLUMNS[colIndex];
+    if (!col) return; // coluna "Local", sem ordenação
+
+    fullTableSort.dir = (fullTableSort.index === colIndex) ? fullTableSort.dir * -1 : 1;
+    fullTableSort.index = colIndex;
+
+    const sorted = [...fullTableData].sort((a, b) => {
+        const va = getSortValue(a, col), vb = getSortValue(b, col);
+        if (va < vb) return -1 * fullTableSort.dir;
+        if (va > vb) return 1 * fullTableSort.dir;
+        return 0;
+    });
+
+    renderFullTable(sorted);
+    updateSortIndicators();
+}
+
+function updateSortIndicators() {
+    const ths = document.querySelectorAll('#fullTableHeadRow th');
+    ths.forEach((th, idx) => {
+        th.classList.remove('sort-asc', 'sort-desc');
+        if (idx === fullTableSort.index) th.classList.add(fullTableSort.dir === 1 ? 'sort-asc' : 'sort-desc');
+    });
+}
+
+function initTableSort() {
+    const ths = document.querySelectorAll('#fullTableHeadRow th');
+    ths.forEach((th, idx) => {
+        if (!FULLTABLE_COLUMNS[idx]) return; // coluna "Local"
+        th.classList.add('sortable-th');
+        th.title = 'Clique para ordenar';
+        th.addEventListener('click', () => sortFullTable(idx));
+    });
+}
+
 function renderFullTable(data) {
     const tbody = document.querySelector('#fullTable tbody');
     tbody.innerHTML = data.map(r => `
@@ -577,6 +646,7 @@ function loadData() {
                     const key = normalizeTitle(row['ESCOLA (COORDENADA)']);
                     row._alunos = alunosByTitle.hasOwnProperty(key) ? alunosByTitle[key] : null;
                     row._cenario = classifyScenario(row);
+                    row._pocosSum = parseIntBR(row['POÇO ESCOLA']) + parseIntBR(row['POÇO COMUNIDADE']) + parseIntBR(row['POÇO SEMSA']);
                 });
                 buildDashboard(data);
             }).catch(() => {
@@ -584,6 +654,7 @@ function loadData() {
                 data.forEach(row => {
                     row._alunos = null;
                     row._cenario = classifyScenario(row);
+                    row._pocosSum = parseIntBR(row['POÇO ESCOLA']) + parseIntBR(row['POÇO COMUNIDADE']) + parseIntBR(row['POÇO SEMSA']);
                 });
                 buildDashboard(data);
             });
@@ -603,7 +674,9 @@ function buildDashboard(data) {
     initSearch();
     renderKPIs(data);
     renderCriticalTable(data);
+    fullTableData = data;
     renderFullTable(data);
+    initTableSort();
     renderCharts(data);
 }
 
