@@ -459,6 +459,40 @@
             gap: 24px;
         }
 
+        /* Segunda fileira de gráficos (2024) — grid isolado para não ser espremido
+           na coluna de 320px do .dashboard-grid, que causava sobreposição/achatamento
+           dos gráficos Chart.js quando o grid principal reciclava a coluna estreita. */
+        .dashboard-grid-secondary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        @media (max-width: 1024px) {
+            .dashboard-grid-secondary {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cartões do Resumo Histórico das Estiagens */
+        .summary-cards { display: flex; flex-direction: column; gap: 12px; }
+        .summary-card {
+            background: rgba(6, 9, 19, 0.5);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-orange);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+        }
+        .summary-card.cyan { border-left-color: var(--accent-cyan); }
+        .summary-card.green { border-left-color: var(--accent-green); }
+        .summary-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+        .summary-card-title { font-family: 'Outfit', sans-serif; font-size: 0.82rem; font-weight: 700; color: #ffffff; }
+        .summary-badge { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+        .summary-badge.orange { background: rgba(249, 115, 22, 0.14); color: var(--accent-orange); border: 1px solid rgba(249, 115, 22, 0.28); }
+        .summary-badge.cyan { background: rgba(6, 182, 212, 0.14); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.28); }
+        .summary-stat-row { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-secondary); gap: 8px; }
+        .summary-stat-row b { color: #ffffff; font-weight: 600; text-align: right; }
+
         /* Card Clima */
         .climate-card {
             background: var(--bg-panel);
@@ -1325,26 +1359,34 @@
                         </p>
                     </div>
                     <div style="background: rgba(6, 9, 19, 0.5); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;">
-                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600; color: #ffffff; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <h4 style="font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 600; color: #ffffff; margin-bottom: 14px; display: flex; align-items: center; gap: 6px;">
                             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                            Métricas Comparativas
+                            Resumo Histórico das Estiagens
                         </h4>
-                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.72rem;">
-                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
-                                <span style="color: var(--text-secondary);">Mínima Seca 2023:</span>
-                                <span style="color: var(--accent-orange); font-weight: 600;">12.70 m (26/Out)</span>
+                        <div class="summary-cards">
+                            <div class="summary-card orange">
+                                <div class="summary-card-header">
+                                    <span class="summary-card-title">Estiagem de 2023</span>
+                                    <span class="summary-badge orange">Antigo Recorde</span>
+                                </div>
+                                <div class="summary-stat-row"><span>Cota Mínima</span><b>12.70 m</b></div>
+                                <div class="summary-stat-row" style="margin-top: 6px;"><span>Pico da Vazante</span><b>26/Out</b></div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
-                                <span style="color: var(--text-secondary);">Mínima Seca 2024:</span>
-                                <span style="color: var(--accent-cyan); font-weight: 600;">12.11 m (15/Out)</span>
+                            <div class="summary-card cyan">
+                                <div class="summary-card-header">
+                                    <span class="summary-card-title">Estiagem de 2024</span>
+                                    <span class="summary-badge cyan">Mínima Absoluta</span>
+                                </div>
+                                <div class="summary-stat-row"><span>Cota Mínima</span><b>12.11 m</b></div>
+                                <div class="summary-stat-row" style="margin-top: 6px;"><span>Diferença vs 2023</span><b>- 59 cm</b></div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
-                                <span style="color: var(--text-secondary);">Diferença Extrema:</span>
-                                <span style="color: #ffffff; font-weight: 600;">- 59 cm em 2024</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding-bottom: 2px;">
-                                <span style="color: var(--text-secondary);">Pico da Estiagem:</span>
-                                <span style="color: #ffffff; font-weight: 500;">Meados de Outubro</span>
+                            <div class="summary-card green">
+                                <div class="summary-card-header">
+                                    <span class="summary-card-title">Monitoramento Contínuo</span>
+                                    <span class="summary-badge cyan">Ao Vivo</span>
+                                </div>
+                                <div class="summary-stat-row"><span>Clima (temp./chuva)</span><b>Open-Meteo, tempo real</b></div>
+                                <div class="summary-stat-row" style="margin-top: 6px;"><span>Cota atual do rio</span><b style="color: var(--text-secondary); font-weight: 500;">Atualização manual — SGB/CPRM</b></div>
                             </div>
                         </div>
                     </div>
@@ -1499,8 +1541,11 @@
                         <a href="https://www.sgb.gov.br/sace/amazonas" target="_blank">SACE Amazonas ↗</a>
                     </div>
                 </div>
+            </div>
 
-                <!-- Coluna 4: Novo Gráfico Comparativo de Estiagem 2023 vs 2024 (Abaixo do Clima/Previsão) -->
+            <!-- Segunda fileira: gráficos comparativos de 2024, em grid próprio (corrige sobreposição) -->
+            <div class="dashboard-grid-secondary">
+                <!-- Novo Gráfico Comparativo de Estiagem 2023 vs 2024 -->
                 <div class="chart-card">
                     <div class="chart-card-body">
                         <div class="chart-card-header">

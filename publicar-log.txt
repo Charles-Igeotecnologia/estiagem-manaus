@@ -1,0 +1,9 @@
+ 
+============================================================ 
+  EXECUCAO EM 11/07/2026 16:15:37,24 
+  Pasta: N:\Drives compartilhados\000 SISTEMAS HTML\08 Projeto 360\01 ANO 2023\PROJETO 360 
+============================================================ 
+git version 2.55.0.windows.2
+From https://github.com/Charles-Igeotecnologia/estiagem-manaus
+ * branch            main       -> FETCH_HEAD
+Already up to date.

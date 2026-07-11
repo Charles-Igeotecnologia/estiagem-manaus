@@ -1697,49 +1697,82 @@
                     <span id="climateAlertText">Alerta de estiagem severa na região.</span>
                 </div>
 
-                <!-- Gráfico Comparativo Mensal 2023 (Janeiro a Dezembro) -->
-                <div class="climate-chart-container">
-                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Precipitação Acumulada - 2023 vs Atual
+                <!-- Resumo das Estiagens Históricas -->
+                <div class="drought-summary-cards" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                    <!-- Card 2023 -->
+                    <div style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.2); border-radius: var(--radius-md); padding: 12px; position: relative; overflow: hidden;">
+                        <div style="font-size: 0.65rem; font-weight: 700; color: #f97316; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Estiagem de 2023 (Antigo Recorde)</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Cota Mínima</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">12,70 m</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Pico da Seca</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">26/Out</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Menor Chuva Mensal</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">15 mm</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Taxa de Descida</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">~30 cm/dia</span>
+                            </div>
+                        </div>
                     </div>
-                    <canvas id="climateComparisonChart"></canvas>
-                </div>
 
-                <!-- Gráfico do Nível do Rio Negro 2023 vs Ano Atual -->
-                <div class="climate-chart-container" style="margin-top: 12px;">
-                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Nível do Rio Negro - 2023 vs Atual
+                    <!-- Card 2024 -->
+                    <div style="background: rgba(234, 179, 8, 0.05); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: var(--radius-md); padding: 12px; position: relative; overflow: hidden;">
+                        <div style="font-size: 0.65rem; font-weight: 700; color: #eab308; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Estiagem de 2024 (Mínima Absoluta)</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Cota Mínima Recorde</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">12,11 m</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Pico da Seca</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">15/Out</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Menor Chuva Mensal</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">8 mm</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Diferença Absoluta</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #f87171;">-59 cm (vs 2023)</span>
+                            </div>
+                        </div>
                     </div>
-                    <canvas id="riverLevelChart"></canvas>
-                </div>
 
-                <!-- Gráfico Comparativo Mensal 2024 (Janeiro a Dezembro) -->
-                <div class="climate-chart-container" style="margin-top: 16px;">
-                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Precipitação Acumulada - Estiagem no ano de 2024
+                    <!-- Card Status Atual -->
+                    <div style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); border-radius: var(--radius-md); padding: 12px; position: relative; overflow: hidden;">
+                        <div style="font-size: 0.65rem; font-weight: 700; color: #06b6d4; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Status Atual do Nível (2026)</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Última Cota</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">28,30 m</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Referência</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">Julho/2026</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Tendência</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #4ade80;">Normalidade</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Nível de Risco</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #4ade80;">Baixo</span>
+                            </div>
+                        </div>
                     </div>
-                    <canvas id="climateComparisonChart2024"></canvas>
-                </div>
 
-                <!-- Gráfico do Nível do Rio Negro 2024 vs Ano Atual -->
-                <div class="climate-chart-container" style="margin-top: 12px;">
-                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Nível do Rio Negro - Estiagem no ano de 2024
-                    </div>
-                    <canvas id="riverLevelChart2024"></canvas>
-                </div>
-
-                <!-- Novo Gráfico: Estiagem Comparativa - 2023 vs 2024 -->
-                <div class="climate-chart-container" style="margin-top: 12px;">
-                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Estiagem no ano de 2024 vs 2023
-                    </div>
-                    <canvas id="riverDroughtComparisonChart"></canvas>
+                    <!-- Botão de Redirecionamento de Gráficos -->
+                    <a href="index.html#dashboard" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 10px 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); text-decoration: none; font-size: 0.7rem; font-weight: 600; text-align: center; transition: var(--transition);" onmouseover="this.style.background='rgba(255, 255, 255, 0.07)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Ver Gráficos Detalhados & Comparativos
+                    </a>
                 </div>
                 
                 <div class="climate-footer">
@@ -1914,15 +1947,8 @@
     <script>
         let map;
         let pViewer = null;
-        let geojsonData = null;
-        let markers = {};
         let escolasRuraisData = null;
         let ruralMarkers = {};
-        let climateChart = null;
-        let climateChart2024 = null;
-        let riverLevelChart = null;
-        let riverLevelChart2024 = null;
-        let riverDroughtComparisonChart = null;
         let activeId = null;
         
         // Variáveis globais para o Modo Edição
@@ -3485,15 +3511,6 @@
             const urlCurrent = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
 
             try {
-                // Instancia os gráficos se ainda não foram feitos
-                if (!climateChart) {
-                    initClimateChart();
-                }
-                if (!riverLevelChart) {
-                    initRiverLevelChart();
-                    initRiverDroughtComparisonChart();
-                }
-
                 const response = await fetch(urlCurrent);
                 if (!response.ok) throw new Error("Erro de resposta da API de Clima");
                 const data = await response.json();
@@ -3540,77 +3557,6 @@
                     alertBox.querySelector('svg').style.color = 'var(--accent-cyan)';
                     alertText.innerHTML = `<b>Equilíbrio Hídrico:</b> Nível aceitável de umidade acumulada na semana (+${waterBalance.toFixed(1)}mm).`;
                 }
-
-                // 2. BUSCA DE DADOS ANUAIS COMPARATIVOS
-                const currentYear = new Date().getFullYear();
-                
-                // Calcula a data de ontem dinamicamente para buscar o histórico de chuvas acumuladas do ano corrente de forma real
-                const today = new Date();
-                const yesterday = new Date(today);
-                yesterday.setDate(today.getDate() - 1);
-                const formattedYesterday = yesterday.toISOString().split('T')[0];
-
-                const url2023 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2023-01-01&end_date=2023-12-31&daily=precipitation_sum&timezone=America/Manaus`;
-                const url2024 = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=2024-01-01&end_date=2024-12-31&daily=precipitation_sum&timezone=America/Manaus`;
-                const urlCurrentYear = `https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=${currentYear}-01-01&end_date=${formattedYesterday}&daily=precipitation_sum&timezone=America/Manaus`;
-
-                // Busca dados históricos de 2023
-                fetch(url2023)
-                    .then(res => res.json())
-                    .then(data2023 => {
-                        const monthly2023 = new Array(12).fill(0);
-                        data2023.daily.time.forEach((dateStr, idx) => {
-                            const month = new Date(dateStr + 'T00:00:00').getMonth();
-                            monthly2023[month] += (data2023.daily.precipitation_sum[idx] || 0);
-                        });
-                        
-                        // Atualiza a série de 2023 no gráfico 1 (datasets[0])
-                        climateChart.data.datasets[0].data = monthly2023.map(v => parseFloat(v.toFixed(1)));
-                        climateChart.update();
-                    })
-                    .catch(err => console.error("Erro ao carregar dados climáticos de 2023:", err));
-
-                // Busca dados históricos de 2024
-                fetch(url2024)
-                    .then(res => res.json())
-                    .then(data2024 => {
-                        const monthly2024 = new Array(12).fill(0);
-                        data2024.daily.time.forEach((dateStr, idx) => {
-                            const month = new Date(dateStr + 'T00:00:00').getMonth();
-                            monthly2024[month] += (data2024.daily.precipitation_sum[idx] || 0);
-                        });
-                        
-                        // Atualiza a série de 2024 no gráfico 2 (datasets[0])
-                        climateChart2024.data.datasets[0].data = monthly2024.map(v => parseFloat(v.toFixed(1)));
-                        climateChart2024.update();
-                    })
-                    .catch(err => console.error("Erro ao carregar dados climáticos de 2024:", err));
-
-                // Busca dados do ano atual (usando archive-api para dados reais consolidados de jan-jul)
-                fetch(urlCurrentYear)
-                    .then(res => res.json())
-                    .then(dataCurrent => {
-                        const monthlyCurrent = new Array(12).fill(null);
-                        
-                        dataCurrent.daily.time.forEach((dateStr, idx) => {
-                            const date = new Date(dateStr + 'T00:00:00');
-                            const month = date.getMonth();
-                            
-                            if (monthlyCurrent[month] === null) {
-                                monthlyCurrent[month] = 0;
-                            }
-                            monthlyCurrent[month] += (dataCurrent.daily.precipitation_sum[idx] || 0);
-                        });
-                        
-                        // Atualiza a série do ano atual no gráfico 1 (datasets[1]) e no gráfico 2 (datasets[1])
-                        const currentDataMapped = monthlyCurrent.map(v => v !== null ? parseFloat(v.toFixed(1)) : null);
-                        climateChart.data.datasets[1].data = currentDataMapped;
-                        climateChart2024.data.datasets[1].data = currentDataMapped;
-                        
-                        climateChart.update();
-                        climateChart2024.update();
-                    })
-                    .catch(err => console.error("Erro ao carregar dados climáticos do ano atual:", err));
 
             } catch (error) {
                 console.error("Falha ao buscar dados de clima:", error);
