@@ -69,34 +69,40 @@
     .kpi-card.alunos .kpi-val { color:var(--accent-orange); }
     .kpi-card.pocos .kpi-val { color:#a78bfa; }
 
-    .layout-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:24px; align-items:start; }
-    @media (max-width:1100px) { .layout-grid { grid-template-columns:1fr; } }
+    .layout-grid { display:flex; flex-direction:column; gap:24px; }
 
     .panel { background:var(--bg-panel); border:1px solid var(--border-color); border-radius:var(--radius-lg); box-shadow:var(--shadow-premium); backdrop-filter:blur(20px); overflow:hidden; display:flex; flex-direction:column; }
     .panel-header { padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; align-items:center; justify-content:space-between; }
     .panel-title { font-family:'Outfit',sans-serif; font-size:.9rem; font-weight:600; color:#fff; display:flex; align-items:center; gap:8px; }
     .panel-body { padding:18px 20px; }
+    .panel-body.chart-body { padding:14px 16px 8px; }
 
-    #map { width:100%; height:460px; }
+    #map { width:100%; height:560px; }
     .legend-row { display:flex; gap:14px; flex-wrap:wrap; padding:12px 20px; border-top:1px solid var(--border-color); font-size:.68rem; color:var(--text-secondary); }
     .legend-item { display:flex; align-items:center; gap:6px; }
     .legend-dot { width:9px; height:9px; border-radius:50%; }
 
-    .chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-    @media (max-width:1400px) { .chart-grid { grid-template-columns:1fr; } }
-    .chart-wrapper { position:relative; height:230px; }
+    .chart-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; }
+    @media (max-width:1500px) { .chart-grid { grid-template-columns:repeat(2, 1fr); } }
+    @media (max-width:640px) { .chart-grid { grid-template-columns:1fr; } }
+    .chart-wrapper { position:relative; height:190px; }
+    .chart-panel .panel-title { font-size:.78rem; }
 
     table.data-table { width:100%; border-collapse:collapse; font-size:.74rem; }
-    table.data-table th { text-align:left; padding:9px 10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; border-bottom:2px solid var(--border-color); background:rgba(255,255,255,.02); position:sticky; top:0; }
-    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; }
-    table.data-table tr:hover td { color:#fff; background:rgba(255,255,255,.02); }
+    table.data-table thead th { text-align:left; padding:10px; color:#fff; font-family:'Outfit',sans-serif; font-weight:600; font-size:.68rem; text-transform:uppercase; letter-spacing:.4px; white-space:nowrap; border-bottom:1px solid var(--border-color); background:var(--bg-panel-solid); position:sticky; top:0; z-index:2; box-shadow:0 1px 0 rgba(255,255,255,.08), 0 6px 12px -6px rgba(0,0,0,.7); }
+    table.data-table td { padding:9px 10px; border-bottom:1px solid var(--border-color); color:var(--text-secondary); vertical-align:top; background:var(--bg-panel-solid); }
+    table.data-table tbody tr:hover td { color:#fff; background:rgba(255,255,255,.03); }
     .tag { display:inline-block; padding:3px 8px; border-radius:6px; font-size:.63rem; font-weight:700; text-transform:uppercase; letter-spacing:.3px; white-space:nowrap; }
     .tag-normal { background:rgba(16,185,129,.12); color:var(--accent-green); border:1px solid rgba(16,185,129,.25); }
     .tag-atencao { background:rgba(250,204,21,.12); color:#facc15; border:1px solid rgba(250,204,21,.25); }
     .tag-critico { background:rgba(239,68,68,.14); color:var(--accent-red); border:1px solid rgba(239,68,68,.3); }
 
-    .table-scroll { max-height:360px; overflow-y:auto; }
+    .table-scroll { max-height:360px; overflow-y:auto; overflow-x:auto; isolation:isolate; }
     .obs-cell { max-width:260px; font-style:italic; color:#cbd5e1; }
+
+    .panel-note { display:flex; align-items:flex-start; gap:8px; padding:10px 20px; font-size:.72rem; line-height:1.5; color:#a5f3fc; background:rgba(6,182,212,.06); border-bottom:1px solid var(--border-color); }
+    .panel-note svg { flex-shrink:0; margin-top:1px; }
+    .panel-note b { color:#e0f7fa; }
 
     footer { padding:24px 5%; text-align:center; font-size:.72rem; color:var(--text-secondary); border-top:1px solid var(--border-color); background:rgba(6,9,19,.6); }
     footer a { color:var(--accent-cyan); text-decoration:none; }
@@ -167,26 +173,30 @@
     </section>
 
     <section class="chart-grid">
-        <div class="panel">
+        <div class="panel chart-panel">
             <div class="panel-header"><div class="panel-title">📊 Distribuição por Cenário</div></div>
-            <div class="panel-body"><div class="chart-wrapper"><canvas id="chartCenario"></canvas></div></div>
+            <div class="panel-body chart-body"><div class="chart-wrapper"><canvas id="chartCenario"></canvas></div></div>
         </div>
-        <div class="panel">
-            <div class="panel-header"><div class="panel-title">📊 Cenário por Calha (Rio Negro x Rio Amazonas)</div></div>
-            <div class="panel-body"><div class="chart-wrapper"><canvas id="chartCalha"></canvas></div></div>
+        <div class="panel chart-panel">
+            <div class="panel-header"><div class="panel-title">📊 Cenário por Calha</div></div>
+            <div class="panel-body chart-body"><div class="chart-wrapper"><canvas id="chartCalha"></canvas></div></div>
         </div>
-        <div class="panel">
-            <div class="panel-header"><div class="panel-title">📊 Poços por Titularidade (Escola / Comunidade / SEMSA)</div></div>
-            <div class="panel-body"><div class="chart-wrapper"><canvas id="chartTitularidade"></canvas></div></div>
+        <div class="panel chart-panel">
+            <div class="panel-header"><div class="panel-title">📊 Poços por Titularidade</div></div>
+            <div class="panel-body chart-body"><div class="chart-wrapper"><canvas id="chartTitularidade"></canvas></div></div>
         </div>
-        <div class="panel">
-            <div class="panel-header"><div class="panel-title">📊 Profundidade Média por Calha (m)</div></div>
-            <div class="panel-body"><div class="chart-wrapper"><canvas id="chartProfundidade"></canvas></div></div>
+        <div class="panel chart-panel">
+            <div class="panel-header"><div class="panel-title">📊 Profundidade Média (m)</div></div>
+            <div class="panel-body chart-body"><div class="chart-wrapper"><canvas id="chartProfundidade"></canvas></div></div>
         </div>
     </section>
 
     <section class="panel">
         <div class="panel-header"><div class="panel-title">📄 Base Completa — 48 Escolas Ribeirinhas</div></div>
+        <div class="panel-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            <span>Base de dados extraída de <b>TABELA POCOS 2026.csv</b>. A coluna <b>Cenário</b> é uma inferência automática (não oficial), calculada a partir do total de poços e de palavras-chave no campo Observação — use como triagem inicial e valide em campo antes de decisões públicas.</span>
+        </div>
         <div class="panel-body table-scroll">
             <table class="data-table" id="fullTable">
                 <thead>
@@ -277,6 +287,11 @@ function addMarker(row) {
                 <b>Cenário:</b> ${row._cenario}<br>
                 ${row['OBSERVAÇÃO'] ? '<b>Obs.:</b> ' + row['OBSERVAÇÃO'] : ''}
             </div>
+            <a href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}" target="_blank" rel="noopener noreferrer"
+               style="display:inline-flex; align-items:center; gap:5px; margin-top:10px; padding:5px 10px; border-radius:6px; background:rgba(37,99,235,.1); border:1px solid rgba(37,99,235,.3); color:#3b82f6; font-size:11px; font-weight:600; text-decoration:none;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Abrir no Google Maps
+            </a>
         </div>
     `);
     markersLayer.addLayer(marker);
@@ -334,11 +349,27 @@ function countBy(data, fn) {
 }
 
 function renderCharts(data) {
+    // Estilo global elegante e consistente para todos os gráficos do módulo
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size = 10.5;
+    Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(9,13,24,.96)';
+    Chart.defaults.plugins.tooltip.titleFont = { family: "'Outfit', sans-serif", size: 11, weight: '600' };
+    Chart.defaults.plugins.tooltip.bodyFont = { family: "'Inter', sans-serif", size: 11 };
+    Chart.defaults.plugins.tooltip.padding = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,.08)';
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+    Chart.defaults.plugins.tooltip.displayColors = true;
+    Chart.defaults.plugins.tooltip.boxPadding = 4;
+    const gridColor = 'rgba(255,255,255,0.045)';
+    const legendLabels = { boxWidth: 8, boxHeight: 8, padding: 10, usePointStyle: true, pointStyle: 'circle', font: { size: 10 } };
+
     const scenarioCounts = countBy(data, r => r._cenario);
     new Chart(document.getElementById('chartCenario'), {
         type: 'doughnut',
-        data: { labels: Object.keys(scenarioCounts), datasets: [{ data: Object.values(scenarioCounts), backgroundColor: Object.keys(scenarioCounts).map(k => SCENARIO_COLORS[k] || '#94a3b8'), borderColor: '#0f172a', borderWidth: 2 }] },
-        options: { plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } } }, maintainAspectRatio: false }
+        data: { labels: Object.keys(scenarioCounts), datasets: [{ data: Object.values(scenarioCounts), backgroundColor: Object.keys(scenarioCounts).map(k => SCENARIO_COLORS[k] || '#94a3b8'), borderColor: '#0b1120', borderWidth: 3, hoverOffset: 6 }] },
+        options: { cutout: '70%', plugins: { legend: { position: 'bottom', labels: legendLabels } }, maintainAspectRatio: false }
     });
 
     const calhas = [...new Set(data.map(r => r.CALHA))];
@@ -348,13 +379,16 @@ function renderCharts(data) {
         data: {
             labels: calhas,
             datasets: cenarios.map(c => ({
-                label: c, backgroundColor: SCENARIO_COLORS[c],
+                label: c, backgroundColor: SCENARIO_COLORS[c], borderRadius: 4, borderSkipped: false, maxBarThickness: 28,
                 data: calhas.map(cal => data.filter(r => r.CALHA === cal && r._cenario === c).length)
             }))
         },
         options: {
-            plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 9 } } } },
-            scales: { x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { stacked: true, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } },
+            plugins: { legend: { position: 'bottom', labels: legendLabels } },
+            scales: {
+                x: { stacked: true, ticks: { color: '#94a3b8' }, grid: { display: false } },
+                y: { stacked: true, ticks: { color: '#94a3b8', precision: 0 }, grid: { color: gridColor } }
+            },
             maintainAspectRatio: false
         }
     });
@@ -364,8 +398,8 @@ function renderCharts(data) {
     const totalSemsa = data.reduce((s,r) => s + parseIntBR(r['POÇO SEMSA']), 0);
     new Chart(document.getElementById('chartTitularidade'), {
         type: 'bar',
-        data: { labels: ['Escola', 'Comunidade', 'SEMSA'], datasets: [{ data: [totalEscola, totalComunidade, totalSemsa], backgroundColor: ['#06b6d4','#2563eb','#a78bfa'], borderRadius: 6 }] },
-        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } }, maintainAspectRatio: false }
+        data: { labels: ['Escola', 'Comunidade', 'SEMSA'], datasets: [{ data: [totalEscola, totalComunidade, totalSemsa], backgroundColor: ['#06b6d4','#2563eb','#a78bfa'], borderRadius: 6, borderSkipped: false, maxBarThickness: 40 }] },
+        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8', precision: 0 }, grid: { color: gridColor } } }, maintainAspectRatio: false }
     });
 
     const profGroups = {};
@@ -380,8 +414,8 @@ function renderCharts(data) {
     const profAvgs = profLabels.map(g => (profGroups[g].reduce((a,b) => a+b, 0) / profGroups[g].length).toFixed(1));
     new Chart(document.getElementById('chartProfundidade'), {
         type: 'bar',
-        data: { labels: profLabels, datasets: [{ data: profAvgs, backgroundColor: '#f97316', borderRadius: 6 }] },
-        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } }, maintainAspectRatio: false }
+        data: { labels: profLabels, datasets: [{ data: profAvgs, backgroundColor: '#f97316', borderRadius: 6, borderSkipped: false, maxBarThickness: 40 }] },
+        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { display: false } }, y: { ticks: { color: '#94a3b8' }, grid: { color: gridColor } } }, maintainAspectRatio: false }
     });
 }
 
