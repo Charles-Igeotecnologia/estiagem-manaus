@@ -124,6 +124,12 @@
     .table-scroll { max-height:340px; overflow-y:auto; overflow-x:hidden; }
     .obs-cell { max-width:260px; font-style:italic; color:#cbd5e1; white-space:normal; overflow:visible; text-overflow:clip; }
 
+    .map-link { display:inline-flex; align-items:center; gap:4px; color:#3b82f6; font-size:.68rem; font-weight:600; text-decoration:none; white-space:nowrap; }
+    .map-link:hover { color:#60a5fa; text-decoration:underline; }
+
+    .btn-download { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:8px; background:rgba(6,182,212,.12); border:1px solid rgba(6,182,212,.3); color:#22d3ee; font-size:.72rem; font-weight:600; text-decoration:none; transition:var(--transition); white-space:nowrap; }
+    .btn-download:hover { background:rgba(6,182,212,.2); color:#67e8f9; }
+
     .panel-note { display:flex; align-items:flex-start; gap:8px; padding:10px 20px; font-size:.72rem; line-height:1.5; color:#a5f3fc; background:rgba(6,182,212,.06); border-bottom:1px solid var(--border-color); }
     .panel-note svg { flex-shrink:0; margin-top:1px; }
     .panel-note b { color:#e0f7fa; }
@@ -192,12 +198,12 @@
             <div class="panel-header"><div class="panel-title">📋 Escolas em Atenção / Crítico</div></div>
             <div class="panel-body" style="padding:0;">
                 <table class="data-table-head">
-                    <colgroup><col style="width:28%"><col style="width:16%"><col style="width:56%"></colgroup>
-                    <thead><tr><th>Escola</th><th>Cenário</th><th>Observação</th></tr></thead>
+                    <colgroup><col style="width:26%"><col style="width:14%"><col style="width:50%"><col style="width:10%"></colgroup>
+                    <thead><tr><th>Escola</th><th>Cenário</th><th>Observação</th><th style="text-align:center;">Local</th></tr></thead>
                 </table>
                 <div class="table-scroll">
                     <table class="data-table" id="criticalTable">
-                        <colgroup><col style="width:28%"><col style="width:16%"><col style="width:56%"></colgroup>
+                        <colgroup><col style="width:26%"><col style="width:14%"><col style="width:50%"><col style="width:10%"></colgroup>
                         <tbody></tbody>
                     </table>
                 </div>
@@ -225,21 +231,27 @@
     </section>
 
     <section class="panel">
-        <div class="panel-header"><div class="panel-title">📄 Base Completa — 48 Escolas Ribeirinhas</div></div>
+        <div class="panel-header">
+            <div class="panel-title">📄 Base Completa — 48 Escolas Ribeirinhas</div>
+            <a class="btn-download" href="TABELA%20POCOS%202026.csv" download="TABELA_POCOS_2026.csv" title="Baixar a tabela completa em formato CSV">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Baixar CSV
+            </a>
+        </div>
         <div class="panel-note">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <span>Base de dados extraída de <b>TABELA POCOS 2026.csv</b>. A coluna <b>Cenário</b> é uma inferência automática (não oficial), calculada a partir do total de poços e de palavras-chave no campo Observação — use como triagem inicial e valide em campo antes de decisões públicas.</span>
         </div>
         <div class="panel-body" style="padding:0;">
             <table class="data-table-head">
-                <colgroup><col style="width:4%"><col style="width:8%"><col style="width:18%"><col style="width:6%"><col style="width:9%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:20%"></colgroup>
+                <colgroup><col style="width:4%"><col style="width:7%"><col style="width:16%"><col style="width:5%"><col style="width:8%"><col style="width:5%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:7%"><col style="width:22%"><col style="width:8%"></colgroup>
                 <thead>
-                    <tr><th>Nº</th><th>Calha</th><th>Escola</th><th>Alunos</th><th>Poços (E/C/S)</th><th>Total</th><th>Prof. (m)</th><th>Bomba (CV)</th><th>Caixa (L)</th><th>Cenário</th><th>Observação</th></tr>
+                    <tr><th>Nº</th><th>Calha</th><th>Escola</th><th>Alunos</th><th>Poços (E/C/S)</th><th>Total</th><th>Prof. (m)</th><th>Bomba (CV)</th><th>Caixa (L)</th><th>Cenário</th><th>Observação</th><th style="text-align:center;">Local</th></tr>
                 </thead>
             </table>
             <div class="table-scroll">
                 <table class="data-table" id="fullTable">
-                    <colgroup><col style="width:4%"><col style="width:8%"><col style="width:18%"><col style="width:6%"><col style="width:9%"><col style="width:6%"><col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:20%"></colgroup>
+                    <colgroup><col style="width:4%"><col style="width:7%"><col style="width:16%"><col style="width:5%"><col style="width:8%"><col style="width:5%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:7%"><col style="width:22%"><col style="width:8%"></colgroup>
                     <tbody></tbody>
                 </table>
             </div>
@@ -422,6 +434,17 @@ function renderKPIs(data) {
     document.getElementById('kpiAlunos').textContent = alunosRisco || '0';
 }
 
+// Gera a célula com o link de coordenadas (abre a localizacao da escola no Google Maps)
+function mapLinkCell(r) {
+    const lat = parseBR(r.LATITUDE);
+    const lon = parseBR(r.LONGITUDE);
+    if (lat === null || lon === null) return '<td style="text-align:center; color:var(--text-secondary);">—</td>';
+    return `<td style="text-align:center;"><a class="map-link" href="https://www.google.com/maps/search/?api=1&query=${lat},${lon}" target="_blank" rel="noopener noreferrer" title="Abrir localização no Google Maps">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Mapa
+    </a></td>`;
+}
+
 function renderCriticalTable(data) {
     const tbody = document.querySelector('#criticalTable tbody');
     const rows = data.filter(r => r._cenario !== 'Normal').sort((a,b) => (a._cenario === 'Crítico' ? 0 : 1) - (b._cenario === 'Crítico' ? 0 : 1));
@@ -430,8 +453,9 @@ function renderCriticalTable(data) {
             <td>${r.ESCOLA}</td>
             <td><span class="tag ${SCENARIO_TAG_CLASS[r._cenario] || ''}">${r._cenario}</span></td>
             <td class="obs-cell">${r['OBSERVAÇÃO'] || (parseIntBR(r['TOTAL POÇOS']) === 0 ? 'Nenhum poço registrado' : '—')}</td>
+            ${mapLinkCell(r)}
         </tr>
-    `).join('') || '<tr><td colspan="3" style="text-align:center;">Nenhuma escola fora do cenário normal.</td></tr>';
+    `).join('') || '<tr><td colspan="4" style="text-align:center;">Nenhuma escola fora do cenário normal.</td></tr>';
 }
 
 function renderFullTable(data) {
@@ -449,6 +473,7 @@ function renderFullTable(data) {
             <td>${r['CAIXA (L)'] || '—'}</td>
             <td><span class="tag ${SCENARIO_TAG_CLASS[r._cenario] || ''}">${r._cenario}</span></td>
             <td class="obs-cell">${r['OBSERVAÇÃO'] || ''}</td>
+            ${mapLinkCell(r)}
         </tr>
     `).join('');
 }
