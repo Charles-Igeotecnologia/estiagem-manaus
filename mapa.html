@@ -492,7 +492,39 @@
                 transform: translateY(calc(160px - 40px));
             }
             .gis-attribute-drawer.expanded {
-                }
+                transform: translateY(0);
+            }
+            
+            /* Ajustes Mobile para Barra Lateral */
+            .sidebar-left {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                width: calc(100% - 40px);
+                max-width: 320px;
+                max-height: calc(100vh - 40px);
+                height: auto;
+                border-right: none;
+                border-radius: var(--radius-sm);
+                box-shadow: var(--shadow-premium);
+                z-index: 1002;
+                transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            }
+            .sidebar-left.collapsed-horizontal {
+                transform: translateX(-110%);
+                width: calc(100% - 40px) !important;
+                margin-left: 0 !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+                opacity: 0;
+            }
+            .sidebar-toggle-btn {
+                left: calc(min(330px, 100% - 50px)) !important;
+                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .sidebar-toggle-btn.sidebar-collapsed {
+                left: 20px !important;
+            }
         }
 
         /* 6. Hotspot de Radar Pulsante Premium no Pannellum 360 */
@@ -1150,40 +1182,44 @@
             line-height: 1.4;
         }
 
-        /* 10. Coluna Lateral Esquerda Flutuante */
+        /* 10. Coluna Lateral Esquerda */
         .sidebar-left {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: 320px;
-            max-height: calc(100vh - 40px);
+            width: 350px;
+            height: 100vh;
+            background-color: var(--bg-panel-solid);
+            border-right: 1px solid var(--border-color);
             overflow-y: auto;
             z-index: 1002;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            pointer-events: none;
+            padding: 20px;
+            box-sizing: border-box;
             scrollbar-width: none;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            flex-shrink: 0;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.4s ease, 
+                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .sidebar-left::-webkit-scrollbar {
             display: none;
         }
 
         .sidebar-left.collapsed-horizontal {
-            transform: translateX(-360px);
+            width: 0;
+            margin-left: -350px;
+            padding-left: 0;
+            padding-right: 0;
             opacity: 0;
-        }
-
-        .sidebar-left > div {
-            pointer-events: auto;
+            pointer-events: none;
         }
 
         /* Botão para recolher a barra lateral */
         .sidebar-toggle-btn {
             position: absolute;
             top: 20px;
-            left: 360px; /* 20px (margin) + 320px (width) + 20px (gap) = 360px */
+            left: 360px; /* 350px (sidebar width) + 10px (gap) = 360px */
             width: 36px;
             height: 36px;
             background: var(--bg-panel-solid);
@@ -1507,8 +1543,11 @@
 </head>
 <body>
 
-    <!-- Painel Lateral Esquerdo (Contêiner Flexível) -->
-    <div class="sidebar-left">
+    <!-- Área Principal de Trabalho (Mapa + 360) -->
+    <main class="workspace" id="workspace">
+
+        <!-- Painel Lateral Esquerdo (Coluna no Workspace) -->
+        <div class="sidebar-left" id="sidebarLeft">
         <!-- Botão de Voltar para a Landing Page -->
         <a href="index.html" class="btn-back-home" style="display: inline-flex; align-items: center; gap: 8px; color: var(--text-secondary); text-decoration: none; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: var(--radius-sm); backdrop-filter: blur(16px); width: 100%; box-sizing: border-box; transition: var(--transition);">
             <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -1655,60 +1694,49 @@
                     <span id="climateAlertText">Alerta de estiagem severa na região.</span>
                 </div>
 
-                <!-- Resumo das Estiagens Históricas -->
-                <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 14px;">
-                    <div style="font-size: 0.7rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 4px;">
-                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Resumo Histórico das Estiagens
+                <!-- Gráfico Comparativo Mensal 2023 (Janeiro a Dezembro) -->
+                <div class="climate-chart-container">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Precipitação Acumulada - 2023 vs Atual
                     </div>
-                    
-                    <!-- Card Seca 2023 -->
-                    <div style="background: rgba(249, 115, 22, 0.04); border: 1px solid rgba(249, 115, 22, 0.15); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 0.72rem; font-weight: 600; color: #ffffff;">Estiagem de 2023</span>
-                            <span style="background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 10px;">Antigo Recorde</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.68rem; color: var(--text-secondary);">
-                            <div>Cota Mínima: <b style="color: #ffffff;">12.70 m</b></div>
-                            <div>Pico: <b style="color: #ffffff;">26/Out</b></div>
-                            <div>Menor Chuva: <b style="color: #ffffff;">15 mm</b></div>
-                            <div>Vazante Dia: <b style="color: #ffffff;">~30 cm/dia</b></div>
-                        </div>
-                    </div>
+                    <canvas id="climateComparisonChart"></canvas>
+                </div>
 
-                    <!-- Card Seca 2024 -->
-                    <div style="background: rgba(234, 179, 8, 0.06); border: 1px solid rgba(234, 179, 8, 0.2); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 8px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 0.72rem; font-weight: 600; color: #ffffff;">Estiagem de 2024</span>
-                            <span style="background: rgba(234, 179, 8, 0.2); color: var(--accent-orange); font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 10px;">Mínima Absoluta</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.68rem; color: var(--text-secondary);">
-                            <div>Cota Mínima: <b style="color: #ffffff; font-size: 0.72rem;">12.11 m</b></div>
-                            <div>Pico: <b style="color: #ffffff;">15/Out</b></div>
-                            <div>Menor Chuva: <b style="color: #ffffff;">8 mm</b></div>
-                            <div>Diferença: <b style="color: #ffffff;">-59 cm vs 23</b></div>
-                        </div>
+                <!-- Gráfico do Nível do Rio Negro 2023 vs Ano Atual -->
+                <div class="climate-chart-container" style="margin-top: 12px;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Nível do Rio Negro - 2023 vs Atual
                     </div>
+                    <canvas id="riverLevelChart"></canvas>
+                </div>
 
-                    <!-- Card Ano Atual -->
-                    <div style="background: rgba(6, 182, 212, 0.04); border: 1px solid rgba(6, 182, 212, 0.15); border-radius: var(--radius-sm); padding: 10px; margin-bottom: 12px;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                            <span style="font-size: 0.72rem; font-weight: 600; color: #ffffff;">Status Atual (2026)</span>
-                            <span style="background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); font-size: 0.6rem; font-weight: 700; padding: 2px 6px; border-radius: 10px;">Monitoramento</span>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.68rem; color: var(--text-secondary);">
-                            <div>Última Cota: <b style="color: #ffffff;">28.30 m</b></div>
-                            <div>Mês Ref: <b style="color: #ffffff;">Julho</b></div>
-                            <div>Tendência: <b style="color: var(--accent-green);">Normalidade</b></div>
-                            <div>Risco Atual: <b style="color: var(--accent-green);">Baixo</b></div>
-                        </div>
+                <!-- Gráfico Comparativo Mensal 2024 (Janeiro a Dezembro) -->
+                <div class="climate-chart-container" style="margin-top: 16px;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                        Precipitação Acumulada - Estiagem no ano de 2024
                     </div>
+                    <canvas id="climateComparisonChart2024"></canvas>
+                </div>
 
-                    <!-- Botão de Ação para Gráficos Completos -->
-                    <a href="index.html#dashboard" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; padding: 8px 12px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); color: var(--text-primary); text-decoration: none; font-size: 0.7rem; font-weight: 600; text-align: center; transition: var(--transition);" onmouseover="this.style.background='rgba(255, 255, 255, 0.07)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.03)'">
-                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Ver Gráficos Detalhados & Comparativos
-                    </a>
+                <!-- Gráfico do Nível do Rio Negro 2024 vs Ano Atual -->
+                <div class="climate-chart-container" style="margin-top: 12px;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Nível do Rio Negro - Estiagem no ano de 2024
+                    </div>
+                    <canvas id="riverLevelChart2024"></canvas>
+                </div>
+
+                <!-- Novo Gráfico: Estiagem Comparativa - 2023 vs 2024 -->
+                <div class="climate-chart-container" style="margin-top: 12px;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Estiagem no ano de 2024 vs 2023
+                    </div>
+                    <canvas id="riverDroughtComparisonChart"></canvas>
                 </div>
                 
                 <div class="climate-footer">
@@ -1735,6 +1763,7 @@
                     </details>
                 </div>
             </div>
+        </div>
     </div>
 
     <!-- Botão de Minimizar/Recolher Barra Lateral -->
@@ -1744,11 +1773,8 @@
         </svg>
     </button>
 
-    <!-- Área Principal de Trabalho (Mapa + 360) -->
-    <main class="workspace" id="workspace">
-        
-        <!-- Seção do Mapa -->
-        <section class="map-section">
+    <!-- Seção do Mapa -->
+    <section class="map-section">
             <div id="map"></div>
 
             <!-- 2. Tabela de Atributos Retrátil Inferior (Flutuando exclusivamente AQUI no Mapa) -->
@@ -1879,6 +1905,9 @@
     <!-- Pannellum 360 Viewer JS -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
+    <!-- Chart.js para o Dashboard Climático -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         let map;
         let pViewer = null;
@@ -1886,6 +1915,11 @@
         let markers = {};
         let escolasRuraisData = null;
         let ruralMarkers = {};
+        let climateChart = null;
+        let climateChart2024 = null;
+        let riverLevelChart = null;
+        let riverLevelChart2024 = null;
+        let riverDroughtComparisonChart = null;
         let activeId = null;
         
         // Variáveis globais para o Modo Edição
@@ -1939,7 +1973,7 @@
 
         // Minimiza/Maximiza a barra lateral esquerda
         function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar-left');
+            const sidebar = document.getElementById('sidebarLeft');
             const toggleBtn = document.querySelector('.sidebar-toggle-btn');
             
             if (!sidebar || !toggleBtn) return;
@@ -2797,6 +2831,629 @@
             return "Nublado";
         }
 
+        // Plugin customizado para aplicar efeito de Neon/Glow nas linhas do Chart.js
+        const glowPlugin = {
+            id: 'glow',
+            beforeDatasetDraw(chart, args) {
+                const ctx = chart.ctx;
+                ctx.save();
+                const dataset = chart.data.datasets[args.index];
+                
+                // Aplica sombra do canvas com base na cor da borda da linha
+                ctx.shadowColor = dataset.borderColor;
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 2;
+            },
+            afterDatasetDraw(chart, args) {
+                chart.ctx.restore();
+            }
+        };
+
+        // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
+        const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
+        // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)
+        const riverData2024 = [20.06, 21.68, 22.72, 23.87, 25.84, 26.83, 26.29, 23.60, 16.23, 12.11, 13.15, 15.22];
+        // Dados de 2026 consolidados até Julho e nulos para o restante
+        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, 28.30, null, null, null, null, null];
+
+        // Inicializa os gráficos de linha comparativos de chuva (Precipitação) com Chart.js
+        function initClimateChart() {
+            const ctx = document.getElementById('climateComparisonChart').getContext('2d');
+            const ctx2024 = document.getElementById('climateComparisonChart2024').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            // Gráfico 2023 vs Atual
+            climateChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Crítica)',
+                            data: new Array(12).fill(0),
+                            borderColor: '#f97316', // Laranja do alerta/estiagem
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: new Array(12).fill(null),
+                            borderColor: '#06b6d4', // Ciano de escolas/chuva
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(1) + ' mm';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' mm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 2024 vs Atual
+            climateChart2024 = new Chart(ctx2024, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Ano 2024 (Recorde Seca)',
+                            data: new Array(12).fill(0),
+                            borderColor: '#eab308', // Amber/Amarelo
+                            borderWidth: 2,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: new Array(12).fill(null),
+                            borderColor: '#06b6d4', // Ciano de escolas/chuva
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.35,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(1) + ' mm';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' mm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializa os gráficos do Nível do Rio Negro com Chart.js
+        function initRiverLevelChart() {
+            const ctx = document.getElementById('riverLevelChart').getContext('2d');
+            const ctx2024 = document.getElementById('riverLevelChart2024').getContext('2d');
+            const currentYear = new Date().getFullYear();
+            
+            // Gráfico 2023 vs Atual
+            riverLevelChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Rio Negro)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: riverData2026,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+
+            // Gráfico 2024 vs Atual
+            riverLevelChart2024 = new Chart(ctx2024, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
+                            data: riverData2024,
+                            borderColor: '#eab308', // Amber
+                            borderWidth: 2,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: `Ano Atual (${currentYear})`,
+                            data: riverData2026,
+                            borderColor: '#06b6d4', // Ciano
+                            borderWidth: 2.5,
+                            backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+        }
+
+        // Inicializa o gráfico comparativo direto de cotas das estiagens 2023 vs 2024
+        function initRiverDroughtComparisonChart() {
+            const ctx = document.getElementById('riverDroughtComparisonChart').getContext('2d');
+            
+            riverDroughtComparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Rio Negro)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
+                            data: riverData2024,
+                            borderColor: '#eab308', // Amber
+                            borderWidth: 2,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+        }
+
 
         // Função utilitária para contagem dinâmica (counter effect) nos cards climáticos
         function animateValue(id, start, end, duration, suffix = "", decimals = 1) {
@@ -2825,6 +3482,15 @@
             const urlCurrent = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&daily=precipitation_sum,et0_fao_evapotranspiration&past_days=7&timezone=America/Manaus`;
 
             try {
+                // Instancia os gráficos se ainda não foram feitos
+                if (!climateChart) {
+                    initClimateChart();
+                }
+                if (!riverLevelChart) {
+                    initRiverLevelChart();
+                    initRiverDroughtComparisonChart();
+                }
+
                 const response = await fetch(urlCurrent);
                 if (!response.ok) throw new Error("Erro de resposta da API de Clima");
                 const data = await response.json();
