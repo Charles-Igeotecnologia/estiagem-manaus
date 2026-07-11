@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web GIS 360 - Visualizador de Fotos Panorâmicas</title>
+    <title>Portal de Monitoramento Climático - Web GIS 360 Manaus</title>
     
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1643,7 +1643,7 @@
                 <div class="climate-chart-container" style="margin-top: 16px;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-orange); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
                         <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                        Precipitação Acumulada - 2024 vs Atual
+                        Precipitação Acumulada - Estiagem no ano de 2024
                     </div>
                     <canvas id="climateComparisonChart2024"></canvas>
                 </div>
@@ -1652,9 +1652,18 @@
                 <div class="climate-chart-container" style="margin-top: 12px;">
                     <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
                         <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-                        Nível do Rio Negro - 2024 vs Atual
+                        Nível do Rio Negro - Estiagem no ano de 2024
                     </div>
                     <canvas id="riverLevelChart2024"></canvas>
+                </div>
+
+                <!-- Novo Gráfico: Estiagem Comparativa - 2023 vs 2024 -->
+                <div class="climate-chart-container" style="margin-top: 12px;">
+                    <div style="font-size: 0.65rem; font-weight: 600; color: var(--accent-cyan); margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                        Estiagem no ano de 2024 vs 2023
+                    </div>
+                    <canvas id="riverDroughtComparisonChart"></canvas>
                 </div>
                 
                 <div class="climate-footer">
@@ -2738,6 +2747,7 @@
         let climateChart2024 = null;
         let riverLevelChart = null;
         let riverLevelChart2024 = null;
+        let riverDroughtComparisonChart = null;
         // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
         // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)
@@ -3221,6 +3231,127 @@
             });
         }
 
+        // Inicializa o gráfico comparativo direto de cotas das estiagens 2023 vs 2024
+        function initRiverDroughtComparisonChart() {
+            const ctx = document.getElementById('riverDroughtComparisonChart').getContext('2d');
+            
+            riverDroughtComparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Rio Negro)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        },
+                        {
+                            label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
+                            data: riverData2024,
+                            borderColor: '#eab308', // Amber
+                            borderWidth: 2,
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 2,
+                            pointHoverRadius: 4
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 9,
+                                    family: "'Inter', sans-serif"
+                                },
+                                boxWidth: 10,
+                                boxHeight: 6
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            titleFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 10,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.04)'
+                            },
+                            ticks: {
+                                color: '#64748b',
+                                font: {
+                                    size: 8
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+        }
+
 
         // Função utilitária para contagem dinâmica (counter effect) nos cards climáticos
         function animateValue(id, start, end, duration, suffix = "", decimals = 1) {
@@ -3255,6 +3386,7 @@
                 }
                 if (!riverLevelChart) {
                     initRiverLevelChart();
+                    initRiverDroughtComparisonChart();
                 }
 
                 const response = await fetch(urlCurrent);

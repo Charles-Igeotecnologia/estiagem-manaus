@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estiagem Manaus - Monitoramento Climático e Histórico da Seca</title>
+    <title>Portal de Monitoramento Climático - Estiagem Manaus</title>
     
     <!-- Google Fonts: Outfit (títulos) e Inter (textos) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -470,7 +470,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            grid-row: span 2;
         }
 
         .climate-header {
@@ -1142,9 +1141,9 @@
         <div class="logo-container">
             <a href="index.html" class="logo">
                 <img src="https://www.manaus.am.gov.br/wp-content/uploads/2026/04/LogoRetBraTransp.png" alt="Prefeitura de Manaus" style="height: 38px; object-fit: contain; width: auto; vertical-align: middle;">
-                <div class="logo-tag">Estiagem</div>
+                <div class="logo-tag" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--accent-cyan);">Monitoramento Climático</div>
             </a>
-            <div class="logo-subtext">Secretaria Municipal de Educação - Divisão de Gestão de Tecnologia da Informação - Setor de Geotecnologia</div>
+            <div class="logo-subtext">Portal de Monitoramento Climático para a Região de Manaus — SEMED / Setor de Geotecnologia</div>
         </div>
         <nav class="nav-links">
             <a href="#dashboard" class="nav-link">Painel Climático</a>
@@ -1183,9 +1182,9 @@
         <!-- Seção Hero -->
         <section class="hero-section">
             <div class="hero-content">
-                <div class="hero-meta">Histórico & Monitoramento</div>
+                <div class="hero-meta">Portal de Monitoramento Climático - Manaus</div>
                 <h1 class="hero-title">
-                    A Grande Seca de 2023 <span>em Manaus</span>
+                    Histórico & Monitoramento de Estiagem <span>em Manaus</span>
                 </h1>
                 <p class="hero-description">
                     Em 2023, o Amazonas vivenciou uma das estiagens mais severas registradas na história recente. O nível do Rio Negro em Manaus atingiu a mínima histórica de <b>12,70 metros</b>, isolando comunidades ribeirinhas, paralisando o transporte hidroviário e gerando severos impactos ambientais e sociais.
@@ -1424,7 +1423,40 @@
                     </div>
                 </div>
 
-                <!-- Coluna 4: Gráfico Comparativo de Precipitação 2024 vs Ano Atual -->
+                <!-- Coluna 4: Novo Gráfico Comparativo de Estiagem 2023 vs 2024 (Abaixo do Clima/Previsão) -->
+                <div class="chart-card">
+                    <div class="chart-card-body">
+                        <div class="chart-card-header">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: wrap; gap: 10px;">
+                                <div>
+                                    <div class="chart-card-title">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
+                                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                        </svg>
+                                        Estiagem no ano de 2024 vs 2023
+                                    </div>
+                                    <div class="chart-card-desc">Comparação direta do nível do Rio Negro (m) entre as duas piores estiagens registradas</div>
+                                </div>
+                                <button class="compare-link-btn" onclick="openCompareModal('drought_comparison')">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Análise Comparativa
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="riverDroughtComparisonChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span>Fontes: Porto de Manaus & SGB/CPRM</span>
+                        <a href="https://www.sgb.gov.br/sace/amazonas" target="_blank">SACE Amazonas ↗</a>
+                    </div>
+                </div>
+
+                <!-- Coluna 5: Gráfico Comparativo de Precipitação - Estiagem no ano de 2024 -->
                 <div class="chart-card">
                     <div class="chart-card-body">
                         <div class="chart-card-header">
@@ -1436,7 +1468,7 @@
                                             <line x1="12" y1="20" x2="12" y2="4"></line>
                                             <line x1="6" y1="20" x2="6" y2="14"></line>
                                         </svg>
-                                        Distribuição de Chuva Mensal (Precipitação) - 2024
+                                        Distribuição de Chuva Mensal (Precipitação) - Estiagem no ano de 2024
                                     </div>
                                     <div class="chart-card-desc">Comparação mês a mês entre o ano do recorde de seca (2024) e o ano atual</div>
                                 </div>
@@ -1459,7 +1491,7 @@
                     </div>
                 </div>
 
-                <!-- Coluna 5: Gráfico do Nível do Rio Negro 2024 vs Ano Atual -->
+                <!-- Coluna 6: Gráfico do Nível do Rio Negro - Estiagem no ano de 2024 -->
                 <div class="chart-card">
                     <div class="chart-card-body">
                         <div class="chart-card-header">
@@ -1469,7 +1501,7 @@
                                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-cyan);">
                                             <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
                                         </svg>
-                                        Cota Hidrométrica (Nível do Rio Negro) - 2024
+                                        Cota Hidrométrica (Nível do Rio Negro) - Estiagem no ano de 2024
                                     </div>
                                     <div class="chart-card-desc">Nível do rio em metros (m) medido no Porto de Manaus/CPRM comparando 2024 e o ano atual</div>
                                 </div>
@@ -1551,6 +1583,7 @@
         let climateChart2024 = null;
         let riverLevelChart = null;
         let riverLevelChart2024 = null;
+        let riverDroughtComparisonChart = null;
 
         // Plugin customizado para aplicar efeito de Neon/Glow nas linhas do Chart.js
         const glowPlugin = {
@@ -2082,6 +2115,131 @@
             });
         }
 
+        // Inicializa o gráfico comparativo direto de cotas das estiagens 2023 vs 2024
+        function initRiverDroughtComparisonChart() {
+            const ctx = document.getElementById('riverDroughtComparisonChart').getContext('2d');
+            
+            riverDroughtComparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        {
+                            label: 'Estiagem 2023 (Mínima 12.70m)',
+                            data: riverData2023,
+                            borderColor: '#f97316', // Laranja
+                            borderWidth: 2.5,
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        },
+                        {
+                            label: 'Estiagem 2024 (Recorde Mínimo 12.11m)',
+                            data: riverData2024,
+                            borderColor: '#eab308', // Amber
+                            borderWidth: 3,
+                            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }
+                    ]
+                },
+                plugins: [glowPlugin],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1800,
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 11,
+                                    family: "'Inter', sans-serif",
+                                    weight: '500'
+                                },
+                                boxWidth: 12,
+                                boxHeight: 8
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: {
+                                size: 12,
+                                family: "'Outfit', 'Inter', sans-serif",
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 11,
+                                family: "'Inter', sans-serif"
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2) + ' m';
+                                    } else {
+                                        label += 'Sem dados';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.03)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: {
+                                    size: 10,
+                                    family: "'Inter', sans-serif"
+                                },
+                                callback: function(value) {
+                                    return value + ' m';
+                                }
+                            },
+                            min: 10,
+                            max: 31
+                        }
+                    }
+                }
+            });
+        }
+
         // Função utilitária para contagem dinâmica (counter effect) nos cards climáticos
         function animateValue(id, start, end, duration, suffix = "", decimals = 1) {
             const obj = document.getElementById(id);
@@ -2484,6 +2642,77 @@
                         💡 <b>Tendência e Alerta:</b> Embora o ano de <b>${currentYear}</b> tenha iniciado com cotas inferiores às de 2023, o pico da cheia em junho foi ligeiramente superior. O fator determinante para evitar um novo desastre será a taxa de descida (recessão) nos meses de agosto a outubro, que em 2023 chegou a registrar descidas diárias assustadoras de mais de 30 centímetros.
                     </p>
                 `;
+            } else if (type === 'drought_comparison') {
+                titleEl.innerHTML = `
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Análise Comparativa: As Grandes Estiagens (2023 vs 2024)
+                `;
+                
+                bodyEl.innerHTML = `
+                    <p style="margin-bottom: 14px;">
+                        A região metropolitana de Manaus enfrentou as duas estiagens mais severas de sua história em anos consecutivos. Em <b>2023</b>, o Rio Negro atingiu a mínima recorde de <b>12,70 metros</b>, superando a grande seca de 2010. Em <b>2024</b>, a escassez persistente estabeleceu o <b>novo recorde absoluto de 12,11 metros</b>.
+                    </p>
+                    <p style="margin-bottom: 16px;">
+                        Abaixo está a comparação detalhada das cotas mínimas históricas, pico das maiores estiagens registradas e o posicionamento crítico de 2024 frente aos registros históricos centenários (iniciados em 1902):
+                    </p>
+                    
+                    <table class="compare-table">
+                        <thead>
+                            <tr>
+                                <th>Posição</th>
+                                <th>Ano Histórico</th>
+                                <th>Cota Mínima Absoluta</th>
+                                <th>Mês / Data do Pico</th>
+                                <th>Severidade & Impacto Principal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: rgba(234, 179, 8, 0.12); border-left: 3px solid var(--accent-orange);">
+                                <td><b>1º (Recorde)</b></td>
+                                <td><b>2024</b></td>
+                                <td style="color: var(--accent-orange); font-weight: 700;">12.11 m</td>
+                                <td>15 de Outubro</td>
+                                <td><b>Novo extremo absoluto</b>. Efeito acumulado de dois anos sob seca persistente, isolando cabeceiras.</td>
+                            </tr>
+                            <tr style="background: rgba(249, 115, 22, 0.04);">
+                                <td>2º</td>
+                                <td>2023</td>
+                                <td style="color: var(--accent-orange); font-weight: 600;">12.70 m</td>
+                                <td>26 de Outubro</td>
+                                <td>Antigo recorde histórico. Impacto severo na navegação, abastecimento e isolamento rural.</td>
+                            </tr>
+                            <tr>
+                                <td>3º</td>
+                                <td>2010</td>
+                                <td>13.63 m</td>
+                                <td>24 de Outubro</td>
+                                <td>Seca severa anterior provocada por forte El Niño no Pacífico.</td>
+                            </tr>
+                            <tr>
+                                <td>4º</td>
+                                <td>1963</td>
+                                <td>13.64 m</td>
+                                <td>30 de Outubro</td>
+                                <td>Estiagem prolongada no leito do Rio Negro por bloqueio atmosférico.</td>
+                            </tr>
+                            <tr>
+                                <td>5º</td>
+                                <td>1906</td>
+                                <td>14.20 m</td>
+                                <td>05 de Novembro</td>
+                                <td>Primeiro grande registro histórico de seca crítica registrado no século XX.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); border-left: 2px solid var(--accent-cyan); padding-left: 10px; margin-top: 14px;">
+                        💡 <b>Contexto e Severidade de 2024:</b> A descida rápida do Rio Negro em 2024 foi intensificada pelo déficit hídrico extremo herdado do final de 2023. Como o período chuvoso (inverno amazônico) de 2023/2024 não foi suficiente para recuperar os lençóis freáticos e reabastecer as cabeceiras dos rios Solimões, Negro e Branco, o leito já iniciou o período de vazante em nível alarmante, atingindo o pico da estiagem (12.11m) dez dias antes do observado no ano anterior.
+                    </p>
+                `;
             }
             
             overlay.style.display = 'flex';
@@ -2669,6 +2898,7 @@
             updateClimateDate();
             fetchClimateData();
             initRiverLevelChart();
+            initRiverDroughtComparisonChart();
             initHeroCarousel();
             initBannerCarousel();
         });
