@@ -22,6 +22,8 @@ PROJETO 360/
 
 ## ⚠️ Fonte dos dados — importante para manutenção
 
+A tabela advém da **Divisão Distrital Rural**, fornecida pela chefia da divisão.
+
 O arquivo `TABELA POCOS 2026.csv` **dentro desta pasta é uma cópia** da planilha de trabalho que fica em `03 TABELA DOS POCOS/TABELA POCOS 2026.csv` (fora deste repositório Git, na estrutura local de pastas do projeto).
 
 Essa cópia existe porque o GitHub Pages só publica o que está dentro do repositório — o app não consegue ler um arquivo de uma pasta fora dele quando publicado online.
