@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAH-AM · Monitoramento Hidrometeorológico da Amazônia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+<style>
+  :root{
+    --bg-void:#060b10;
+    --bg-panel:#0b141c;
+    --bg-panel-2:#101d27;
+    --bg-card:#0e1922;
+    --border:#1c2e3a;
+    --border-soft:#152531;
+    --cyan:#06b6d4;
+    --cyan-soft:rgba(6,182,212,.14);
+    --cyan-glow:rgba(6,182,212,.35);
+    --amber:#f59e0b;
+    --red:#ef4444;
+    --green:#22c55e;
+    --text-hi:#eaf4f7;
+    --text-mid:#8fa4ae;
+    --text-low:#5a6f79;
+    --radius-lg:26px;
+    --radius-md:16px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  [hidden]{display:none !important;}
+  html{scroll-behavior:smooth;}
+  @keyframes viewIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+  .main [data-view]:not([hidden]){animation:viewIn .3s ease;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 82% -10%, rgba(6,182,212,.10), transparent 60%),
+      radial-gradient(800px 500px at -5% 105%, rgba(6,182,212,.06), transparent 55%),
+      var(--bg-void);
+    color:var(--text-hi);
+    font-family:'Sora',sans-serif;
+    font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:'Space Mono',monospace;}
+
+  /* ===== layout ===== */
+  .shell{display:grid; grid-template-columns:264px 1fr; min-height:100vh;}
+
+  /* ===== sidebar ===== */
+  .sidebar{
+    background:linear-gradient(180deg,#080f15,#050a0e 70%);
+    border-right:1px solid var(--border-soft);
+    padding:26px 18px 22px;
+    display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .sidebar::after{
+    content:"";
+    position:absolute; top:0; right:-1px; width:1px; height:100%;
+    background:linear-gradient(180deg, transparent, var(--cyan-glow) 40%, transparent 80%);
+    opacity:.4;
+  }
+  .brand{display:flex; align-items:center; gap:11px; padding:0 6px 26px; border-bottom:1px solid var(--border-soft); margin-bottom:22px;}
+  .brand-mark{
+    width:38px; height:38px; border-radius:11px 11px 11px 4px;
+    background:conic-gradient(from 220deg, var(--cyan), #0891b2 40%, #063f4a 70%, var(--cyan));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 1px rgba(6,182,212,.35), 0 8px 18px -6px rgba(6,182,212,.5);
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:20px; height:20px;}
+  .brand-text{line-height:1.15;}
+  .brand-text b{display:block; font-size:14.5px; font-weight:800; letter-spacing:.2px;}
+  .brand-text span{font-size:10.5px; color:var(--text-mid); font-family:'Space Mono',monospace; letter-spacing:.4px;}
+
+  .nav-label{font-size:10px; text-transform:uppercase; letter-spacing:1.6px; color:var(--text-low); margin:18px 10px 8px; font-weight:700;}
+  .nav-item{
+    display:flex; align-items:center; gap:11px;
+    padding:10px 12px; border-radius:12px; color:var(--text-mid);
+    font-size:13px; font-weight:600; cursor:pointer; margin-bottom:2px;
+    border:1px solid transparent;
+    transition:.15s;
+  }
+  .nav-item svg{width:16px; height:16px; flex-shrink:0; opacity:.85;}
+  .nav-item:hover{color:var(--text-hi); background:rgba(255,255,255,.03);}
+  .nav-item.active{
+    color:var(--cyan); background:var(--cyan-soft); border-color:rgba(6,182,212,.28);
+  }
+  .nav-badge{margin-left:auto; font-size:9.5px; font-family:'Space Mono',monospace; padding:2px 6px; border-radius:20px; background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.3);}
+
+  .sidebar-foot{
+    margin-top:auto; padding:14px 12px; border-radius:var(--radius-md);
+    background:var(--bg-panel-2); border:1px solid var(--border-soft);
+  }
+  .sidebar-foot .row{display:flex; justify-content:space-between; font-size:10.5px; color:var(--text-low); margin-bottom:6px; font-family:'Space Mono',monospace;}
+  .sidebar-foot .row b{color:var(--text-mid);}
+  .pulse-dot{width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; margin-right:5px; box-shadow:0 0 0 3px rgba(34,197,94,.18); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
+  /* ===== main ===== */
+  .main{padding:24px 30px 40px; max-width:1500px; min-width:0;}
+
+  .topbar{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:14px;}
+  .topbar h1{font-size:22px; font-weight:800; letter-spacing:-.3px;}
+  .topbar p{color:var(--text-mid); font-size:12.5px; margin-top:4px;}
+  .topbar-actions{display:flex; gap:10px; align-items:center;}
+  .chip{
+    display:flex; align-items:center; gap:7px;
+    background:var(--bg-panel-2); border:1px solid var(--border-soft);
+    padding:8px 13px; border-radius:30px; font-size:11.5px; color:var(--text-mid); font-family:'Space Mono',monospace;
+  }
+  .chip.alert{border-color:rgba(245,158,11,.35); color:#fbbf24; background:rgba(245,158,11,.08);}
+  .chip b{color:var(--text-hi); font-weight:700;}
+
+  /* ===== alert banner ===== */
+  .banner{
+    display:grid; grid-template-columns:auto 1fr auto; gap:18px; align-items:center;
+    background:linear-gradient(90deg, rgba(245,158,11,.10), rgba(245,158,11,.02));
+    border:1px solid rgba(245,158,11,.28);
+    border-radius:var(--radius-md);
+    padding:16px 20px; margin-bottom:22px;
+  }
+  .banner-icon{width:38px; height:38px; border-radius:10px; background:rgba(245,158,11,.15); display:flex; align-items:center; justify-content:center; color:#fbbf24; flex-shrink:0;}
+  .banner-icon svg{width:20px; height:20px;}
+  .banner h3{font-size:13.5px; font-weight:700; margin-bottom:3px;}
+  .banner p{font-size:12px; color:var(--text-mid); line-height:1.5;}
+  .banner .src{font-size:10px; font-family:'Space Mono',monospace; color:var(--text-low); white-space:nowrap;}
+
+  /* ===== KPI grid ===== */
+  .kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px;}
+  .kpi{
+    background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius-md);
+    padding:18px 20px; position:relative; overflow:hidden;
+  }
+  .kpi::before{
+    content:""; position:absolute; top:0; left:0; width:100%; height:2px;
+    background:linear-gradient(90deg, var(--cyan), transparent);
+  }
+  .kpi-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;}
+  .kpi-label{font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:var(--text-mid); font-weight:700;}
+  .kpi-icon{width:30px; height:30px; border-radius:9px; background:var(--cyan-soft); display:flex; align-items:center; justify-content:center; color:var(--cyan);}
+  .kpi-icon svg{width:15px; height:15px;}
+  .kpi-val{font-size:29px; font-weight:800; font-family:'Space Mono',monospace; letter-spacing:-1px;}
+  .kpi-val span{font-size:14px; color:var(--text-mid); font-weight:400;}
+  .kpi-sub{display:flex; align-items:center; gap:6px; margin-top:8px; font-size:11.5px;}
+  .up{color:var(--red);} .down{color:var(--green);} .flat{color:var(--text-mid);}
+  .kpi-note{font-size:10.5px; color:var(--text-low); margin-top:6px;}
+
+  /* ===== panels ===== */
+  .grid-2{display:grid; grid-template-columns:1.55fr 1fr; gap:16px; margin-bottom:16px;}
+  .panel{
+    background:var(--bg-card); border:1px solid var(--border-soft); border-radius:var(--radius-lg);
+    padding:20px 22px;
+  }
+  .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .panel-head h2{font-size:14px; font-weight:700;}
+  .panel-head p{font-size:11px; color:var(--text-low); margin-top:2px; font-family:'Space Mono',monospace;}
+  .legend-tag{font-size:10px; font-family:'Space Mono',monospace; color:var(--text-mid); display:flex; align-items:center; gap:5px;}
+  .legend-tag i{width:9px; height:9px; border-radius:3px; display:inline-block;}
+
+  .icon-btn{
+    width:26px; height:26px; border-radius:8px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--cyan-soft); border:1px solid rgba(6,182,212,.28); color:var(--cyan);
+    cursor:pointer; transition:.15s;
+  }
+  .icon-btn svg{width:14px; height:14px;}
+  .icon-btn:hover{background:rgba(6,182,212,.24);}
+  .icon-btn.active{background:var(--cyan); color:#04141a;}
+
+  /* ===== station table ===== */
+  .stations{width:100%; border-collapse:collapse;}
+  .stations th{
+    text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.8px;
+    color:var(--text-low); font-weight:700; padding:0 10px 10px; border-bottom:1px solid var(--border-soft);
+  }
+  .stations td{padding:11px 10px; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .stations tr:last-child td{border-bottom:none;}
+  .stations tr:hover td{background:rgba(255,255,255,.015);}
+  .st-name{font-weight:700;}
+  .st-river{font-size:10.5px; color:var(--text-low); font-family:'Space Mono',monospace;}
+  .badge{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:20px;
+    font-size:10px; font-weight:700; font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:.4px;
+  }
+  .badge.b-critico{background:rgba(239,68,68,.14); color:#f87171; border:1px solid rgba(239,68,68,.3);}
+  .badge.b-alerta{background:rgba(245,158,11,.14); color:#fbbf24; border:1px solid rgba(245,158,11,.3);}
+  .badge.b-normal{background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.28);}
+  .trend{font-family:'Space Mono',monospace; font-size:11.5px;}
+
+  /* ===== bottom grid ===== */
+  .grid-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;}
+
+  .src-list{display:flex; flex-direction:column; gap:10px;}
+  .src-item{
+    display:flex; align-items:center; gap:12px; padding:11px 13px;
+    background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px;
+  }
+  .src-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .src-item b{font-size:12px; display:block;}
+  .src-item span{font-size:10.5px; color:var(--text-low); font-family:'Space Mono',monospace;}
+  .src-status{margin-left:auto; font-size:9.5px; font-family:'Space Mono',monospace; padding:2px 8px; border-radius:20px;}
+  .s-ok{background:rgba(34,197,94,.12); color:#4ade80;}
+  .s-token{background:rgba(245,158,11,.12); color:#fbbf24;}
+
+  .wind-compass{display:flex; align-items:center; justify-content:center; padding:6px 0 2px;}
+
+  /* ===== previsão 7 dias · cena animada de céu ===== */
+  .sky-scene{
+    position:relative; height:108px; border-radius:16px; overflow:hidden; margin-bottom:16px;
+    background:linear-gradient(180deg,#0d2438,#0a1520 85%);
+    border:1px solid var(--border-soft);
+  }
+  .sky-sun{
+    position:absolute; top:18px; left:34px; width:44px; height:44px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #fff3cf, #f59e0b 72%);
+    box-shadow:0 0 34px 10px rgba(245,158,11,.4);
+    opacity:.15; transition:opacity .8s ease, filter .8s ease;
+    animation:sunPulse 5s ease-in-out infinite;
+  }
+  @keyframes sunPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+  .sky-cloud{
+    position:absolute; border-radius:40px; background:rgba(234,244,247,.92);
+    box-shadow:20px -13px 0 -3px rgba(234,244,247,.92), -20px -5px 0 -7px rgba(234,244,247,.78);
+    opacity:0; transition:opacity .8s ease;
+    animation:drift linear infinite;
+  }
+  .sky-cloud.c1{ top:14px; width:96px; height:32px; animation-duration:34s; }
+  .sky-cloud.c2{ top:44px; width:66px; height:24px; animation-duration:46s; animation-delay:-14s; }
+  .sky-cloud.c3{ top:68px; width:118px; height:38px; animation-duration:58s; animation-delay:-30s; }
+  @keyframes drift{ from{transform:translateX(-160px);} to{transform:translateX(520px);} }
+  .sky-rain{
+    position:absolute; inset:0; opacity:0; pointer-events:none; transition:opacity .6s ease;
+    background-image:repeating-linear-gradient(112deg, rgba(6,182,212,.55) 0 2px, transparent 2px 20px);
+    animation:rainfall .5s linear infinite;
+  }
+  @keyframes rainfall{ from{background-position:0 0;} to{background-position:-14px 20px;} }
+  .sky-label{
+    position:absolute; right:16px; bottom:12px; text-align:right;
+    font-family:'Space Mono',monospace; font-size:10.5px; color:var(--text-mid);
+  }
+  .sky-label b{display:block; font-size:13px; color:var(--text-hi); font-weight:700; text-transform:capitalize;}
+
+  .sky-scene.state-sol .sky-sun{ opacity:1; }
+  .sky-scene.state-sol .sky-cloud{ opacity:.12; }
+  .sky-scene.state-parcial .sky-sun{ opacity:.85; }
+  .sky-scene.state-parcial .sky-cloud{ opacity:.8; }
+  .sky-scene.state-nublado .sky-sun{ opacity:.2; filter:blur(1px); }
+  .sky-scene.state-nublado .sky-cloud{ opacity:.95; }
+  .sky-scene.state-chuva .sky-sun{ opacity:.12; }
+  .sky-scene.state-chuva .sky-cloud{ opacity:1; }
+  .sky-scene.state-chuva .sky-rain{ opacity:1; }
+
+  .forecast-row{display:grid; grid-template-columns:repeat(7,1fr); gap:8px;}
+  .fc-day{
+    background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px;
+    padding:10px 6px; text-align:center;
+  }
+  .fc-day.is-today{border-color:rgba(6,182,212,.4); background:var(--cyan-soft);}
+  .fc-label{font-size:10px; text-transform:uppercase; color:var(--text-mid); font-weight:700; letter-spacing:.5px;}
+  .fc-icon{margin:8px auto; width:24px; height:24px; color:var(--cyan);}
+  .fc-icon svg{width:100%; height:100%;}
+  .fc-temp{font-family:'Space Mono',monospace; font-size:12px;}
+  .fc-temp b{color:var(--text-hi);}
+  .fc-temp span{color:var(--text-low);}
+  .fc-rain{font-size:9.5px; color:var(--cyan); margin-top:4px; font-family:'Space Mono',monospace;}
+
+  @media (max-width:640px){
+    .forecast-row{grid-template-columns:repeat(7,76px); overflow-x:auto; padding-bottom:4px;}
+  }
+
+  footer{margin-top:26px; padding-top:18px; border-top:1px solid var(--border-soft); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+  footer p{font-size:10.5px; color:var(--text-low); font-family:'Space Mono',monospace;}
+
+  @media (max-width:1180px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+    .grid-3{grid-template-columns:1fr;}
+    .shell{grid-template-columns:1fr;}
+    .sidebar{display:none;}
+  }
+
+  @media (max-width:480px){
+    .main{padding:18px 16px 28px;}
+    .topbar{align-items:flex-start;}
+    .kpi-grid{grid-template-columns:1fr;}
+    .banner{grid-template-columns:auto 1fr; row-gap:10px;}
+    .banner .src{grid-column:1 / -1; white-space:normal; text-align:left;}
+    .panel{padding:16px 16px;}
+    .panel-head{flex-wrap:wrap; row-gap:8px;}
+    .src-item{flex-wrap:wrap; row-gap:6px;}
+    .src-item .src-status{margin-left:0;}
+    .stations th:nth-child(3), .stations td:nth-child(3){display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 17c2-1 3-3 6-3s4 2 6 2 4-2 6-3M3 12c2-1 3-3 6-3s4 2 6 2 4-2 6-3" stroke="#04141a" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <b>SAH · AMAZÔNIA</b>
+        <span>MONITOR-RN14990000</span>
+      </div>
+    </div>
+
+    <a href="../index.html" style="display:flex; align-items:center; gap:8px; padding:9px 12px; margin:14px 0 4px; border-radius:12px; color:var(--text-mid); font-size:11.5px; font-weight:600; text-decoration:none; border:1px solid var(--border-soft); background:var(--bg-panel-2); transition:.15s;" onmouseover="this.style.color='var(--cyan)'" onmouseout="this.style.color='var(--text-mid)'">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Portal de Monitoramento Climático
+    </a>
+
+    <div class="nav-label">Painéis</div>
+    <div class="nav-item active" data-nav="geral">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Visão Geral
+    </div>
+    <div class="nav-item" data-nav="cotas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17c2-1 3-3 6-3s4 2 6 2 4-2 6-3M3 12c2-1 3-3 6-3s4 2 6 2 4-2 6-3"/></svg>
+      Cotas dos Rios
+    </div>
+    <div class="nav-item" data-nav="clima">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      Clima &amp; Vento
+    </div>
+    <div class="nav-item" data-nav="alertas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 16H3L12 2z"/><path d="M12 10v4M12 17.5v.01"/></svg>
+      Alertas
+      <span class="nav-badge">3</span>
+    </div>
+    <div class="nav-item" data-nav="bacias">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+      Bacias Monitoradas
+    </div>
+
+    <div class="nav-label">Integração</div>
+    <div class="nav-item" data-nav="fontes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10M4 17l4 4h8l4-4M4 17h16"/></svg>
+      Fontes / APIs
+    </div>
+    <div class="nav-item" data-nav="log">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Log de Ingestão
+    </div>
+
+    <div class="sidebar-foot">
+      <div class="row"><span><span class="pulse-dot"></span>status</span><b>4 fontes mapeadas</b></div>
+      <div class="row"><span>última sinc.</span><b>há 6 min</b></div>
+      <div class="row"><span>cobertura</span><b>bacia amazônica</b></div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h1>Monitoramento Hidrometeorológico — Manaus / Bacia Amazônica</h1>
+        <p>Protótipo Web GIS · dados simulados para validação de layout — estrutura pronta para ingestão via ANA HidroWebService, SGB/SACE, CEMADEN e INMET</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="chip">📍 <b>Porto de Manaus · 14990000</b></div>
+        <div class="chip alert">⚠ <b>Cota de inundação atingida</b></div>
+      </div>
+    </div>
+
+    <!-- ALERT BANNER -->
+    <div class="banner" data-view="geral,cotas,alertas">
+      <div class="banner-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 16H3L12 2z"/><path d="M12 10v4M12 17.5v.01"/></svg>
+      </div>
+      <div>
+        <h3>Rio Negro em Manaus estabilizado em 28,50 m — cota de inundação</h3>
+        <p>Curva de recessão de 2026 apresenta paralelismo inicial com 2023 (2ª pior seca já registrada, cota mínima 12,70 m). Projeção estatística com base na série histórica 1903–2025 aponta descida mediana de ~11,08 m a partir do pico atual. Monitoramento contínuo recomendado até definição do padrão de vazante em JJA/JAS.</p>
+      </div>
+      <div class="src">FONTE: SGB/SACE<br>BOLETIM SAH-AMAZONAS</div>
+    </div>
+
+    <!-- PREVISÃO DO TEMPO · 7 DIAS -->
+    <div class="panel" data-view="geral,clima" style="margin-bottom:22px;">
+      <div class="panel-head">
+        <div>
+          <h2>Previsão do Tempo — 7 dias</h2>
+          <p>MANAUS · INMET/CPTEC · CONDIÇÃO ATUAL EM DESTAQUE</p>
+        </div>
+      </div>
+      <div class="sky-scene" id="sky-scene">
+        <div class="sky-sun"></div>
+        <div class="sky-cloud c1"></div>
+        <div class="sky-cloud c2"></div>
+        <div class="sky-cloud c3"></div>
+        <div class="sky-rain"></div>
+        <div class="sky-label"><b id="sky-label-text">—</b><span id="sky-label-temp">—</span></div>
+      </div>
+      <div class="forecast-row" id="forecast-row"></div>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid">
+      <div class="kpi" data-view="geral,cotas">
+        <div class="kpi-top">
+          <span class="kpi-label">Cota · Rio Negro (Manaus)</span>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17c2-1 3-3 6-3s4 2 6 2 4-2 6-3"/></svg></div>
+        </div>
+        <div class="kpi-val">28,50<span> m</span></div>
+        <div class="kpi-sub flat">→ estabilizado nas últimas 48h</div>
+        <div class="kpi-note">Cota de inundação: 29,00 m · ref. histórica</div>
+      </div>
+
+      <div class="kpi" data-view="geral,clima">
+        <div class="kpi-top">
+          <span class="kpi-label">Temperatura · A101 Manaus</span>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+        </div>
+        <div class="kpi-val" id="kpi-temp-val">33,4<span>°C</span></div>
+        <div class="kpi-sub up" id="kpi-temp-sub">▲ 1,8°C acima da média do dia</div>
+        <div class="kpi-note" id="kpi-temp-note">Sensação térmica: 38°C · umidade 61%</div>
+      </div>
+
+      <div class="kpi" data-view="geral,clima">
+        <div class="kpi-top">
+          <span class="kpi-label">Vento · A101 Manaus</span>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h11a3 3 0 1 0-3-3M3 16h15a3 3 0 1 1-3 3M3 12h9"/></svg></div>
+        </div>
+        <div class="kpi-val" id="kpi-wind-val">11<span>km/h</span></div>
+        <div class="kpi-sub flat" id="kpi-wind-sub">Direção NE · rajada máx. 22 km/h</div>
+        <div class="kpi-note" id="kpi-wind-note">Coleta horária · INMET automáticas</div>
+      </div>
+
+      <div class="kpi" data-view="geral,clima">
+        <div class="kpi-top">
+          <span class="kpi-label">Chuva acumulada 24h</span>
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 13v4M8 13v4M12 15v4M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg></div>
+        </div>
+        <div class="kpi-val">14,2<span>mm</span></div>
+        <div class="kpi-sub down">▼ abaixo da mediana p/ época</div>
+        <div class="kpi-note">Rede de pluviômetros · CEMADEN</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="grid-2">
+      <div class="panel" data-view="geral,cotas">
+        <div class="panel-head">
+          <div>
+            <h2>Cotas Observadas do Porto de Manaus / Rio Negro</h2>
+            <p>ÚLTIMOS 60 DIAS · LEITURA DIÁRIA DAS 07H · FAIXA 15–85% DE PERMANÊNCIA HISTÓRICA</p>
+          </div>
+          <div style="display:flex; gap:14px;">
+            <div class="legend-tag"><i style="background:var(--cyan)"></i>cota observada</div>
+            <div class="legend-tag"><i style="background:rgba(6,182,212,.18)"></i>faixa normal</div>
+          </div>
+        </div>
+        <div id="chart-cota" style="width:100%; height:290px;"></div>
+      </div>
+
+      <div class="panel" data-view="geral,cotas,bacias,alertas">
+        <div class="panel-head">
+          <div>
+            <h2>Status por estação — Bacia Amazônica</h2>
+            <p>SGB/SACE · BOLETIM SAH AMAZONAS</p>
+          </div>
+        </div>
+        <table class="stations">
+          <thead>
+            <tr><th>Estação</th><th>Cota</th><th>Var. 24h</th><th>Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="st-name">Manaus</div><div class="st-river">Rio Negro</div></td>
+              <td class="trend">28,50 m</td>
+              <td class="trend flat">0 cm</td>
+              <td><span class="badge b-alerta">Inundação</span></td>
+            </tr>
+            <tr>
+              <td><div class="st-name">Tabatinga</div><div class="st-river">Rio Solimões</div></td>
+              <td class="trend">11,2 m</td>
+              <td class="trend down">− 6 cm</td>
+              <td><span class="badge b-alerta">Alerta</span></td>
+            </tr>
+            <tr>
+              <td><div class="st-name">Porto Velho</div><div class="st-river">Rio Madeira</div></td>
+              <td class="trend">14,8 m</td>
+              <td class="trend down">− 136 cm</td>
+              <td><span class="badge b-critico">Vulnerável</span></td>
+            </tr>
+            <tr>
+              <td><div class="st-name">Boa Vista</div><div class="st-river">Rio Branco</div></td>
+              <td class="trend">6,4 m</td>
+              <td class="trend up">+ 18 cm</td>
+              <td><span class="badge b-normal">Normal</span></td>
+            </tr>
+            <tr>
+              <td><div class="st-name">Rio Branco</div><div class="st-river">Rio Acre</div></td>
+              <td class="trend">7,1 m</td>
+              <td class="trend down">− 89 cm</td>
+              <td><span class="badge b-critico">Nível mínimo</span></td>
+            </tr>
+            <tr>
+              <td><div class="st-name">Beruri</div><div class="st-river">Rio Purus</div></td>
+              <td class="trend">9,3 m</td>
+              <td class="trend up">+ 16 cm</td>
+              <td><span class="badge b-normal">Normal</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- preenche o espaço vazio da aba "Bacias Monitoradas" -->
+      <div class="panel" data-view="bacias">
+        <div class="panel-head">
+          <div>
+            <h2>Cobertura da Rede — Bacia Amazônica</h2>
+            <p>ESTAÇÕES TELEMÉTRICAS · SGB/SACE</p>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+          <div style="background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;">
+            <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-mid); font-weight:700;">Bacias monitoradas</div>
+            <div style="font-family:'Space Mono',monospace; font-size:24px; font-weight:800; margin-top:4px;">6</div>
+          </div>
+          <div style="background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;">
+            <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-mid); font-weight:700;">Estações ativas</div>
+            <div style="font-family:'Space Mono',monospace; font-size:24px; font-weight:800; margin-top:4px;">6<span style="font-size:13px; color:var(--text-mid);">/6</span></div>
+          </div>
+          <div style="background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;">
+            <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-mid); font-weight:700;">Situação crítica</div>
+            <div style="font-family:'Space Mono',monospace; font-size:24px; font-weight:800; margin-top:4px; color:#f87171;">2</div>
+          </div>
+          <div style="background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px;">
+            <div style="font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-mid); font-weight:700;">Normalidade</div>
+            <div style="font-family:'Space Mono',monospace; font-size:24px; font-weight:800; margin-top:4px; color:#4ade80;">2</div>
+          </div>
+        </div>
+        <p style="font-size:10.5px; color:var(--text-low); font-family:'Space Mono',monospace; line-height:1.6;">Cobertura: Rio Negro (Manaus) · Solimões (Tabatinga) · Madeira (Porto Velho) · Branco (Boa Vista) · Acre (Rio Branco) · Purus (Beruri) — atualização a cada boletim SAH-Amazonas.</p>
+      </div>
+
+      <!-- preenche o espaço vazio da aba "Alertas" -->
+      <div class="panel" data-view="alertas">
+        <div class="panel-head">
+          <div>
+            <h2>Alertas Ativos</h2>
+            <p>3 OCORRÊNCIAS · BOLETIM SAH-AMAZONAS</p>
+          </div>
+        </div>
+        <div class="src-list">
+          <div class="src-item" style="background:rgba(245,158,11,.06); border-color:rgba(245,158,11,.25);">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Manaus · Rio Negro</b><span>cota de inundação atingida (28,50 m)</span></div>
+            <span class="src-status" style="background:rgba(245,158,11,.15); color:#fbbf24;">alerta</span>
+          </div>
+          <div class="src-item" style="background:rgba(239,68,68,.06); border-color:rgba(239,68,68,.25);">
+            <span class="src-dot" style="background:var(--red)"></span>
+            <div><b>Porto Velho · Rio Madeira</b><span>queda acentuada · −136 cm em 24h</span></div>
+            <span class="src-status" style="background:rgba(239,68,68,.15); color:#f87171;">vulnerável</span>
+          </div>
+          <div class="src-item" style="background:rgba(239,68,68,.06); border-color:rgba(239,68,68,.25);">
+            <span class="src-dot" style="background:var(--red)"></span>
+            <div><b>Rio Branco · Rio Acre</b><span>nível mínimo histórico · −89 cm em 24h</span></div>
+            <span class="src-status" style="background:rgba(239,68,68,.15); color:#f87171;">crítico</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECOND ROW -->
+    <div class="grid-2">
+      <div class="panel" data-view="geral,clima">
+        <div class="panel-head">
+          <div>
+            <h2>Temperatura &amp; vento — Estação A101 (Manaus)</h2>
+            <p>ÚLTIMAS 48H · DADOS HORÁRIOS INMET</p>
+          </div>
+          <div style="display:flex; gap:14px;">
+            <div class="legend-tag"><i style="background:#f59e0b"></i>temperatura</div>
+            <div class="legend-tag"><i style="background:var(--cyan)"></i>vento</div>
+          </div>
+        </div>
+        <div id="chart-clima" style="width:100%; height:250px;"></div>
+      </div>
+
+      <div class="panel" data-view="geral,clima">
+        <div class="panel-head">
+          <div>
+            <h2>Chuva acumulada — Rede CEMADEN</h2>
+            <p>ÚLTIMOS 7 DIAS · MANAUS E ENTORNO</p>
+          </div>
+        </div>
+        <div id="chart-chuva" style="width:100%; height:250px;"></div>
+      </div>
+    </div>
+
+    <!-- COMPARATIVO HISTÓRICO -->
+    <div class="grid-2">
+      <div class="panel" data-view="geral,cotas">
+        <div class="panel-head">
+          <div>
+            <h2>Cota Hidrográfica Comparada — Rio Negro em Manaus</h2>
+            <p>POR MÊS · JUN–NOV · SÉRIES 2023 (SECA HISTÓRICA) · 2026 (EM CURSO)</p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div class="legend-tag"><i style="background:var(--amber)"></i>cota 2023 · mín. 12,70m</div>
+            <div class="legend-tag"><i style="background:var(--cyan)"></i>cota 2026 · observada</div>
+            <div class="legend-tag"><i style="background:var(--green)"></i>cota 2026 · projeção</div>
+            <button class="icon-btn" id="btn-analise-mensal" type="button" title="Análise mês a mês" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V10M10 19V5M16 19v-7M20 19H4"/></svg>
+            </button>
+          </div>
+        </div>
+        <div id="chart-overlay" style="width:100%; height:280px;"></div>
+        <p style="font-size:10.5px; color:var(--text-low); margin-top:8px; font-family:'Space Mono',monospace;">2026 plotado até a data atual (jul/2026) · projeção tracejada a partir da descida mediana histórica (SGB, série 1903–2025)</p>
+
+        <div id="analise-mensal" hidden style="margin-top:14px; border-top:1px solid var(--border-soft); padding-top:14px;">
+          <table class="stations" style="width:100%;">
+            <thead>
+              <tr><th>Mês</th><th>Cota 2023</th><th>Cota 2026</th><th>Δ vs. 2023</th><th>Leitura</th></tr>
+            </thead>
+            <tbody id="analise-mensal-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" data-view="geral,alertas">
+        <div class="panel-head">
+          <div>
+            <h2>Indicador ENOS — risco de vazante severa</h2>
+            <p>CPC/NOAA · NOTA TÉCNICA INPE/INMET/FUNCEME/CENSIPAM</p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div class="src-item" style="background:rgba(239,68,68,.06); border-color:rgba(239,68,68,.25);">
+            <span class="src-dot" style="background:var(--red)"></span>
+            <div><b>ago–set–out 2026</b><span>El Niño — probabilidade ≥ 90%</span></div>
+            <span class="src-status" style="background:rgba(239,68,68,.15); color:#f87171;">crítico</span>
+          </div>
+          <div class="src-item" style="background:rgba(245,158,11,.06); border-color:rgba(245,158,11,.25);">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>jul–ago–set 2026</b><span>El Niño — probabilidade &gt; 80%</span></div>
+            <span class="src-status s-token">atenção</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--green)"></span>
+            <div><b>jun–jul–ago 2026</b><span>Neutralidade → transição (~79%)</span></div>
+            <span class="src-status s-ok">monitorar</span>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; padding:12px 14px; background:var(--bg-panel-2); border:1px solid var(--border-soft); border-radius:12px;">
+          <p style="font-size:11px; color:var(--text-mid); line-height:1.6;">
+            <b style="color:var(--text-hi);">Leitura para planejamento:</b> diferente de 2023, o sinal El Niño 2026 amadurece <i>durante</i> o início da vazante (ago–out), coincidindo com o período de maior sensibilidade do hidrograma do Rio Negro. Janela de antecipação ainda aberta — recomenda-se revisão do indicador a cada boletim trimestral móvel.
+          </p>
+        </div>
+      </div>
+
+      <!-- preenche o espaço vazio ao lado do ENOS na aba "Alertas" -->
+      <div class="panel" data-view="alertas">
+        <div class="panel-head">
+          <div>
+            <h2>Ações Recomendadas</h2>
+            <p>PLANEJAMENTO · JANELA AGO–OUT 2026</p>
+          </div>
+        </div>
+        <div class="src-list">
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--cyan)"></span>
+            <div><b>Monitorar Porto Velho e Rio Branco</b><span>estações com queda acentuada — risco de vazante severa</span></div>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--cyan)"></span>
+            <div><b>Revisar indicador ENOS a cada boletim trimestral</b><span>sinal El Niño amadurece durante o início da vazante</span></div>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--cyan)"></span>
+            <div><b>Antecipar comunicação à Defesa Civil</b><span>Manaus segue em cota de inundação — pico ainda instável</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOURCES -->
+    <div class="grid-3">
+      <div class="panel" style="grid-column:span 2;" data-view="geral,fontes">
+        <div class="panel-head">
+          <div>
+            <h2>Fontes conectadas</h2>
+            <p>ARQUITETURA DE INGESTÃO · SUPABASE / POSTGIS</p>
+          </div>
+        </div>
+        <div class="src-list">
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--cyan)"></span>
+            <div><b>ANA · HidroWebService</b><span>cotas, vazões, chuva por estação telemétrica</span></div>
+            <span class="src-status s-token">token pendente</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>SGB/CPRM · SACE (SAH Amazonas)</b><span>cotagramas simulados — parsing de boletim PDF ainda não implementado</span></div>
+            <span class="src-status s-token">simulado</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--green)" id="src-inmet-dot"></span>
+            <div><b>INMET · Estações Automáticas</b><span>temperatura, vento, umidade, pressão — requer token (cadastro.act@inmet.gov.br)</span></div>
+            <span class="src-status s-token" id="src-inmet-status">conectando…</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>CEMADEN · Plataforma de Entrega de Dados</b><span>pluviômetros automáticos, estações hidrológicas</span></div>
+            <span class="src-status s-token">token pendente</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" data-view="geral,cotas">
+        <div class="panel-head">
+          <div>
+            <h2>Projeção de vazante</h2>
+            <p>SÉRIE HISTÓRICA 1903–2025</p>
+          </div>
+        </div>
+        <div id="chart-gauge" style="width:100%; height:170px;"></div>
+        <p style="font-size:11px; color:var(--text-mid); text-align:center; margin-top:6px;">Similaridade com padrão de 2023: <b style="color:#fbbf24;">moderada-alta</b></p>
+      </div>
+
+      <!-- preenche o espaço vazio ao lado de Fontes conectadas na aba "Fontes / APIs" -->
+      <div class="panel" data-view="fontes">
+        <div class="panel-head">
+          <div>
+            <h2>Checklist de Integração</h2>
+            <p>PRÓXIMOS PASSOS · DADOS EM TEMPO REAL</p>
+          </div>
+        </div>
+        <div class="src-list">
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Implementar parsing de boletim PDF (SACE)</b><span>hoje o cotagrama é simulado — precisa extrair cota real do boletim SAH-Amazonas</span></div>
+            <span class="src-status s-token">pendente</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Solicitar token ANA HidroWebService</b><span>autoatendimento via portal HidroWeb</span></div>
+            <span class="src-status s-token">pendente</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Solicitar token INMET</b><span>e-mail para cadastro.act@inmet.gov.br</span></div>
+            <span class="src-status s-token">pendente</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Solicitar token CEMADEN</b><span>Plataforma de Entrega de Dados</span></div>
+            <span class="src-status s-token">pendente</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>Configurar ingestão contínua</b><span>Supabase/PostGIS + jobs agendados</span></div>
+            <span class="src-status s-token">pendente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG DE INGESTÃO -->
+    <div class="grid-2" data-view="log">
+      <div class="panel" style="grid-column:span 2;">
+        <div class="panel-head">
+          <div>
+            <h2>Log de ingestão</h2>
+            <p>EVENTOS DE SINCRONIZAÇÃO · FONTES EXTERNAS</p>
+          </div>
+        </div>
+        <div class="src-list">
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>SGB/CPRM · SACE</b><span>simulado — parsing de boletim ainda não implementado</span></div>
+            <span class="src-status s-token">sem sincronização real</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--green)"></span>
+            <div><b>INMET · Estações Automáticas</b><span>lista de estações sincronizada (sem token) · leituras de sensor bloqueadas</span></div>
+            <span class="src-status s-token">há 6 min</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>CEMADEN · Plataforma de Entrega de Dados</b><span>tentativa de sincronização · aguardando token de acesso</span></div>
+            <span class="src-status s-token">há 41 min</span>
+          </div>
+          <div class="src-item">
+            <span class="src-dot" style="background:var(--amber)"></span>
+            <div><b>ANA · HidroWebService</b><span>tentativa de sincronização · aguardando token de acesso</span></div>
+            <span class="src-status s-token">há 1h 12min</span>
+          </div>
+        </div>
+        <p style="font-size:10.5px; color:var(--text-low); margin-top:12px; font-family:'Space Mono',monospace;">Registro ilustrativo — em produção, populado a partir da tabela de auditoria de ingestão (Supabase/PostGIS).</p>
+      </div>
+    </div>
+
+    <footer>
+      <p>Protótipo de layout — dados ilustrativos. Estrutura preparada para substituição por ingestão em tempo real (ANA / SGB-SACE / CEMADEN / INMET).</p>
+      <p>SAH-AM MONITOR · Setor de Geoprocessamento</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+const cyan = '#06b6d4';
+const textMid = '#8fa4ae';
+const gridColor = 'rgba(255,255,255,.05)';
+
+echarts.registerTheme('dark-amazon', {});
+
+function baseGrid(extra){
+  return Object.assign({left:44, right:18, top:20, bottom:28, containLabel:true}, extra||{});
+}
+function baseAxisStyle(){
+  return {
+    axisLine:{lineStyle:{color:'rgba(255,255,255,.08)'}},
+    axisLabel:{color:textMid, fontFamily:'Space Mono', fontSize:10},
+    splitLine:{lineStyle:{color:gridColor}}
+  };
+}
+
+/* ===== PREVISÃO DO TEMPO · 7 DIAS + CENA ANIMADA DE CÉU ===== */
+(function(){
+  const weekdays = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+
+  const icons = {
+    sol: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8L6 18M18 6l1.8-1.8"/></svg>',
+    parcial: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="3.5"/><path d="M8.5 2.3v1.7M3.4 8.5H1.7M4.5 4.5 5.7 5.7"/><path d="M8 17.5h9a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 8 12.5"/></svg>',
+    nublado: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 18h11a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 6.6 12.5 3.5 3.5 0 0 0 6 18z"/></svg>',
+    chuva: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 14h11a3.5 3.5 0 0 0 .5-6.96A5.5 5.5 0 0 0 6.6 8.5 3.5 3.5 0 0 0 6 14z"/><path d="M8 18l-1 2.5M12.5 18l-1 2.5M17 18l-1 2.5"/></svg>'
+  };
+  const skyLabels = {sol:'Ensolarado', parcial:'Parcialmente nublado', nublado:'Nublado', chuva:'Pancadas de chuva'};
+
+  // previsão ilustrativa Manaus · padrão de vazante (jul/ago) — poucas chuvas, calor estável
+  const forecast = [
+    {cond:'parcial', max:33, min:24, chuva:20},
+    {cond:'nublado', max:31, min:24, chuva:55},
+    {cond:'chuva',   max:30, min:23, chuva:80},
+    {cond:'parcial', max:32, min:24, chuva:35},
+    {cond:'sol',     max:34, min:24, chuva:10},
+    {cond:'parcial', max:33, min:24, chuva:30},
+    {cond:'nublado', max:31, min:23, chuva:50}
+  ];
+
+  const today = new Date();
+  const row = document.getElementById('forecast-row');
+  forecast.forEach((f,i)=>{
+    const d = new Date(today); d.setDate(d.getDate()+i);
+    const label = i===0 ? 'Hoje' : weekdays[d.getDay()];
+    const card = document.createElement('div');
+    card.className = 'fc-day' + (i===0 ? ' is-today' : '');
+    card.innerHTML = `
+      <div class="fc-label">${label}</div>
+      <div class="fc-icon">${icons[f.cond]}</div>
+      <div class="fc-temp"><b>${f.max}°</b> <span>${f.min}°</span></div>
+      <div class="fc-rain">💧 ${f.chuva}%</div>`;
+    row.appendChild(card);
+  });
+
+  // cena do céu reflete a condição de hoje (previsão[0])
+  const todayCond = forecast[0].cond;
+  const scene = document.getElementById('sky-scene');
+  scene.classList.add('state-'+todayCond);
+  document.getElementById('sky-label-text').textContent = skyLabels[todayCond];
+  document.getElementById('sky-label-temp').textContent = forecast[0].max+'° / '+forecast[0].min+'°';
+})();
+
+/* ===== COTAGRAMA ===== */
+(function(){
+  const days = 60;
+  const dates = [];
+  const cota = [];
+  const bandLow = [];
+  const bandHigh = [];
+  let val = 17.2;
+  const start = new Date();
+  start.setHours(0,0,0,0);
+  start.setDate(start.getDate() - (days - 1)); // últimos 60 dias terminando hoje
+  for(let i=0;i<days;i++){
+    const d = new Date(start); d.setDate(d.getDate()+i);
+    dates.push(String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'));
+    // rising curve toward 28.5 then flattening
+    const t = i/days;
+    const target = 17.2 + (28.5-17.2)*Math.min(1, t*1.55);
+    val = val + (target-val)*0.18 + (Math.random()-0.5)*0.15;
+    cota.push(+val.toFixed(2));
+    bandLow.push(+(16.5 + t*9.2).toFixed(2));
+    bandHigh.push(+(19.5 + t*11.5).toFixed(2));
+  }
+
+  const chart = echarts.init(document.getElementById('chart-cota'));
+  chart.setOption({
+    grid: baseGrid(),
+    tooltip:{
+      trigger:'axis', backgroundColor:'#0e1922', borderColor:'#1c2e3a', textStyle:{color:'#eaf4f7', fontSize:11},
+      formatter: params=>{
+        const p = params.find(x=>x.seriesName==='cota observada');
+        if(!p) return '';
+        return `${p.axisValue} · 07h<br>${p.marker} cota observada: <b>${String(p.value).replace('.',',')} m</b>`;
+      }
+    },
+    xAxis: Object.assign({type:'category', data:dates, boundaryGap:false}, baseAxisStyle()),
+    yAxis: Object.assign({type:'value', name:'cota (m)', nameTextStyle:{color:textMid, fontSize:10}}, baseAxisStyle()),
+    series:[
+      {
+        name:'faixa normal', type:'line', data:bandHigh, lineStyle:{opacity:0}, stack:'band',
+        areaStyle:{color:'rgba(6,182,212,.08)'}, symbol:'none', silent:true
+      },
+      {
+        name:'faixa base', type:'line', data:bandLow.map((v,i)=>+(bandHigh[i]-v).toFixed(2)), lineStyle:{opacity:0}, stack:'band',
+        areaStyle:{color:'#060b10'}, symbol:'none', silent:true
+      },
+      {
+        name:'cota observada', type:'line', data:cota, smooth:true, symbol:'none',
+        lineStyle:{color:cyan, width:2.5},
+        areaStyle:{color:{type:'linear', x:0,y:0,x2:0,y2:1, colorStops:[{offset:0,color:'rgba(6,182,212,.25)'},{offset:1,color:'rgba(6,182,212,0)'}]}},
+        markLine:{
+          symbol:'none',
+          lineStyle:{color:'#f59e0b', type:'dashed'},
+          label:{color:'#fbbf24', fontSize:10, fontFamily:'Space Mono'},
+          data:[{yAxis:29.0, name:'cota de inundação'}]
+        }
+      }
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+/* ===== CLIMA (temp + vento) — INMET A101 Manaus, com fallback simulado ===== */
+(async function(){
+  // Token gratuito solicitado por e-mail a cadastro.act@inmet.gov.br — a rota aberta
+  // /estacao/{ini}/{fim}/{cod} passou a responder 204 sem token; preencha aqui quando tiver um.
+  const INMET_TOKEN = '';
+  const fmt1 = v => v.toFixed(1).replace('.', ',');
+  const compass = deg => {
+    const dirs = ['N','NE','L','SE','S','SO','O','NO'];
+    return dirs[Math.round(deg/45) % 8];
+  };
+  const isoDate = d => d.toISOString().slice(0,10);
+
+  function simulate(){
+    const hours = [], temp = [], wind = [];
+    for(let i=0;i<48;i++){
+      hours.push((i%24).toString().padStart(2,'0')+'h');
+      const hourOfDay = i%24;
+      const t = 24 + 9*Math.sin((hourOfDay-9)/24*2*Math.PI) + Math.random()*0.8;
+      temp.push(+t.toFixed(1));
+      wind.push(+(6 + 8*Math.max(0,Math.sin((hourOfDay-13)/24*2*Math.PI)) + Math.random()*2).toFixed(1));
+    }
+    return {hours, temp, wind, source:'simulado', latest:null};
+  }
+
+  async function fetchInmetA101(){
+    const today = new Date();
+    const twoDaysAgo = new Date(today.getTime() - 2*86400000);
+    const url = INMET_TOKEN
+      ? `https://apitempo.inmet.gov.br/token/estacao/${isoDate(twoDaysAgo)}/${isoDate(today)}/A101/${INMET_TOKEN}`
+      : `https://apitempo.inmet.gov.br/estacao/${isoDate(twoDaysAgo)}/${isoDate(today)}/A101`;
+    const ctrl = new AbortController();
+    const timeout = setTimeout(()=>ctrl.abort(), 8000);
+    try{
+      const res = await fetch(url, {signal:ctrl.signal});
+      clearTimeout(timeout);
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const rows = await res.json();
+      if(!Array.isArray(rows) || rows.length === 0) throw new Error('resposta vazia');
+
+      const recent = rows.slice(-48);
+      const hours = [], temp = [], wind = [];
+      let latest = null;
+      recent.forEach(r=>{
+        const utcHour = parseInt(String(r.HR_MEDICAO).slice(0,2), 10);
+        const localHour = ((utcHour - 4) % 24 + 24) % 24; // UTC → America/Manaus (UTC-4)
+        hours.push(String(localHour).padStart(2,'0')+'h');
+        const t = parseFloat(r.TEM_INS);
+        const v = parseFloat(r.VEN_VEL);
+        temp.push(Number.isFinite(t) ? +t.toFixed(1) : null);
+        wind.push(Number.isFinite(v) ? +(v*3.6).toFixed(1) : null); // m/s → km/h
+        if(t || v || r.UMD_INS || r.VEN_RAJ || r.VEN_DIR){
+          latest = {
+            temp: Number.isFinite(t) ? t : latest?.temp,
+            wind: Number.isFinite(v) ? v*3.6 : latest?.wind,
+            umid: r.UMD_INS != null ? parseFloat(r.UMD_INS) : latest?.umid,
+            rajada: r.VEN_RAJ != null ? parseFloat(r.VEN_RAJ)*3.6 : latest?.rajada,
+            dir: r.VEN_DIR != null ? parseFloat(r.VEN_DIR) : latest?.dir
+          };
+        }
+      });
+      return {hours, temp, wind, source:'INMET · A101', latest};
+    }catch(err){
+      clearTimeout(timeout);
+      console.warn('[INMET] falha ao buscar dados reais, usando simulação:', err.message);
+      return null;
+    }
+  }
+
+  const real = await fetchInmetA101();
+  const data = real || simulate();
+
+  // atualiza KPIs e status da fonte quando há dado real
+  const statusEl = document.getElementById('src-inmet-status');
+  const dotEl = document.getElementById('src-inmet-dot');
+  if(real && real.latest){
+    statusEl.textContent = 'ativo';
+    statusEl.className = 'src-status s-ok';
+    dotEl.style.background = 'var(--green)';
+
+    if(Number.isFinite(real.latest.temp)){
+      document.getElementById('kpi-temp-val').innerHTML = fmt1(real.latest.temp)+'<span>°C</span>';
+      document.getElementById('kpi-temp-sub').textContent = 'dado ao vivo · estação A101';
+    }
+    if(Number.isFinite(real.latest.wind)){
+      document.getElementById('kpi-wind-val').innerHTML = Math.round(real.latest.wind)+'<span>km/h</span>';
+      const dirTxt = Number.isFinite(real.latest.dir) ? 'Direção '+compass(real.latest.dir)+' · ' : '';
+      const rajTxt = Number.isFinite(real.latest.rajada) ? 'rajada máx. '+Math.round(real.latest.rajada)+' km/h' : '';
+      document.getElementById('kpi-wind-sub').textContent = dirTxt + rajTxt;
+    }
+    if(Number.isFinite(real.latest.umid)){
+      document.getElementById('kpi-temp-note').textContent = 'Umidade '+Math.round(real.latest.umid)+'% · INMET A101 (tempo real)';
+    }
+  } else {
+    statusEl.textContent = 'token pendente · simulado';
+    statusEl.className = 'src-status s-token';
+    dotEl.style.background = 'var(--amber)';
+  }
+
+  const chart = echarts.init(document.getElementById('chart-clima'));
+  chart.setOption({
+    grid: baseGrid({right:44}),
+    tooltip:{trigger:'axis', backgroundColor:'#0e1922', borderColor:'#1c2e3a', textStyle:{color:'#eaf4f7', fontSize:11}},
+    xAxis: Object.assign({type:'category', data:data.hours, boundaryGap:false}, baseAxisStyle()),
+    yAxis:[
+      Object.assign({type:'value', name:'°C', position:'left', nameTextStyle:{color:textMid, fontSize:10}}, baseAxisStyle()),
+      Object.assign({type:'value', name:'km/h', position:'right', nameTextStyle:{color:textMid, fontSize:10}}, baseAxisStyle())
+    ],
+    series:[
+      {name:'temperatura', type:'line', data:data.temp, smooth:true, symbol:'none', lineStyle:{color:'#f59e0b', width:2}, connectNulls:true},
+      {name:'vento', type:'line', yAxisIndex:1, data:data.wind, smooth:true, symbol:'none', lineStyle:{color:cyan, width:2, type:'dashed'}, connectNulls:true}
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+/* ===== CHUVA (bar) ===== */
+(function(){
+  const days = ['26/06','27/06','28/06','29/06','30/06','01/07','02/07'];
+  const rain = [3.2, 0, 8.6, 22.4, 1.0, 0, 14.2];
+  const chart = echarts.init(document.getElementById('chart-chuva'));
+  chart.setOption({
+    grid: baseGrid(),
+    tooltip:{trigger:'axis', backgroundColor:'#0e1922', borderColor:'#1c2e3a', textStyle:{color:'#eaf4f7', fontSize:11}},
+    xAxis: Object.assign({type:'category', data:days}, baseAxisStyle()),
+    yAxis: Object.assign({type:'value', name:'mm', nameTextStyle:{color:textMid, fontSize:10}}, baseAxisStyle()),
+    series:[{
+      type:'bar', data:rain, barWidth:'46%',
+      itemStyle:{color:{type:'linear', x:0,y:0,x2:0,y2:1, colorStops:[{offset:0,color:'#06b6d4'},{offset:1,color:'#0e3945'}]}, borderRadius:[5,5,0,0]}
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+/* ===== OVERLAY COTAGRAMAS 2023/2024/2026 ===== */
+(function(){
+  const monthNames = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  // eixo: 01/jun a 15/nov (~168 dias) — janela de cheia->vazante do Rio Negro
+  const totalDays = 168;
+  const jDays = [];
+  for(let i=0;i<totalDays;i+=4){ jDays.push(i); }
+
+  function curve(peak, min, peakDay, minDay, noise){
+    return jDays.map(d=>{
+      let v;
+      if(d<=peakDay){
+        v = 17 + (peak-17)*(d/peakDay);
+      } else if(d<=minDay){
+        const t=(d-peakDay)/(minDay-peakDay);
+        // recessão com aceleração no meio (formato sigmoide invertido)
+        v = peak - (peak-min)*(0.5-0.5*Math.cos(Math.PI*t));
+      } else {
+        v = min + (min*0.02)*((d-minDay)/(totalDays-minDay));
+      }
+      return +(v + (Math.random()-0.5)*noise).toFixed(2);
+    });
+  }
+
+  const s2023 = curve(29.6, 12.70, 40, 148, 0.25);
+
+  // 2026: só temos dados reais até o "hoje" (~dia 32 = 02/jul), resto é projeção
+  const hojeIdx = jDays.findIndex(d=>d>=32);
+  const s2026Full = curve(28.9, 14.5, 30, 145, 0.15); // cenário de projeção alinhado ao SGB
+  const s2026Obs = s2026Full.map((v,i)=> i<=hojeIdx ? v : null);
+  const s2026Proj = s2026Full.map((v,i)=> i>=hojeIdx ? v : null);
+
+  const labels = jDays.map(d=>{
+    const dt = new Date(2026,5,1); dt.setDate(dt.getDate()+d);
+    return (dt.getMonth()+1)+'/'+dt.getDate();
+  });
+
+  const chart = echarts.init(document.getElementById('chart-overlay'));
+  chart.setOption({
+    grid: baseGrid(),
+    tooltip:{trigger:'axis', backgroundColor:'#0e1922', borderColor:'#1c2e3a', textStyle:{color:'#eaf4f7', fontSize:11}},
+    xAxis: Object.assign({type:'category', data:labels, boundaryGap:false}, baseAxisStyle(), {
+      axisLabel: Object.assign({}, baseAxisStyle().axisLabel, {
+        formatter: value=>{
+          const [m,d] = value.split('/').map(Number);
+          return d<=4 ? monthNames[m-1] : '';
+        }
+      })
+    }),
+    yAxis: Object.assign({type:'value', name:'cota (m)', nameTextStyle:{color:textMid, fontSize:10}}, baseAxisStyle()),
+    series:[
+      {name:'2023', type:'line', data:s2023, smooth:true, symbol:'none', lineStyle:{color:'#f59e0b', width:2, type:'dashed'}},
+      {name:'2026 observado', type:'line', data:s2026Obs, smooth:true, symbol:'circle', symbolSize:5,
+        lineStyle:{color:cyan, width:3}, itemStyle:{color:cyan}},
+      {name:'2026 projeção', type:'line', data:s2026Proj, smooth:true, symbol:'none',
+        lineStyle:{color:'#22c55e', width:2, type:'dashed'}}
+    ]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+
+  // ===== análise mês a mês (botão de análise no cabeçalho do painel) =====
+  const monthGroups = {};
+  jDays.forEach((d,i)=>{
+    const dt = new Date(2026,5,1); dt.setDate(dt.getDate()+d);
+    const key = dt.getMonth();
+    (monthGroups[key] = monthGroups[key] || []).push(i);
+  });
+  const monthOrder = Object.keys(monthGroups).map(Number).sort((a,b)=>a-b);
+  const fmtM = v => v.toFixed(2).replace('.', ',');
+  const tbody = document.getElementById('analise-mensal-body');
+  monthOrder.forEach(m=>{
+    const idxs = monthGroups[m];
+    const lastIdx = idxs[idxs.length-1];
+    const v23 = s2023[lastIdx];
+    const v26 = s2026Full[lastIdx];
+    const delta = +(v26 - v23).toFixed(2);
+    const isProj = lastIdx > hojeIdx;
+    const trendClass = delta >= 0 ? 'down' : 'up'; // down=verde (melhor que 2023), up=vermelho (pior que 2023)
+    let leitura;
+    if(delta >= 0.5) leitura = 'acima da seca de 2023 — situação mais amena';
+    else if(delta <= -0.5) leitura = 'abaixo da seca de 2023 — atenção';
+    else leitura = 'próximo ao padrão de 2023';
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="st-name" style="text-transform:capitalize;">${monthNames[m]}${isProj ? ' <span style="font-size:9px; color:var(--text-low); font-weight:400; text-transform:none;">(projeção)</span>' : ''}</td>
+      <td class="trend">${fmtM(v23)} m</td>
+      <td class="trend">${fmtM(v26)} m</td>
+      <td class="trend ${trendClass}">${delta>=0?'+':''}${fmtM(delta)} m</td>
+      <td style="font-size:11px; color:var(--text-mid);">${leitura}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  const btnAnalise = document.getElementById('btn-analise-mensal');
+  const painelAnalise = document.getElementById('analise-mensal');
+  btnAnalise.addEventListener('click', ()=>{
+    const willShow = painelAnalise.hidden;
+    painelAnalise.hidden = !willShow;
+    btnAnalise.classList.toggle('active', willShow);
+    btnAnalise.setAttribute('aria-expanded', String(willShow));
+  });
+})();
+
+/* ===== GAUGE (projeção) ===== */
+(function(){
+  const chart = echarts.init(document.getElementById('chart-gauge'));
+  chart.setOption({
+    series:[{
+      type:'gauge',
+      startAngle:200, endAngle:-20,
+      min:0, max:100,
+      radius:'92%',
+      pointer:{show:true, itemStyle:{color:'#f59e0b'}},
+      progress:{show:true, width:12, itemStyle:{color:{type:'linear', x:0,y:0,x2:1,y2:0, colorStops:[{offset:0,color:'#06b6d4'},{offset:1,color:'#f59e0b'}]}}},
+      axisLine:{lineStyle:{width:12, color:[[1,'rgba(255,255,255,.06)']]}},
+      axisTick:{show:false}, splitLine:{show:false}, axisLabel:{show:false},
+      detail:{valueAnimation:true, fontSize:20, fontFamily:'Space Mono', color:'#eaf4f7', offsetCenter:[0,'20%'], formatter:'{value}%'},
+      data:[{value:64}]
+    }]
+  });
+  window.addEventListener('resize', ()=>chart.resize());
+})();
+
+/* ===== NAVEGAÇÃO DA SIDEBAR ===== */
+(function(){
+  const containers = document.querySelectorAll('.kpi-grid, .grid-2, .grid-3');
+
+  function applyView(view){
+    document.querySelectorAll('[data-view]').forEach(el=>{
+      el.hidden = !el.dataset.view.split(',').includes(view);
+    });
+    containers.forEach(c=>{
+      if(c.hasAttribute('data-view')) return; // container já controlado explicitamente
+      const anyVisible = Array.from(c.children).some(child=>!child.hidden);
+      c.hidden = !anyVisible;
+    });
+    requestAnimationFrame(()=>window.dispatchEvent(new Event('resize')));
+  }
+
+  document.querySelectorAll('.nav-item[data-nav]').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item[data-nav]').forEach(n=>n.classList.remove('active'));
+      item.classList.add('active');
+      applyView(item.dataset.nav);
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+
+  applyView('geral');
+})();
+</script>
+</body>
+</html>
