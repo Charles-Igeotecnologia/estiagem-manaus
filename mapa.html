@@ -2890,6 +2890,76 @@
             }
         };
 
+        // Plugin para desenhar a linha perpendicular do dia atual (Hoje) interpolada entre os meses
+        const todayLinePlugin = {
+            id: 'todayLine',
+            afterDraw(chart) {
+                const today = new Date();
+                const currentMonth = today.getMonth(); // 6 para Julho
+                const currentDay = today.getDate();
+                const year = today.getFullYear();
+                
+                // Só desenha se for o gráfico de comparação com o ano atual
+                const hasCurrentYear = chart.data.datasets.some(ds => ds.label && ds.label.includes(year.toString()));
+                if (!hasCurrentYear) return;
+                
+                const xAxis = chart.scales.x;
+                const yAxis = chart.scales.y;
+                if (!xAxis || !yAxis) return;
+                
+                const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+                const xStart = xAxis.getPixelForTick(currentMonth);
+                let xToday = xStart;
+                
+                if (currentMonth < 11) {
+                    const xEnd = xAxis.getPixelForTick(currentMonth + 1);
+                    const fraction = currentDay / daysInMonth;
+                    xToday = xStart + (xEnd - xStart) * fraction;
+                }
+                
+                const ctx = chart.ctx;
+                ctx.save();
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(249, 115, 22, 0.6)'; // Laranja suave
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([4, 4]);
+                ctx.moveTo(xToday, yAxis.top);
+                ctx.lineTo(xToday, yAxis.bottom);
+                ctx.stroke();
+                
+                ctx.fillStyle = 'rgba(249, 115, 22, 0.9)';
+                ctx.font = 'bold 9px "Inter", sans-serif';
+                ctx.textAlign = 'center';
+                const monthsShort = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                const labelText = `Hoje (${currentDay}/${monthsShort[currentMonth]})`;
+                ctx.fillText(labelText, xToday, yAxis.top + 15);
+                ctx.restore();
+            }
+        };
+
+        // Plugin customizado para desenhar a linha de cruzamento vertical no hover
+        const hoverLinePlugin = {
+            id: 'hoverLine',
+            afterDraw(chart) {
+                if (chart.tooltip && chart.tooltip.getActiveElements().length) {
+                    const activeElement = chart.tooltip.getActiveElements()[0];
+                    const ctx = chart.ctx;
+                    const yAxis = chart.scales.y;
+                    const x = activeElement.element.x;
+                    
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(x, yAxis.top);
+                    ctx.lineTo(x, yAxis.bottom);
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                    ctx.setLineDash([3, 3]);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+            }
+        };
+
         // Dados oficiais de cota do Rio Negro em Manaus (Porto de Manaus / CPRM)
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
         // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)
@@ -2934,8 +3004,12 @@
                         }
                     ]
                 },
-                plugins: [glowPlugin],
+                plugins: [glowPlugin, todayLinePlugin, hoverLinePlugin],
                 options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
@@ -3048,8 +3122,12 @@
                         }
                     ]
                 },
-                plugins: [glowPlugin],
+                plugins: [glowPlugin, todayLinePlugin, hoverLinePlugin],
                 options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
@@ -3170,8 +3248,12 @@
                         }
                     ]
                 },
-                plugins: [glowPlugin],
+                plugins: [glowPlugin, todayLinePlugin, hoverLinePlugin],
                 options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
@@ -3286,8 +3368,12 @@
                         }
                     ]
                 },
-                plugins: [glowPlugin],
+                plugins: [glowPlugin, todayLinePlugin, hoverLinePlugin],
                 options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
@@ -3407,8 +3493,12 @@
                         }
                     ]
                 },
-                plugins: [glowPlugin],
+                plugins: [glowPlugin, todayLinePlugin, hoverLinePlugin],
                 options: {
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
