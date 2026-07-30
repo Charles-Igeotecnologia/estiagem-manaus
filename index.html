@@ -1848,6 +1848,20 @@
                                 family: "'Inter', sans-serif"
                             },
                             callbacks: {
+                                title: function(context) {
+                                    if (!context || !context.length) return '';
+                                    const item = context[0];
+                                    const index = item.dataIndex;
+                                    const label = item.label;
+                                    const dataset = item.dataset;
+                                    const datasetLabel = dataset && dataset.label ? dataset.label : '';
+                                    const today = new Date();
+                                    const currentMonth = today.getMonth();
+                                    if (datasetLabel.includes('Ano Atual') && index === currentMonth) {
+                                        return `${label} (Atualizado até o dia ${today.getDate()})`;
+                                    }
+                                    return label;
+                                },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) {
@@ -1966,6 +1980,20 @@
                                 family: "'Inter', sans-serif"
                             },
                             callbacks: {
+                                title: function(context) {
+                                    if (!context || !context.length) return '';
+                                    const item = context[0];
+                                    const index = item.dataIndex;
+                                    const label = item.label;
+                                    const dataset = item.dataset;
+                                    const datasetLabel = dataset && dataset.label ? dataset.label : '';
+                                    const today = new Date();
+                                    const currentMonth = today.getMonth();
+                                    if (datasetLabel.includes('Ano Atual') && index === currentMonth) {
+                                        return `${label} (Atualizado até o dia ${today.getDate()})`;
+                                    }
+                                    return label;
+                                },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) {
@@ -2092,6 +2120,20 @@
                                 family: "'Inter', sans-serif"
                             },
                             callbacks: {
+                                title: function(context) {
+                                    if (!context || !context.length) return '';
+                                    const item = context[0];
+                                    const index = item.dataIndex;
+                                    const label = item.label;
+                                    const dataset = item.dataset;
+                                    const datasetLabel = dataset && dataset.label ? dataset.label : '';
+                                    const today = new Date();
+                                    const currentMonth = today.getMonth();
+                                    if (datasetLabel.includes('Ano Atual') && index === currentMonth) {
+                                        return `${label} (Atualizado até o dia ${today.getDate()})`;
+                                    }
+                                    return label;
+                                },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) {
@@ -2212,6 +2254,20 @@
                                 family: "'Inter', sans-serif"
                             },
                             callbacks: {
+                                title: function(context) {
+                                    if (!context || !context.length) return '';
+                                    const item = context[0];
+                                    const index = item.dataIndex;
+                                    const label = item.label;
+                                    const dataset = item.dataset;
+                                    const datasetLabel = dataset && dataset.label ? dataset.label : '';
+                                    const today = new Date();
+                                    const currentMonth = today.getMonth();
+                                    if (datasetLabel.includes('Ano Atual') && index === currentMonth) {
+                                        return `${label} (Atualizado até o dia ${today.getDate()})`;
+                                    }
+                                    return label;
+                                },
                                 label: function(context) {
                                     let label = context.dataset.label || '';
                                     if (label) {
@@ -2751,6 +2807,12 @@
                                 <td><span style="color: var(--accent-cyan); font-weight: 600;">+0.30 m</span> (Cheia de ${currentYear} superou a de 2023)</td>
                             </tr>
                             <tr>
+                                <td><b>Julho</b> (Vazante)</td>
+                                <td>27.85 m</td>
+                                <td>27.60 m</td>
+                                <td><span style="color: var(--accent-orange); font-weight: 600;">-0.25 m</span> (Vazante no dia 30 vs cota mensal de 2023)</td>
+                            </tr>
+                            <tr>
                                 <td><b>Outubro</b> (Seca)</td>
                                 <td><b>12.70 m</b> (Mínima)</td>
                                 <td>-- m</td>
@@ -2860,6 +2922,12 @@
                                 <td>26.83 m</td>
                                 <td>28.50 m</td>
                                 <td><span style="color: var(--accent-cyan); font-weight: 600;">+1.67 m</span> (Cheia de ${currentYear} muito superior à de 2024)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Julho</b> (Vazante)</td>
+                                <td>26.29 m</td>
+                                <td>27.60 m</td>
+                                <td><span style="color: var(--accent-cyan); font-weight: 600;">+1.31 m</span> (Nível mais elevado no dia 30 vs cota mensal de 2024)</td>
                             </tr>
                             <tr>
                                 <td><b>Outubro</b> (Seca)</td>
