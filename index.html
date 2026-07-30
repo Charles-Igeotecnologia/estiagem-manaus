@@ -1727,9 +1727,36 @@
             }
         };
 
-        // Plugin para desenhar a linha perpendicular do dia atual (Hoje) interpolada entre os meses
+        // Plugin para desenhar a linha perpendicular do dia atual (Hoje) interpolada entre os meses e esticar a linha até hoje
         const todayLinePlugin = {
             id: 'todayLine',
+            beforeDatasetDraw(chart, args) {
+                const today = new Date();
+                const currentMonth = today.getMonth(); // 6 para Julho
+                const currentDay = today.getDate();
+                const year = today.getFullYear();
+                
+                const dataset = chart.data.datasets[args.index];
+                // Se for a série do ano atual (2026)
+                if (dataset.label && dataset.label.includes(year.toString())) {
+                    const meta = chart.getDatasetMeta(args.index);
+                    const xAxis = chart.scales.x;
+                    if (xAxis && meta.data && meta.data[currentMonth]) {
+                        const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+                        const xStart = xAxis.getPixelForTick(currentMonth);
+                        let xToday = xStart;
+                        
+                        if (currentMonth < 11) {
+                            const xEnd = xAxis.getPixelForTick(currentMonth + 1);
+                            const fraction = currentDay / daysInMonth;
+                            xToday = xStart + (xEnd - xStart) * fraction;
+                        }
+                        
+                        // Ajusta a posição X do ponto para coincidir exatamente com a linha de "Hoje"
+                        meta.data[currentMonth].x = xToday;
+                    }
+                }
+            },
             afterDraw(chart) {
                 const today = new Date();
                 const currentMonth = today.getMonth(); // 6 para Julho
@@ -1757,7 +1784,7 @@
                 const ctx = chart.ctx;
                 ctx.save();
                 ctx.beginPath();
-                ctx.strokeStyle = 'rgba(249, 115, 22, 0.6)'; // Laranja suave
+                ctx.strokeStyle = 'rgba(249, 115, 22, 0.7)'; // Laranja suave
                 ctx.lineWidth = 1.5;
                 ctx.setLineDash([4, 4]);
                 ctx.moveTo(xToday, yAxis.top);
