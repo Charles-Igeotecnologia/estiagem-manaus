@@ -1760,19 +1760,19 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                             <div>
                                 <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Última Cota</span>
-                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">28,30 m</span>
+                                <span style="font-size: 0.8rem; font-weight: 700; color: #ffffff;">27,60 m</span>
                             </div>
                             <div>
                                 <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Referência</span>
-                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">Julho/2026</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #ffffff;">30/Julho/2026</span>
                             </div>
                             <div>
                                 <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Tendência</span>
-                                <span style="font-size: 0.7rem; font-weight: 600; color: #4ade80;">Normalidade</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #f97316;">Vazante (Descida)</span>
                             </div>
                             <div>
                                 <span style="font-size: 0.55rem; color: var(--text-secondary); display: block;">Nível de Risco</span>
-                                <span style="font-size: 0.7rem; font-weight: 600; color: #4ade80;">Baixo</span>
+                                <span style="font-size: 0.7rem; font-weight: 600; color: #f97316;">Atenção</span>
                             </div>
                         </div>
                     </div>
@@ -2894,8 +2894,8 @@
         const riverData2023 = [26.13, 26.43, 27.22, 27.97, 28.18, 28.20, 27.85, 25.96, 20.08, 13.91, 13.45, 16.53];
         // Dados oficiais de cota de 2024 (representando o dia 15 de cada mês)
         const riverData2024 = [20.06, 21.68, 22.72, 23.87, 25.84, 26.83, 26.29, 23.60, 16.23, 12.11, 13.15, 15.22];
-        // Dados de 2026 consolidados até Julho e nulos para o restante
-        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, 28.30, null, null, null, null, null];
+        // Dados de 2026 consolidados até Julho e nulos para o restante (Julho atualizado para 27.60m no dia 30)
+        const riverData2026 = [22.80, 24.30, 25.90, 26.90, 27.52, 28.50, 27.60, null, null, null, null, null];
 
         // Inicializa os gráficos de linha comparativos de chuva (Precipitação) com Chart.js
         function initClimateChart() {
