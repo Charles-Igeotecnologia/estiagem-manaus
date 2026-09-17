@@ -1975,18 +1975,10 @@
         let startX = 0;
         let startY = 0;
 
-        // Inicializa mapa e camadas base
+        // Inicializa mapa e camadas base (Satélite e Mapa de Ruas)
         function initMap() {
             const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri &mdash; Source: Esri'
-            });
-
-            const darkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-            });
-
-            const lightPositron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
             });
 
             const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1995,16 +1987,14 @@
 
             map = L.map('map', {
                 zoomControl: false,
-                layers: [darkMatter] // Padrão escuro
+                layers: [satelite]
             }).setView([-2.97, -60.19], 13);
 
             // Adiciona o Zoom Control no topo direito
             L.control.zoom({ position: 'topright' }).addTo(map);
 
             const basemaps = {
-                "Satélite": satelite,
-                "Mapa Escuro": darkMatter,
-                "Mapa Claro": lightPositron,
+                "Imagem de Satélite": satelite,
                 "Mapa de Ruas": osm
             };
 

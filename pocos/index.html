@@ -323,9 +323,6 @@ function normalizeTitle(t) {
 function initMap() {
     map = L.map('map', { zoomControl: true }).setView([-2.95, -60.05], 9);
 
-    const baseDark = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
-    });
     const baseSatImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics', maxZoom: 19
     });
@@ -333,20 +330,15 @@ function initMap() {
         attribution: 'Esri', maxZoom: 19
     });
     const baseSatelite = L.layerGroup([baseSatImagery, baseSatLabels]);
-    const baseClaro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 19
-    });
     const baseRuas = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors', subdomains: 'abc', maxZoom: 19
     });
 
-    baseDark.addTo(map);
+    baseRuas.addTo(map);
 
     L.control.layers({
-        '🌑 Escuro (Padrão)': baseDark,
-        '🛰️ Satélite': baseSatelite,
-        '☀️ Claro': baseClaro,
-        '🗺️ Ruas (OSM)': baseRuas
+        '🗺️ Mapa de Ruas': baseRuas,
+        '🛰️ Imagem de Satélite': baseSatelite
     }, null, { position: 'topright', collapsed: true }).addTo(map);
 
     markersLayer = L.layerGroup().addTo(map);
